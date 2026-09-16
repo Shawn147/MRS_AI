@@ -96,7 +96,7 @@ def sidebar(chat):
                 if st.form_submit_button('Save context'):
                     chat['profile'] = profile
                     st.success('Context saved for future replies.')
-        st.caption('VU–BC190411036 · Educational prototype')
+        st.caption('VU–BC190411036')
 
 
 def render_message(message):
