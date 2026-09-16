@@ -131,7 +131,6 @@ def chat_page(chat, data, version):
         for col, example in zip(st.columns(3), examples):
             if col.button(example, use_container_width=True):
                 st.session_state.queued_prompt = example
-        st.caption('Educational use only. This assistant cannot diagnose, prescribe, or replace a clinician.')
     for message in chat['messages']:
         render_message(message)
     entered = st.chat_input('Reply with symptoms or details…', max_chars=2000)
@@ -164,7 +163,6 @@ def chat_page(chat, data, version):
             }
         chat['messages'].append(message)
         st.rerun()
-    st.caption('For medical concerns, consult a qualified healthcare professional. Chat history is session-only.')
 
 
 def dataset_page(data):
