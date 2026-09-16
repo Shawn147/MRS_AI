@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "repository": "https://github.com/dr-mushtaq/Medicine-Recommendation-System",
+  "revision": "aa6b145d4838ac1dd6fd21b4db7a43c3098e19f9",
+  "raw_rows": 4920,
+  "unique_rows": 304,
+  "duplicates_removed": 4616,
+  "condition_count": 41,
+  "feature_count": 131,
+  "source_sha256": {
+    "Symptom-severity.csv": "cb5a84b5ebde81bb18738b7e7733bcbc5abdc667b4376893fb1774d8c444bc8d",
+    "Training.csv": "cc00c869b702c0c90eef3c1fb4d0b54f16965f8def2dec7e1bf91d0b76480ac3",
+    "description.csv": "92479f16248a50e8d8728ebc020ce2a7c3254bea4cf9b1959344e88f2eacde7b",
+    "diets.csv": "60dcd99af04627bcc9bddd1cf95298cc2df3af3c664ad89ce6be534821cb3cad",
+    "medications.csv": "ed20a9860e8b28dfe68a93e73315f8fac30f8275a204039f1c56d5eb43e8ce75",
+    "precautions_df.csv": "1c861595a43c106e5b5da035a0b480fd9c56008230a684f824db8ae1a16614db",
+    "symtoms_df.csv": "7eaea94647059877026e5160a3cfef326f92f92634bdd397d6dd6a809bc777fa",
+    "workout_df.csv": "6de044b92e572a74e0b4974981a7c144d3e4b87dd6b945f562925cb07289a1bd"
+  },
+  "notes": [
+    "No patient-level identifiers in training; independence of patients cannot be established.",
+    "CSV medicine mappings are unreviewed educational reference data, not prescribing rules.",
+    "Severity weights are stored for provenance, not used as clinical triage thresholds."
+  ],
+  "json_sha256": {
+    "training.json": "d13cfccf91f2586a90e137b2a68e6fd5e3f1da87a82be8e901eae9e9d99a452d",
+    "conditions.json": "293785ffceccb0b5eec36545b0c368e163948c60b1ebe8d0bdb607ce8d1dafd8",
+    "symptoms.json": "dae66c23729ab70890f9e3977f0dec1c6414a4d7385317bae829032e07058461"
+  }
+}
