@@ -10,6 +10,33 @@ streamlit run app.py
 
 On Windows: `.venv\Scripts\activate`. No API key is needed. Chat history stays in the browser session.
 
+## Live deployment and Qwen
+
+The default chat endpoint is `http://127.0.0.1:11434/api/chat`. That works when
+Streamlit and Ollama run on the same computer. On Streamlit Community Cloud,
+`127.0.0.1` refers to the cloud container, so a model downloaded to a personal
+Mac is not available to the public app.
+
+To answer general questions in a cloud deployment, run Qwen on a hosted inference
+service with an OpenAI-compatible chat-completions endpoint. Add these **root-level
+secrets** in the Streamlit app's settings (replace every placeholder):
+
+```toml
+MRS_LLM_BACKEND = "openai"
+MRS_LLM_URL = "https://YOUR-PROVIDER/v1/chat/completions"
+MRS_LLM_MODEL = "YOUR-PROVIDER-QWEN-MODEL-ID"
+MRS_LLM_API_KEY = "YOUR-SECRET-KEY"
+```
+
+The endpoint must use HTTPS. The provider receives the general question and any
+symptom labels included as context. Review its data handling before enabling it
+for real users. Do not commit `.streamlit/secrets.toml`; it is git-ignored.
+The app can also connect to a reachable hosted Ollama endpoint by setting
+`MRS_LLM_BACKEND = "ollama"`, `MRS_LLM_URL` to its full `/api/chat` URL,
+`MRS_LLM_MODEL` to the hosted model tag, and `MRS_LLM_API_KEY` if required.
+Without a hosted endpoint, the live app cannot generate general answers. It will
+show a setup message while local Ollama continues to work for local development.
+
 ## Layout
 
 ```

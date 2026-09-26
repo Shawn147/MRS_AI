@@ -1,4 +1,5 @@
 import json
+import os
 import unittest
 from unittest.mock import Mock, patch
 
@@ -91,6 +92,46 @@ class GeneralQuestionTests(unittest.TestCase):
         with patch('src.general_qa.urlopen', return_value=response):
             result = answer_general_question('What is sinusitis?', new_state(), self.data)
         self.assertEqual(result['text'], 'Sinusitis is inflammation of the sinuses.')
+
+    def test_hosted_openai_compatible_endpoint(self):
+        response = Mock()
+        response.__enter__ = Mock(return_value=response)
+        response.__exit__ = Mock(return_value=None)
+        response.read = Mock(return_value=json.dumps({
+            'choices': [{'message': {'content': 'A short answer.'}}]
+        }).encode())
+        settings = {'MRS_LLM_BACKEND': 'openai',
+                    'MRS_LLM_URL': 'https://example.test/v1/chat/completions',
+                    'MRS_LLM_MODEL': 'hosted-qwen', 'MRS_LLM_API_KEY': 'test-key'}
+        with patch.dict(os.environ, settings), patch('src.general_qa.urlopen', return_value=response) as send:
+            result = answer_general_question('How can I support gut health?', new_state(), self.data)
+        self.assertEqual(result['text'], 'A short answer.')
+        request = send.call_args.args[0]
+        self.assertEqual(request.full_url, settings['MRS_LLM_URL'])
+        self.assertEqual(request.get_header('Authorization'), 'Bearer test-key')
+        payload = json.loads(request.data)
+        self.assertEqual(payload['model'], 'hosted-qwen')
+        self.assertEqual(payload['messages'][-1]['content'], 'How can I support gut health?')
+
+    def test_hosted_endpoint_requires_configuration(self):
+        with patch.dict(os.environ, {'MRS_LLM_BACKEND': 'openai',
+                                     'MRS_LLM_URL': '', 'MRS_LLM_API_KEY': ''}), \
+                patch('src.general_qa.urlopen') as send:
+            result = answer_general_question('How can I support gut health?', new_state(), self.data)
+        self.assertEqual(result['intent'], 'general_question_unavailable')
+        self.assertIn('hosted language model', result['text'])
+        send.assert_not_called()
+
+    def test_reference_summary_fallback_without_downloaded_medembed(self):
+        response = Mock()
+        response.__enter__ = Mock(return_value=response)
+        response.__exit__ = Mock(return_value=None)
+        response.read = Mock(return_value=json.dumps({'message': {'content': 'Sinusitis is sinus inflammation.'}}).encode())
+        with patch('src.general_qa.search_references', side_effect=FileNotFoundError), \
+                patch('src.general_qa.urlopen', return_value=response) as send:
+            result = answer_general_question('What is sinusitis?', new_state(), self.data)
+        self.assertEqual(result['sources'], ['https://www.nhs.uk/conditions/sinusitis-sinus-infection/'])
+        self.assertIn('Sinusitis', json.loads(send.call_args.args[0].data)['messages'][0]['content'])
 
 
 if __name__ == '__main__':

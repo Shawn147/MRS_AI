@@ -1,7 +1,9 @@
 """Local, optional general-question answers using Ollama and reference search."""
 import json
+import os
 import re
 from urllib.error import HTTPError, URLError
+from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
 from src.reference_search import search_references
@@ -53,7 +55,16 @@ def _matched_references(question, records):
 
 def answer_general_question(question, state, data):
     records = _matched_references(question, data['reference_conditions'])
-    passages = search_references(question, records, limit=3) if records else []
+    try:
+        passages = search_references(question, records, limit=3) if records else []
+    except (FileNotFoundError, ImportError):
+        # Deployed copies may have source summaries but no downloaded MedEmbed weights.
+        passages = [
+            {'text': record['name'] + ': ' + record['description'] + ' Symptoms: ' +
+             ', '.join(record.get('symptom_terms', [])),
+             'source': record['sources'][0]['url']}
+            for record in records if record.get('sources')
+        ]
     source_text = '\n'.join(f'- {item["text"]}' for item in passages)
     symptoms = ', '.join(data['by_symptom'][key]['label'] for key in state['symptoms']) or 'none reported'
     system = (
@@ -70,23 +81,43 @@ def answer_general_question(question, state, data):
         f'Previously reported symptoms (context only): {symptoms}.\n'
         f'Reference notes:\n{source_text or "None for this topic."}'
     )
-    payload = {
-        'model': MODEL,
-        'stream': False,
-        'think': False,
-        'messages': [{'role': 'system', 'content': system},
-                     {'role': 'user', 'content': question + '\n/no_think'}],
-        'options': {'temperature': 0.2, 'num_predict': 1200},
-    }
-    request = Request(OLLAMA_URL, data=json.dumps(payload).encode(),
-                      headers={'Content-Type': 'application/json'}, method='POST')
+    backend = os.environ.get('MRS_LLM_BACKEND', 'ollama').lower()
+    endpoint = os.environ.get('MRS_LLM_URL') or (OLLAMA_URL if backend == 'ollama' else '')
+    model = os.environ.get('MRS_LLM_MODEL') or MODEL
+    key = os.environ.get('MRS_LLM_API_KEY', '')
+    parsed = urlparse(endpoint)
+    local = parsed.hostname in {'localhost', '127.0.0.1', '::1'}
+    if (backend not in {'ollama', 'openai'} or not model or
+            (backend == 'openai' and not key) or
+            parsed.scheme not in {'http', 'https'} or not parsed.netloc or
+            (parsed.scheme != 'https' and not local)):
+        return {'text': 'This app needs a hosted language model to answer general questions. '
+                        'The app owner must configure its model endpoint and API key.',
+                'predictions': [], 'intent': 'general_question_unavailable'}
+    messages = [{'role': 'system', 'content': system},
+                {'role': 'user', 'content': question + ('\n/no_think' if backend == 'ollama' else '')}]
+    if backend == 'ollama':
+        payload = {'model': model, 'stream': False, 'think': False, 'messages': messages,
+                   'options': {'temperature': 0.2, 'num_predict': 1200}}
+    else:
+        payload = {'model': model, 'messages': messages, 'temperature': 0.2, 'max_tokens': 500}
+    headers = {'Content-Type': 'application/json'}
+    if key:
+        headers['Authorization'] = 'Bearer ' + key
+    request = Request(endpoint, data=json.dumps(payload).encode(), headers=headers, method='POST')
     try:
         with urlopen(request, timeout=120) as response:
             result = json.load(response)
     except (HTTPError, URLError, TimeoutError, OSError):
-        return {'text': 'I can’t reach the local Qwen model right now. Start Ollama and confirm qwen3:4b is installed.',
+        return {'text': 'The language model is unavailable on this server. '
+                        'If you run the app locally, start Ollama. If this is the live app, '
+                        'the app owner must configure a reachable hosted model.',
                 'predictions': [], 'intent': 'general_question_unavailable'}
-    answer = result.get('message', {}).get('content', '').strip()
+    if backend == 'ollama':
+        answer = result.get('message', {}).get('content', '').strip()
+    else:
+        choices = result.get('choices') or []
+        answer = choices[0].get('message', {}).get('content', '').strip() if choices else ''
     if '</think>' in answer:
         answer = answer.rsplit('</think>', 1)[1].strip()
     elif answer.startswith('<think>') or answer.startswith('Okay, the user'):
