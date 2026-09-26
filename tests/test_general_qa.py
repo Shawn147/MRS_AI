@@ -1,7 +1,7 @@
 import json
 import os
 import unittest
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from unittest.mock import Mock, patch
 
 from src.data import load_data
@@ -132,6 +132,16 @@ class GeneralQuestionTests(unittest.TestCase):
         with patch.dict(os.environ, settings), patch('src.general_qa.urlopen', side_effect=error):
             result = answer_general_question('How can I stay healthy?', new_state(), self.data)
         self.assertIn('HTTP 403', result['text'])
+        self.assertNotIn('test-key', result['text'])
+
+    def test_hosted_connection_error_redacts_key(self):
+        settings = {'MRS_LLM_BACKEND': 'openai',
+                    'MRS_LLM_URL': 'https://example.test/v1/chat/completions',
+                    'MRS_LLM_MODEL': 'hosted-qwen', 'MRS_LLM_API_KEY': 'test-key'}
+        with patch.dict(os.environ, settings), patch('src.general_qa.urlopen',
+                side_effect=URLError('proxy failed for test-key')):
+            result = answer_general_question('How can I stay healthy?', new_state(), self.data)
+        self.assertIn('proxy failed', result['text'])
         self.assertNotIn('test-key', result['text'])
 
     def test_reference_summary_fallback_without_downloaded_medembed(self):

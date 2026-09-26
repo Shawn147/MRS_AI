@@ -113,10 +113,10 @@ def answer_general_question(question, state, data):
         return {'text': f'The hosted language model rejected this request (HTTP {error.code}). '
                         'The app owner should check the provider key, model access, and rate limits.',
                 'predictions': [], 'intent': 'general_question_unavailable'}
-    except (URLError, TimeoutError, OSError):
-        return {'text': 'The language model is unavailable on this server. '
-                        'If you run the app locally, start Ollama. If this is the live app, '
-                        'the app owner must configure a reachable hosted model.',
+    except (URLError, TimeoutError, OSError) as error:
+        reason = getattr(error, 'reason', error)
+        detail = str(reason).replace(key, '[redacted]')[:120] if key else str(reason)[:120]
+        return {'text': 'The language model connection failed: ' + detail,
                 'predictions': [], 'intent': 'general_question_unavailable'}
     if backend == 'ollama':
         answer = result.get('message', {}).get('content', '').strip()
