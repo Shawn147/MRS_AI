@@ -22,6 +22,19 @@ def load_data():
         actual = hashlib.sha256((DATA_DIR / name).read_bytes()).hexdigest()
         if actual != expected:
             raise ValueError(f'{name} changed. Run python scripts/prepare_json.py, then retrain.')
+    data['reference_conditions'] = json.loads((DATA_DIR / 'reference_conditions.json').read_text())
+    data['symptom_metadata'] = json.loads((DATA_DIR / 'symptom_metadata.json').read_text())
+    symptoms = {row['id']: row for row in data['symptoms']}
+    seen = set()
+    for metadata in data['symptom_metadata']:
+        key = metadata['id']
+        weight = metadata['source_severity_weight']
+        if key in seen or key not in symptoms or type(weight) is not int or not 1 <= weight <= 7:
+            raise ValueError('Invalid or duplicate symptom metadata')
+        if metadata['source_sha256'] != data['manifest']['source_sha256'].get(metadata['source_file']):
+            raise ValueError('Symptom metadata source mismatch')
+        seen.add(key)
+        symptoms[key]['source_severity_weight'] = weight
     data['by_condition'] = {row['name']: row for row in data['conditions']}
     data['by_symptom'] = {row['id']: row for row in data['symptoms']}
     return data

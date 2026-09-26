@@ -48,6 +48,16 @@ def list_field(value):
     return list(dict.fromkeys(clean(x) for x in parsed if clean(x)))
 
 
+def validate_condition_tables(diseases):
+    for filename, key in [('description.csv', 'Disease'), ('medications.csv', 'Disease'),
+                          ('diets.csv', 'Disease'), ('precautions_df.csv', 'Disease')]:
+        names = [clean(row[key]) for row in read(filename)]
+        if len(names) != len(set(names)):
+            raise ValueError(f'Duplicate condition in {filename}')
+        if set(names) != set(diseases):
+            raise ValueError(f'Condition coverage mismatch in {filename}')
+
+
 def main():
     rows = read('Training.csv')
     features = [k for k in rows[0] if k != 'prognosis' and not k.startswith('Unnamed')]
@@ -65,6 +75,7 @@ def main():
             patterns[symptoms] = {'id': hashlib.sha256('|'.join(symptoms).encode()).hexdigest()[:16],
                                  'condition': disease, 'symptoms': list(symptoms), 'source_rows': []}
         patterns[symptoms]['source_rows'].append(index + 2)
+    validate_condition_tables({r['condition'] for r in patterns.values()})
     descriptions = {clean(r['Disease']): clean(r['Description']) for r in read('description.csv')}
     medications = {clean(r['Disease']): list_field(r['Medication']) for r in read('medications.csv')}
     diets = {clean(r['Disease']): list_field(r['Diet']) for r in read('diets.csv')}
@@ -116,6 +127,17 @@ def main():
         (OUTPUT / name).write_text(json.dumps(value, indent=2, ensure_ascii=False) + '\n')
     manifest['json_sha256'] = {name: hashlib.sha256((OUTPUT/name).read_bytes()).hexdigest() for name in files}
     (OUTPUT/'manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
+    # Additive metadata keeps original model fingerprints and source IDs stable.
+    source_ids = {'spotting_ urination': 'spotting_urination',
+                  'foul_smell_of urine': 'foul_smell_ofurine',
+                  'dischromic _patches': 'dischromic_patches'}
+    metadata = [{'id': key, 'source_symptom': source_id,
+                 'source_severity_weight': severity[source_id],
+                 'source_file': 'Symptom-severity.csv',
+                 'source_sha256': manifest['source_sha256']['Symptom-severity.csv'],
+                 'reason': 'Explicit match for inconsistent whitespace in source IDs'}
+                for key, source_id in source_ids.items()]
+    (OUTPUT/'symptom_metadata.json').write_text(json.dumps(metadata, indent=2)+'\n')
     print(json.dumps({k: manifest[k] for k in ['raw_rows','unique_rows','duplicates_removed','condition_count','feature_count']}))
 
 if __name__ == '__main__':

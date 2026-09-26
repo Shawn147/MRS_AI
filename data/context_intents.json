@@ -1,0 +1,1087 @@
+{
+  "schema_version": 1,
+  "provenance": "Manually authored illustrative language examples; no patient data. Fixed held-out paraphrases; not clinical validation.",
+  "purpose": "Recognize follow-up intent. Responses use conversation state and constrained templates, not generated medical advice.",
+  "examples": [
+    {
+      "id": "summary_01",
+      "text": "Can you summarize what I told you?",
+      "intent": "summary",
+      "split": "train"
+    },
+    {
+      "id": "summary_02",
+      "text": "What symptoms have I mentioned?",
+      "intent": "summary",
+      "split": "train"
+    },
+    {
+      "id": "summary_03",
+      "text": "Give me a recap of this conversation",
+      "intent": "summary",
+      "split": "train"
+    },
+    {
+      "id": "summary_04",
+      "text": "List my current symptoms",
+      "intent": "summary",
+      "split": "train"
+    },
+    {
+      "id": "summary_05",
+      "text": "Remind me what I reported",
+      "intent": "summary",
+      "split": "train"
+    },
+    {
+      "id": "summary_06",
+      "text": "What do you remember about my symptoms?",
+      "intent": "summary",
+      "split": "train"
+    },
+    {
+      "id": "summary_07",
+      "text": "Show a summary of my health context",
+      "intent": "summary",
+      "split": "train"
+    },
+    {
+      "id": "summary_08",
+      "text": "Put together my symptoms so far",
+      "intent": "summary",
+      "split": "train"
+    },
+    {
+      "id": "summary_09",
+      "text": "Can I have a short summary?",
+      "intent": "summary",
+      "split": "train"
+    },
+    {
+      "id": "summary_10",
+      "text": "What have we discussed?",
+      "intent": "summary",
+      "split": "train"
+    },
+    {
+      "id": "summary_11",
+      "text": "Summarize my concern for me",
+      "intent": "summary",
+      "split": "train"
+    },
+    {
+      "id": "summary_12",
+      "text": "Show everything I have told you",
+      "intent": "summary",
+      "split": "train"
+    },
+    {
+      "id": "summary_13",
+      "text": "Which symptoms are you keeping track of?",
+      "intent": "summary",
+      "split": "validation"
+    },
+    {
+      "id": "summary_14",
+      "text": "Please recap my situation",
+      "intent": "summary",
+      "split": "validation"
+    },
+    {
+      "id": "summary_15",
+      "text": "Tell me what is in my conversation history",
+      "intent": "summary",
+      "split": "validation"
+    },
+    {
+      "id": "summary_16",
+      "text": "Review the symptoms I described",
+      "intent": "summary",
+      "split": "validation"
+    },
+    {
+      "id": "summary_17",
+      "text": "What information have you collected so far?",
+      "intent": "summary",
+      "split": "test"
+    },
+    {
+      "id": "summary_18",
+      "text": "Could you repeat my symptom history back to me?",
+      "intent": "summary",
+      "split": "test"
+    },
+    {
+      "id": "summary_19",
+      "text": "Give me an overview of my earlier messages",
+      "intent": "summary",
+      "split": "test"
+    },
+    {
+      "id": "summary_20",
+      "text": "Which problems did I say I was having?",
+      "intent": "summary",
+      "split": "test"
+    },
+    {
+      "id": "explain_match_01",
+      "text": "Why did you suggest that condition?",
+      "intent": "explain_match",
+      "split": "train"
+    },
+    {
+      "id": "explain_match_02",
+      "text": "What does that result mean?",
+      "intent": "explain_match",
+      "split": "train"
+    },
+    {
+      "id": "explain_match_03",
+      "text": "Explain the possible match",
+      "intent": "explain_match",
+      "split": "train"
+    },
+    {
+      "id": "explain_match_04",
+      "text": "How did you come to that result?",
+      "intent": "explain_match",
+      "split": "train"
+    },
+    {
+      "id": "explain_match_05",
+      "text": "Why does that condition fit?",
+      "intent": "explain_match",
+      "split": "train"
+    },
+    {
+      "id": "explain_match_06",
+      "text": "Can you explain your last answer?",
+      "intent": "explain_match",
+      "split": "train"
+    },
+    {
+      "id": "explain_match_07",
+      "text": "Is this a confirmed diagnosis?",
+      "intent": "explain_match",
+      "split": "train"
+    },
+    {
+      "id": "explain_match_08",
+      "text": "Are you certain about this condition?",
+      "intent": "explain_match",
+      "split": "train"
+    },
+    {
+      "id": "explain_match_09",
+      "text": "Why is that the top match?",
+      "intent": "explain_match",
+      "split": "train"
+    },
+    {
+      "id": "explain_match_10",
+      "text": "What is the reason for your suggestion?",
+      "intent": "explain_match",
+      "split": "train"
+    },
+    {
+      "id": "explain_match_11",
+      "text": "What do the results tell me?",
+      "intent": "explain_match",
+      "split": "train"
+    },
+    {
+      "id": "explain_match_12",
+      "text": "Help me understand the condition you mentioned",
+      "intent": "explain_match",
+      "split": "train"
+    },
+    {
+      "id": "explain_match_13",
+      "text": "Explain how the symptoms relate to the result",
+      "intent": "explain_match",
+      "split": "validation"
+    },
+    {
+      "id": "explain_match_14",
+      "text": "Can you tell me more about that match?",
+      "intent": "explain_match",
+      "split": "validation"
+    },
+    {
+      "id": "explain_match_15",
+      "text": "Does this mean I definitely have it?",
+      "intent": "explain_match",
+      "split": "validation"
+    },
+    {
+      "id": "explain_match_16",
+      "text": "How reliable is that result?",
+      "intent": "explain_match",
+      "split": "validation"
+    },
+    {
+      "id": "explain_match_17",
+      "text": "How should I interpret the condition you listed?",
+      "intent": "explain_match",
+      "split": "test"
+    },
+    {
+      "id": "explain_match_18",
+      "text": "Why did that name appear in my results?",
+      "intent": "explain_match",
+      "split": "test"
+    },
+    {
+      "id": "explain_match_19",
+      "text": "Is your suggestion proof of an illness?",
+      "intent": "explain_match",
+      "split": "test"
+    },
+    {
+      "id": "explain_match_20",
+      "text": "Talk me through the previous result",
+      "intent": "explain_match",
+      "split": "test"
+    },
+    {
+      "id": "medicine_question_01",
+      "text": "What medicine can I take?",
+      "intent": "medicine_question",
+      "split": "train"
+    },
+    {
+      "id": "medicine_question_02",
+      "text": "Can you suggest a medicine?",
+      "intent": "medicine_question",
+      "split": "train"
+    },
+    {
+      "id": "medicine_question_03",
+      "text": "Show the medicine information again",
+      "intent": "medicine_question",
+      "split": "train"
+    },
+    {
+      "id": "medicine_question_04",
+      "text": "What treatment information is available?",
+      "intent": "medicine_question",
+      "split": "train"
+    },
+    {
+      "id": "medicine_question_05",
+      "text": "Which medicines were mentioned?",
+      "intent": "medicine_question",
+      "split": "train"
+    },
+    {
+      "id": "medicine_question_06",
+      "text": "Is there any medicine information for that?",
+      "intent": "medicine_question",
+      "split": "train"
+    },
+    {
+      "id": "medicine_question_07",
+      "text": "Tell me about the medicines for this condition",
+      "intent": "medicine_question",
+      "split": "train"
+    },
+    {
+      "id": "medicine_question_08",
+      "text": "Can I take a painkiller?",
+      "intent": "medicine_question",
+      "split": "train"
+    },
+    {
+      "id": "medicine_question_09",
+      "text": "Would antibiotics help me?",
+      "intent": "medicine_question",
+      "split": "train"
+    },
+    {
+      "id": "medicine_question_10",
+      "text": "Can I use paracetamol?",
+      "intent": "medicine_question",
+      "split": "train"
+    },
+    {
+      "id": "medicine_question_11",
+      "text": "Is ibuprofen suitable for me?",
+      "intent": "medicine_question",
+      "split": "train"
+    },
+    {
+      "id": "medicine_question_12",
+      "text": "What drug should I use?",
+      "intent": "medicine_question",
+      "split": "train"
+    },
+    {
+      "id": "medicine_question_13",
+      "text": "Can you recommend a tablet?",
+      "intent": "medicine_question",
+      "split": "validation"
+    },
+    {
+      "id": "medicine_question_14",
+      "text": "Show the educational medicine list",
+      "intent": "medicine_question",
+      "split": "validation"
+    },
+    {
+      "id": "medicine_question_15",
+      "text": "Which medication is right for me?",
+      "intent": "medicine_question",
+      "split": "validation"
+    },
+    {
+      "id": "medicine_question_16",
+      "text": "What can I take for these symptoms?",
+      "intent": "medicine_question",
+      "split": "validation"
+    },
+    {
+      "id": "medicine_question_17",
+      "text": "Where is the medication list for my result?",
+      "intent": "medicine_question",
+      "split": "test"
+    },
+    {
+      "id": "medicine_question_18",
+      "text": "Could a pharmacist suggest something for this?",
+      "intent": "medicine_question",
+      "split": "test"
+    },
+    {
+      "id": "medicine_question_19",
+      "text": "What are the drug options mentioned in the source?",
+      "intent": "medicine_question",
+      "split": "test"
+    },
+    {
+      "id": "medicine_question_20",
+      "text": "Can I treat this with tablets?",
+      "intent": "medicine_question",
+      "split": "test"
+    },
+    {
+      "id": "dose_question_01",
+      "text": "What dose should I take?",
+      "intent": "dose_question",
+      "split": "train"
+    },
+    {
+      "id": "dose_question_02",
+      "text": "How many tablets should I take?",
+      "intent": "dose_question",
+      "split": "train"
+    },
+    {
+      "id": "dose_question_03",
+      "text": "How often can I take this medicine?",
+      "intent": "dose_question",
+      "split": "train"
+    },
+    {
+      "id": "dose_question_04",
+      "text": "Tell me the dosage",
+      "intent": "dose_question",
+      "split": "train"
+    },
+    {
+      "id": "dose_question_05",
+      "text": "How many milligrams do I need?",
+      "intent": "dose_question",
+      "split": "train"
+    },
+    {
+      "id": "dose_question_06",
+      "text": "Can I take two tablets?",
+      "intent": "dose_question",
+      "split": "train"
+    },
+    {
+      "id": "dose_question_07",
+      "text": "What is the maximum dose?",
+      "intent": "dose_question",
+      "split": "train"
+    },
+    {
+      "id": "dose_question_08",
+      "text": "How much medicine can I give my child?",
+      "intent": "dose_question",
+      "split": "train"
+    },
+    {
+      "id": "dose_question_09",
+      "text": "Should I take it twice a day?",
+      "intent": "dose_question",
+      "split": "train"
+    },
+    {
+      "id": "dose_question_10",
+      "text": "How long should I take this medication?",
+      "intent": "dose_question",
+      "split": "train"
+    },
+    {
+      "id": "dose_question_11",
+      "text": "Give me a dosing schedule",
+      "intent": "dose_question",
+      "split": "train"
+    },
+    {
+      "id": "dose_question_12",
+      "text": "How many pills per day?",
+      "intent": "dose_question",
+      "split": "train"
+    },
+    {
+      "id": "dose_question_13",
+      "text": "Is 500 mg enough?",
+      "intent": "dose_question",
+      "split": "validation"
+    },
+    {
+      "id": "dose_question_14",
+      "text": "Can I double my dose?",
+      "intent": "dose_question",
+      "split": "validation"
+    },
+    {
+      "id": "dose_question_15",
+      "text": "How many hours between doses?",
+      "intent": "dose_question",
+      "split": "validation"
+    },
+    {
+      "id": "dose_question_16",
+      "text": "What is the recommended dose for my age?",
+      "intent": "dose_question",
+      "split": "validation"
+    },
+    {
+      "id": "dose_question_17",
+      "text": "Please calculate the amount of medicine I need",
+      "intent": "dose_question",
+      "split": "test"
+    },
+    {
+      "id": "dose_question_18",
+      "text": "How frequently should I swallow a tablet?",
+      "intent": "dose_question",
+      "split": "test"
+    },
+    {
+      "id": "dose_question_19",
+      "text": "Which strength and number of pills do I use?",
+      "intent": "dose_question",
+      "split": "test"
+    },
+    {
+      "id": "dose_question_20",
+      "text": "Can you work out a child dose?",
+      "intent": "dose_question",
+      "split": "test"
+    },
+    {
+      "id": "duration_01",
+      "text": "It started two days ago",
+      "intent": "duration",
+      "split": "train"
+    },
+    {
+      "id": "duration_02",
+      "text": "I have had it for three days",
+      "intent": "duration",
+      "split": "train"
+    },
+    {
+      "id": "duration_03",
+      "text": "Since yesterday",
+      "intent": "duration",
+      "split": "train"
+    },
+    {
+      "id": "duration_04",
+      "text": "It has been going on for a week",
+      "intent": "duration",
+      "split": "train"
+    },
+    {
+      "id": "duration_05",
+      "text": "For the last few hours",
+      "intent": "duration",
+      "split": "train"
+    },
+    {
+      "id": "duration_06",
+      "text": "This started this morning",
+      "intent": "duration",
+      "split": "train"
+    },
+    {
+      "id": "duration_07",
+      "text": "About two weeks now",
+      "intent": "duration",
+      "split": "train"
+    },
+    {
+      "id": "duration_08",
+      "text": "It began last night",
+      "intent": "duration",
+      "split": "train"
+    },
+    {
+      "id": "duration_09",
+      "text": "For around four days",
+      "intent": "duration",
+      "split": "train"
+    },
+    {
+      "id": "duration_10",
+      "text": "It has lasted a month",
+      "intent": "duration",
+      "split": "train"
+    },
+    {
+      "id": "duration_11",
+      "text": "Since Monday",
+      "intent": "duration",
+      "split": "train"
+    },
+    {
+      "id": "duration_12",
+      "text": "It started about an hour ago",
+      "intent": "duration",
+      "split": "train"
+    },
+    {
+      "id": "duration_13",
+      "text": "I have had these symptoms for several days",
+      "intent": "duration",
+      "split": "validation"
+    },
+    {
+      "id": "duration_14",
+      "text": "Just since this afternoon",
+      "intent": "duration",
+      "split": "validation"
+    },
+    {
+      "id": "duration_15",
+      "text": "For six hours now",
+      "intent": "duration",
+      "split": "validation"
+    },
+    {
+      "id": "duration_16",
+      "text": "This has been happening for five days",
+      "intent": "duration",
+      "split": "validation"
+    },
+    {
+      "id": "duration_17",
+      "text": "The symptoms began yesterday evening",
+      "intent": "duration",
+      "split": "test"
+    },
+    {
+      "id": "duration_18",
+      "text": "It first appeared roughly a fortnight ago",
+      "intent": "duration",
+      "split": "test"
+    },
+    {
+      "id": "duration_19",
+      "text": "This has continued since the weekend",
+      "intent": "duration",
+      "split": "test"
+    },
+    {
+      "id": "duration_20",
+      "text": "For more than a week already",
+      "intent": "duration",
+      "split": "test"
+    },
+    {
+      "id": "severity_01",
+      "text": "The pain is mild",
+      "intent": "severity",
+      "split": "train"
+    },
+    {
+      "id": "severity_02",
+      "text": "It feels moderate",
+      "intent": "severity",
+      "split": "train"
+    },
+    {
+      "id": "severity_03",
+      "text": "It is severe",
+      "intent": "severity",
+      "split": "train"
+    },
+    {
+      "id": "severity_04",
+      "text": "About seven out of ten",
+      "intent": "severity",
+      "split": "train"
+    },
+    {
+      "id": "severity_05",
+      "text": "The pain is 3 out of 10",
+      "intent": "severity",
+      "split": "train"
+    },
+    {
+      "id": "severity_06",
+      "text": "It is only a little uncomfortable",
+      "intent": "severity",
+      "split": "train"
+    },
+    {
+      "id": "severity_07",
+      "text": "I would rate it 6/10",
+      "intent": "severity",
+      "split": "train"
+    },
+    {
+      "id": "severity_08",
+      "text": "It is quite painful",
+      "intent": "severity",
+      "split": "train"
+    },
+    {
+      "id": "severity_09",
+      "text": "My symptoms are very mild",
+      "intent": "severity",
+      "split": "train"
+    },
+    {
+      "id": "severity_10",
+      "text": "It hurts a lot",
+      "intent": "severity",
+      "split": "train"
+    },
+    {
+      "id": "severity_11",
+      "text": "The discomfort is pretty strong",
+      "intent": "severity",
+      "split": "train"
+    },
+    {
+      "id": "severity_12",
+      "text": "It is a mild ache",
+      "intent": "severity",
+      "split": "train"
+    },
+    {
+      "id": "severity_13",
+      "text": "I can barely tolerate it",
+      "intent": "severity",
+      "split": "validation"
+    },
+    {
+      "id": "severity_14",
+      "text": "I would call it moderate pain",
+      "intent": "severity",
+      "split": "validation"
+    },
+    {
+      "id": "severity_15",
+      "text": "It is not very painful",
+      "intent": "severity",
+      "split": "validation"
+    },
+    {
+      "id": "severity_16",
+      "text": "The pain intensity is eight out of ten",
+      "intent": "severity",
+      "split": "validation"
+    },
+    {
+      "id": "severity_17",
+      "text": "I rate my discomfort as five out of ten",
+      "intent": "severity",
+      "split": "test"
+    },
+    {
+      "id": "severity_18",
+      "text": "The intensity is low",
+      "intent": "severity",
+      "split": "test"
+    },
+    {
+      "id": "severity_19",
+      "text": "It feels fairly intense",
+      "intent": "severity",
+      "split": "test"
+    },
+    {
+      "id": "severity_20",
+      "text": "The severity is somewhere in the middle",
+      "intent": "severity",
+      "split": "test"
+    },
+    {
+      "id": "improving_01",
+      "text": "I am feeling better now",
+      "intent": "improving",
+      "split": "train"
+    },
+    {
+      "id": "improving_02",
+      "text": "It is getting better",
+      "intent": "improving",
+      "split": "train"
+    },
+    {
+      "id": "improving_03",
+      "text": "The symptoms are improving",
+      "intent": "improving",
+      "split": "train"
+    },
+    {
+      "id": "improving_04",
+      "text": "It has eased a little",
+      "intent": "improving",
+      "split": "train"
+    },
+    {
+      "id": "improving_05",
+      "text": "I feel less unwell today",
+      "intent": "improving",
+      "split": "train"
+    },
+    {
+      "id": "improving_06",
+      "text": "The pain is going down",
+      "intent": "improving",
+      "split": "train"
+    },
+    {
+      "id": "improving_07",
+      "text": "It is much better than yesterday",
+      "intent": "improving",
+      "split": "train"
+    },
+    {
+      "id": "improving_08",
+      "text": "Things have started to improve",
+      "intent": "improving",
+      "split": "train"
+    },
+    {
+      "id": "improving_09",
+      "text": "The discomfort has eased",
+      "intent": "improving",
+      "split": "train"
+    },
+    {
+      "id": "improving_10",
+      "text": "I am recovering slowly",
+      "intent": "improving",
+      "split": "train"
+    },
+    {
+      "id": "improving_11",
+      "text": "It is less intense now",
+      "intent": "improving",
+      "split": "train"
+    },
+    {
+      "id": "improving_12",
+      "text": "The symptoms are fading",
+      "intent": "improving",
+      "split": "train"
+    },
+    {
+      "id": "improving_13",
+      "text": "I feel a bit better",
+      "intent": "improving",
+      "split": "validation"
+    },
+    {
+      "id": "improving_14",
+      "text": "It seems to be settling down",
+      "intent": "improving",
+      "split": "validation"
+    },
+    {
+      "id": "improving_15",
+      "text": "It is not as bad anymore",
+      "intent": "improving",
+      "split": "validation"
+    },
+    {
+      "id": "improving_16",
+      "text": "I think I am improving",
+      "intent": "improving",
+      "split": "validation"
+    },
+    {
+      "id": "improving_17",
+      "text": "Today is an improvement on how I felt before",
+      "intent": "improving",
+      "split": "test"
+    },
+    {
+      "id": "improving_18",
+      "text": "The symptoms seem to be easing off",
+      "intent": "improving",
+      "split": "test"
+    },
+    {
+      "id": "improving_19",
+      "text": "I notice some relief since we spoke",
+      "intent": "improving",
+      "split": "test"
+    },
+    {
+      "id": "improving_20",
+      "text": "Things are less uncomfortable this evening",
+      "intent": "improving",
+      "split": "test"
+    },
+    {
+      "id": "worsening_01",
+      "text": "It is getting worse",
+      "intent": "worsening",
+      "split": "train"
+    },
+    {
+      "id": "worsening_02",
+      "text": "I feel worse than yesterday",
+      "intent": "worsening",
+      "split": "train"
+    },
+    {
+      "id": "worsening_03",
+      "text": "The symptoms are worsening",
+      "intent": "worsening",
+      "split": "train"
+    },
+    {
+      "id": "worsening_04",
+      "text": "The pain has increased",
+      "intent": "worsening",
+      "split": "train"
+    },
+    {
+      "id": "worsening_05",
+      "text": "It has become more intense",
+      "intent": "worsening",
+      "split": "train"
+    },
+    {
+      "id": "worsening_06",
+      "text": "I am feeling much worse",
+      "intent": "worsening",
+      "split": "train"
+    },
+    {
+      "id": "worsening_07",
+      "text": "Things are going downhill",
+      "intent": "worsening",
+      "split": "train"
+    },
+    {
+      "id": "worsening_08",
+      "text": "It is worse today",
+      "intent": "worsening",
+      "split": "train"
+    },
+    {
+      "id": "worsening_09",
+      "text": "There has been no improvement",
+      "intent": "worsening",
+      "split": "train"
+    },
+    {
+      "id": "worsening_10",
+      "text": "I am not getting better",
+      "intent": "worsening",
+      "split": "train"
+    },
+    {
+      "id": "worsening_11",
+      "text": "The symptoms keep getting stronger",
+      "intent": "worsening",
+      "split": "train"
+    },
+    {
+      "id": "worsening_12",
+      "text": "It is becoming harder to cope",
+      "intent": "worsening",
+      "split": "train"
+    },
+    {
+      "id": "worsening_13",
+      "text": "I am still feeling just as ill",
+      "intent": "worsening",
+      "split": "validation"
+    },
+    {
+      "id": "worsening_14",
+      "text": "The discomfort is increasing",
+      "intent": "worsening",
+      "split": "validation"
+    },
+    {
+      "id": "worsening_15",
+      "text": "It has not improved at all",
+      "intent": "worsening",
+      "split": "validation"
+    },
+    {
+      "id": "worsening_16",
+      "text": "I feel more unwell than before",
+      "intent": "worsening",
+      "split": "validation"
+    },
+    {
+      "id": "worsening_17",
+      "text": "My condition seems to be deteriorating",
+      "intent": "worsening",
+      "split": "test"
+    },
+    {
+      "id": "worsening_18",
+      "text": "Since we talked the symptoms have intensified",
+      "intent": "worsening",
+      "split": "test"
+    },
+    {
+      "id": "worsening_19",
+      "text": "I have not had any relief yet",
+      "intent": "worsening",
+      "split": "test"
+    },
+    {
+      "id": "worsening_20",
+      "text": "Things have taken a turn for the worse",
+      "intent": "worsening",
+      "split": "test"
+    },
+    {
+      "id": "other_01",
+      "text": "Write a poem about the moon",
+      "intent": "other",
+      "split": "train"
+    },
+    {
+      "id": "other_02",
+      "text": "What is the weather tomorrow?",
+      "intent": "other",
+      "split": "train"
+    },
+    {
+      "id": "other_03",
+      "text": "I have a cough and fever",
+      "intent": "other",
+      "split": "train"
+    },
+    {
+      "id": "other_04",
+      "text": "I feel nausea and have a headache",
+      "intent": "other",
+      "split": "train"
+    },
+    {
+      "id": "other_05",
+      "text": "I do not have a rash",
+      "intent": "other",
+      "split": "train"
+    },
+    {
+      "id": "other_06",
+      "text": "Hello there",
+      "intent": "other",
+      "split": "train"
+    },
+    {
+      "id": "other_07",
+      "text": "Thank you for your help",
+      "intent": "other",
+      "split": "train"
+    },
+    {
+      "id": "other_08",
+      "text": "My stomach hurts",
+      "intent": "other",
+      "split": "train"
+    },
+    {
+      "id": "other_09",
+      "text": "I have itchy skin",
+      "intent": "other",
+      "split": "train"
+    },
+    {
+      "id": "other_10",
+      "text": "My nose is running",
+      "intent": "other",
+      "split": "train"
+    },
+    {
+      "id": "other_11",
+      "text": "Can you help with my homework?",
+      "intent": "other",
+      "split": "train"
+    },
+    {
+      "id": "other_12",
+      "text": "What time is it?",
+      "intent": "other",
+      "split": "train"
+    },
+    {
+      "id": "other_13",
+      "text": "I have chest pain",
+      "intent": "other",
+      "split": "validation"
+    },
+    {
+      "id": "other_14",
+      "text": "I am allergic to penicillin",
+      "intent": "other",
+      "split": "validation"
+    },
+    {
+      "id": "other_15",
+      "text": "I am pregnant",
+      "intent": "other",
+      "split": "validation"
+    },
+    {
+      "id": "other_16",
+      "text": "No cough but I am sneezing",
+      "intent": "other",
+      "split": "validation"
+    },
+    {
+      "id": "other_17",
+      "text": "My eyes are watering",
+      "intent": "other",
+      "split": "test"
+    },
+    {
+      "id": "other_18",
+      "text": "Please write some Python code",
+      "intent": "other",
+      "split": "test"
+    },
+    {
+      "id": "other_19",
+      "text": "I have a sore throat today",
+      "intent": "other",
+      "split": "test"
+    },
+    {
+      "id": "other_20",
+      "text": "I have diabetes and use insulin",
+      "intent": "other",
+      "split": "test"
+    }
+  ]
+}

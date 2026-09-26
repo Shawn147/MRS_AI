@@ -1,0 +1,26 @@
+[
+  {
+    "id": "spotting_ urination",
+    "source_symptom": "spotting_urination",
+    "source_severity_weight": 6,
+    "source_file": "Symptom-severity.csv",
+    "source_sha256": "cb5a84b5ebde81bb18738b7e7733bcbc5abdc667b4376893fb1774d8c444bc8d",
+    "reason": "Explicit match for inconsistent whitespace in source IDs"
+  },
+  {
+    "id": "foul_smell_of urine",
+    "source_symptom": "foul_smell_ofurine",
+    "source_severity_weight": 5,
+    "source_file": "Symptom-severity.csv",
+    "source_sha256": "cb5a84b5ebde81bb18738b7e7733bcbc5abdc667b4376893fb1774d8c444bc8d",
+    "reason": "Explicit match for inconsistent whitespace in source IDs"
+  },
+  {
+    "id": "dischromic _patches",
+    "source_symptom": "dischromic_patches",
+    "source_severity_weight": 6,
+    "source_file": "Symptom-severity.csv",
+    "source_sha256": "cb5a84b5ebde81bb18738b7e7733bcbc5abdc667b4376893fb1774d8c444bc8d",
+    "reason": "Explicit match for inconsistent whitespace in source IDs"
+  }
+]

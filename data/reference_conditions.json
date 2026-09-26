@@ -1,0 +1,115 @@
+[
+  {
+    "name": "Influenza (flu)",
+    "description": "A respiratory illness that often starts suddenly and can cause marked fatigue.",
+    "symptom_terms": [
+      "fever",
+      "body aches",
+      "fatigue",
+      "dry cough",
+      "sore throat",
+      "headache",
+      "sleep difficulty",
+      "reduced appetite"
+    ],
+    "care_notes": [
+      "Rest and fluids are supportive measures.",
+      "The source discusses paracetamol or ibuprofen for discomfort; suitability must be checked.",
+      "Avoid combining products containing paracetamol. Antibiotics do not treat flu."
+    ],
+    "seek_help_notes": [
+      "Seek urgent assessment for breathlessness, feeling very unwell, or failure to improve after seven days.",
+      "Sudden chest pain, severe breathing difficulty or coughing blood require emergency help."
+    ],
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/flu/",
+        "accessed_on": "2026-09-21",
+        "page_last_reviewed": "2026-02-03"
+      }
+    ],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Non-exhaustive educational summary; consult linked guidance for age-specific details. No doses or prescribing rules."
+  },
+  {
+    "name": "Sinusitis",
+    "description": "Inflammation of the sinuses, often following a respiratory infection.",
+    "symptom_terms": [
+      "facial pain or tenderness",
+      "blocked or runny nose",
+      "reduced smell",
+      "coloured nasal mucus",
+      "fever",
+      "headache",
+      "toothache",
+      "cough",
+      "ear pressure"
+    ],
+    "care_notes": [
+      "Rest and fluids may help.",
+      "The source discusses pain relief and clinician-directed nasal steroids; antihistamines may help when allergy contributes.",
+      "Antibiotics are rarely needed."
+    ],
+    "seek_help_notes": [
+      "Seek urgent assessment for severe illness, worsening symptoms, uncontrolled pain or a weakened immune system.",
+      "Persistent or recurring symptoms need professional assessment."
+    ],
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/sinusitis-sinus-infection/",
+        "accessed_on": "2026-09-21",
+        "page_last_reviewed": "2024-01-31"
+      }
+    ],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Non-exhaustive educational summary; consult linked guidance for age-specific details. No doses or prescribing rules."
+  },
+  {
+    "name": "COVID-19",
+    "description": "An infection with symptoms that overlap with other respiratory illnesses; a symptom list alone cannot distinguish them.",
+    "symptom_terms": [
+      "fever",
+      "persistent cough",
+      "changed smell or taste",
+      "breathlessness",
+      "fatigue",
+      "body aches",
+      "headache",
+      "sore throat",
+      "blocked or runny nose",
+      "reduced appetite",
+      "diarrhoea",
+      "nausea or vomiting"
+    ],
+    "care_notes": [
+      "Rest and fluids may help.",
+      "The source discusses paracetamol or ibuprofen for discomfort; suitability must be checked.",
+      "People eligible for specific COVID-19 treatment should follow current professional testing and treatment advice."
+    ],
+    "seek_help_notes": [
+      "Seek urgent assessment if symptoms worsen or fail to improve, especially in higher-risk people.",
+      "Sudden chest pain, severe breathing difficulty, coughing blood or collapse require emergency help."
+    ],
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/covid-19/covid-19-symptoms-and-what-to-do/",
+        "accessed_on": "2026-09-21",
+        "page_last_reviewed": "2023-03-21"
+      }
+    ],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Non-exhaustive educational summary; consult linked guidance for age-specific details. No doses or prescribing rules."
+  }
+]

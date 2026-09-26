@@ -1,6 +1,7 @@
 # MRS AI BOT
 
-Local Streamlit chatbot: symptoms → MiniLM classifier → educational medicine notes from the supervisor dataset.
+Local Streamlit chatbot: symptom assessment through a MiniLM classifier, plus
+local Qwen answers to informational questions with MedEmbed reference search.
 
 ```bash
 source .venv/bin/activate
@@ -21,7 +22,7 @@ references/supervisor/ original CSVs and documents
 tests/
 ```
 
-Sidebar pages: **Chat**, **Dataset Preview**, **Model Evaluation**, **History**, **About**.
+The main experience is a styled Streamlit conversation with recent chats, optional **Health context**, **Conversation history**, and **About & sources**. Dataset Preview and Model Evaluation remain available under **About & sources → Technical details & project resources**.
 
 ## Rebuild
 
@@ -79,3 +80,120 @@ Patient context in the sidebar withholds medicine names rather than pretending t
 ```bash
 python -m unittest discover -s tests -v
 ```
+
+## Data quality and reference expansion
+
+Run `python scripts/audit_data.py` to validate dataset relationships, duplicate
+patterns, source-row coverage, required condition fields, manifest counts and
+reference-only status. It writes `data/quality_report.json` and exits nonzero on
+validation errors.
+
+`data/symptom_metadata.json` repairs three missing severity joins using explicit
+source-name mappings and the original CSV checksum. The importer regenerates this
+file; `load_data()` applies it after checking the original JSON hashes. Original
+symptom IDs, training patterns and model fingerprints are preserved. Severity is
+still provenance metadata, not a triage score. Dataset Preview and downloads show
+the corrected values.
+
+`data/reference_conditions.json` adds **flu, sinusitis and COVID-19**, summarized
+from linked NHS pages accessed on 2026-09-21. Each record contains symptom terms,
+care notes, help-seeking notes, source review dates and review status. These are
+manually maintained reference records, visible and downloadable in Dataset
+Preview; the CSV importer does not overwrite them. COVID-19's source page has a
+past review-due date, so recheck current guidance before clinical use.
+
+Optional local semantic search uses `abhinand/MedEmbed-small-v0.1` at pinned revision
+`40a5850d046cfdb56154e332b4d7099b63e8d50e`. Run
+`python scripts/download_medembed.py` once, then call
+`search_references(question, data['reference_conditions'])` from
+`src.reference_search`. It ranks passages from the three source-linked summaries
+and returns their URLs; similarity is not diagnostic confidence. It does not
+extend the condition classifier.
+
+For informational questions and personal health descriptions with contextual details, the chat
+calls local Ollama `qwen3:4b` and supplies
+matching MedEmbed passages when a question explicitly names flu, sinusitis or
+COVID-19. Run Ollama locally and download the model with `ollama pull qwen3:4b`.
+Questions about other topics receive a clearly unverified general answer, with no
+invented source link. The symptom flow, emergency handling and medicine/dose guards
+remain separate. These generated answers have not been clinically validated.
+
+Coverage is **41 classifier labels plus 3 reference-only conditions**. The new
+records do not supply patient observations, classifier training rows, doses or
+verified prescribing rules. Clinical review and local applicability review are
+pending. Expanding classifier labels requires appropriately licensed, labeled
+examples, deduplication, independent evaluation and retraining; symptom lists
+must not be multiplied into purported patient cases. Existing medicine mappings
+remain unreviewed, and only 5–10 unique patterns support each current label.
+
+## Interface
+
+The interface follows the supplied Stitch design using native Streamlit components
+and local CSS in `assets/style.css`; no separate frontend or JavaScript framework
+is needed. The local SVG logo is in `assets/logo.svg`.
+
+Starter prompts and yes/no follow-up buttons submit real chatbot messages.
+The latest user message has an **Edit last prompt** control. Saving an edit restores
+conversation state from before that turn, regenerates its reply, and replaces its
+analytics event. Chats made before turn snapshots were added rebuild their state
+from earlier user messages when edited.
+Headaches reported during or after sex receive a specific safety follow-up rather
+than an unrelated symptom question; sudden severe onset directs users to emergency
+assessment. Other symptom reports with timing or activity context can use Qwen.
+Condition cards show captured symptoms and keep medicine information collapsed.
+Health context is scoped to each conversation and also withholds medicine details
+in earlier cards. Urgent notices persist through subsequent messages.
+
+The design's fictional patient details, clinical verification claims and sample
+diagnoses are not included. Predictions come from the existing saved model.
+Model scores and model selection are not shown in the main conversation.
+
+Use `streamlit run app.py` to start the interface. Restart the process after Python
+changes because file watching is disabled. Conversations are session-only; download
+history before restarting if you want to retain a copy.
+
+## Analytics
+
+The **Analytics** page reports anonymous sessions, conversations, assistant replies,
+urgent conversations, common condition matches and symptoms, medicine references
+offered, and the most active conversations. Filter by 7 days, 30 days or all time;
+export medicine counts as CSV or the aggregate summary as JSON.
+
+Events persist locally in `artifacts/analytics/events.sqlite3` (excluded from git).
+Each assistant turn has a unique event ID, so Streamlit reruns do not add counts.
+No message text, patient names or profile values are stored. Session identifiers
+are random and reset with the browser session: they do **not** identify unique
+patients. Medicine counts measure lists offered, not prescriptions, use,
+effectiveness or whether a collapsed section was opened. Historical counts do not
+change when later health context hides a previous medicine card. Earlier chats
+are not automatically imported. Dates use UTC. Set `MRS_ANALYTICS_DB` to override
+the database path; tests use isolated temporary databases. Keep this local dashboard
+private; authentication for shared or public deployments is not implemented.
+
+## Context-aware follow-ups
+
+`data/context_intents.json` contains 180 authored language examples across nine
+intents: summary, match explanation, medicine information, dose questions, duration,
+severity, improving, worsening, and other. They are illustrative language examples,
+not patient cases or additional condition-training evidence.
+
+```bash
+.venv/bin/python scripts/train_context.py
+```
+
+The script trains a separate logistic-regression intent head over frozen pretrained
+MiniLM embeddings. The condition classifier and its existing artifacts are unchanged.
+Fixed splits: 108 train / 36 validation / 36 test. Regularization is selected on
+validation only. The saved run achieved 31/36 test accuracy (86.1%); the fixed 0.60
+score and 0.15 margin gates accepted 21/36 examples, all correct on this small test.
+These results are language-routing checks, not clinical validation or evidence of
+real-world generalization. Scores are not calibrated. Rejected intents fall back
+to the existing symptom dialogue.
+
+Follow-ups retain symptom lists, denials, pending questions, duration, severity and
+reported improvement/worsening. “Summarize my symptoms” and “Explain the previous
+result” use that conversation's state. Duration and severity are remembered for
+replies, but are **not** inputs to the condition classifier. Medicine/dose requests
+have explicit guards; emergency handling takes precedence over intent routing.
+Replies remain constrained templates; no generative medical model was added.
+Training metrics and split IDs are in `artifacts/context/metrics.json`.

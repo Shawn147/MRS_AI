@@ -59,11 +59,42 @@ class DialogueTests(unittest.TestCase):
         self.predict.assert_not_called()
         self.assertFalse(emergency('no chest pain, but cough'))
 
+    def test_headache_after_sex_uses_context_specific_reply(self):
+        answer = respond('headache after sex', self.state, self.data, self.predict)
+        self.assertEqual(answer['intent'], 'sex_headache')
+        self.assertIn('Did it start suddenly', answer['text'])
+        self.assertIn('headache', self.state['symptoms'])
+        self.assertIsNone(self.state['pending'])
+        self.predict.assert_not_called()
+
+    def test_sudden_severe_headache_after_sex_is_urgent(self):
+        answer = respond('sudden severe headache during sex', self.state, self.data, self.predict)
+        self.assertTrue(answer['urgent'])
+        self.assertTrue(self.state['urgent'])
+        self.assertIn('emergency assessment', answer['text'])
+        self.predict.assert_not_called()
+
+    def test_negated_headache_after_sex_is_not_recorded(self):
+        respond('no headache after sex', self.state, self.data, self.predict)
+        self.assertNotIn('headache', self.state['symptoms'])
+
     def test_low_confidence_has_no_medicine_list(self):
         self.predict.return_value[0]['probability']=.3
         answer=respond('cough and fever',self.state,self.data,self.predict)
         self.assertTrue(answer['uncertain'])
+        self.assertIn('You mentioned **cough and high fever**', answer['text'])
+        self.assertIn('Have you also had', answer['text'])
+        self.assertNotIn('model', answer['text'].lower())
         self.assertNotIn('Educational medicine information',answer['text'])
+
+    def test_uncertain_reply_uses_plain_language_without_a_followup(self):
+        self.predict.return_value[0]['probability'] = .3
+        self.state['questions_asked'] = ['cough', 'high_fever', 'headache']
+        answer = respond('nausea and stomach pain', self.state, self.data, self.predict)
+        self.assertTrue(answer['uncertain'])
+        self.assertIn('nausea and stomach pain', answer['text'])
+        self.assertNotIn('model', answer['text'].lower())
+        self.assertNotIn('medicine information from', answer['text'].lower())
 
     def test_context_withholds_medicine_names(self):
         answer=respond('cough and fever',self.state,self.data,self.predict,{'allergies':'penicillin'})
