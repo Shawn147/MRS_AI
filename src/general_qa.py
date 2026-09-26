@@ -101,7 +101,8 @@ def answer_general_question(question, state, data):
                    'options': {'temperature': 0.2, 'num_predict': 1200}}
     else:
         payload = {'model': model, 'messages': messages, 'temperature': 0.2, 'max_tokens': 500}
-    headers = {'Content-Type': 'application/json'}
+    # Groq's edge rejects urllib's default Python-urllib User-Agent (HTTP 403/1010).
+    headers = {'Content-Type': 'application/json', 'User-Agent': 'MRS-AI/1.0'}
     if key:
         headers['Authorization'] = 'Bearer ' + key
     request = Request(endpoint, data=json.dumps(payload).encode(), headers=headers, method='POST')

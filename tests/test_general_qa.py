@@ -109,6 +109,7 @@ class GeneralQuestionTests(unittest.TestCase):
         request = send.call_args.args[0]
         self.assertEqual(request.full_url, settings['MRS_LLM_URL'])
         self.assertEqual(request.get_header('Authorization'), 'Bearer test-key')
+        self.assertEqual(request.get_header('User-agent'), 'MRS-AI/1.0')
         payload = json.loads(request.data)
         self.assertEqual(payload['model'], 'hosted-qwen')
         self.assertEqual(payload['messages'][-1]['content'], 'How can I support gut health?')

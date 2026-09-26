@@ -17,16 +17,42 @@ Streamlit and Ollama run on the same computer. On Streamlit Community Cloud,
 `127.0.0.1` refers to the cloud container, so a model downloaded to a personal
 Mac is not available to the public app.
 
-To answer general questions in a cloud deployment, run Qwen on a hosted inference
-service with an OpenAI-compatible chat-completions endpoint. Add these **root-level
-secrets** in the Streamlit app's settings (replace every placeholder):
+For a free, rate-limited live demo, [Groq's Free plan](https://console.groq.com/docs/rate-limits)
+currently serves [Qwen](https://console.groq.com/docs/models).
+Create a [Groq API key](https://console.groq.com/keys) and set these root-level
+Streamlit app secrets:
 
 ```toml
 MRS_LLM_BACKEND = "openai"
-MRS_LLM_URL = "https://YOUR-PROVIDER/v1/chat/completions"
-MRS_LLM_MODEL = "YOUR-PROVIDER-QWEN-MODEL-ID"
-MRS_LLM_API_KEY = "YOUR-SECRET-KEY"
+MRS_LLM_URL = "https://api.groq.com/openai/v1/chat/completions"
+MRS_LLM_MODEL = "qwen/qwen3.8-27b"
+MRS_LLM_API_KEY = "YOUR_GROQ_API_KEY"
 ```
+
+Save the secrets, restart the app, and test a general question. The free plan has
+request and token limits; check Groq's current model list and rate-limit page
+before relying on it for public traffic. Keep the key in Streamlit secrets,
+never in GitHub. This hosted model differs from the locally installed `qwen3:4b`.
+
+To answer general questions in a cloud deployment, run Qwen on a hosted inference
+service with an OpenAI-compatible chat-completions endpoint. One option is
+[Hugging Face Inference Providers](https://huggingface.co/docs/inference-providers/index),
+which currently serves [Qwen3-4B-Instruct-2507](https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507).
+Create a fine-grained Hugging Face token with **Make calls to Inference Providers**
+permission. Add these **root-level secrets** in the Streamlit app's settings,
+replacing only the token placeholder:
+
+```toml
+MRS_LLM_BACKEND = "openai"
+MRS_LLM_URL = "https://router.huggingface.co/v1/chat/completions"
+MRS_LLM_MODEL = "Qwen/Qwen3-4B-Instruct-2507"
+MRS_LLM_API_KEY = "hf_YOUR_TOKEN"
+```
+
+Save the secrets in the deployed app's settings, then restart the app and test a
+general question. Inference Providers may require available credits or billing;
+check the account's usage before making the app public. Model availability can
+change, so select another supported chat model if this model is no longer served.
 
 The endpoint must use HTTPS. The provider receives the general question and any
 symptom labels included as context. Review its data handling before enabling it
