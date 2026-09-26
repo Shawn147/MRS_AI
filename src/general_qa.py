@@ -109,7 +109,11 @@ def answer_general_question(question, state, data):
     try:
         with urlopen(request, timeout=120) as response:
             result = json.load(response)
-    except (HTTPError, URLError, TimeoutError, OSError):
+    except HTTPError as error:
+        return {'text': f'The hosted language model rejected this request (HTTP {error.code}). '
+                        'The app owner should check the provider key, model access, and rate limits.',
+                'predictions': [], 'intent': 'general_question_unavailable'}
+    except (URLError, TimeoutError, OSError):
         return {'text': 'The language model is unavailable on this server. '
                         'If you run the app locally, start Ollama. If this is the live app, '
                         'the app owner must configure a reachable hosted model.',

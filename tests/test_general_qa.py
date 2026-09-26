@@ -1,6 +1,7 @@
 import json
 import os
 import unittest
+from urllib.error import HTTPError
 from unittest.mock import Mock, patch
 
 from src.data import load_data
@@ -122,6 +123,16 @@ class GeneralQuestionTests(unittest.TestCase):
         self.assertEqual(result['intent'], 'general_question_unavailable')
         self.assertIn('hosted language model', result['text'])
         send.assert_not_called()
+
+    def test_hosted_http_error_reports_status_without_leaking_response(self):
+        settings = {'MRS_LLM_BACKEND': 'openai',
+                    'MRS_LLM_URL': 'https://example.test/v1/chat/completions',
+                    'MRS_LLM_MODEL': 'hosted-qwen', 'MRS_LLM_API_KEY': 'test-key'}
+        error = HTTPError(settings['MRS_LLM_URL'], 403, 'Forbidden', {}, None)
+        with patch.dict(os.environ, settings), patch('src.general_qa.urlopen', side_effect=error):
+            result = answer_general_question('How can I stay healthy?', new_state(), self.data)
+        self.assertIn('HTTP 403', result['text'])
+        self.assertNotIn('test-key', result['text'])
 
     def test_reference_summary_fallback_without_downloaded_medembed(self):
         response = Mock()
