@@ -1,4 +1,4 @@
-"""Local, optional general-question answers using Ollama and reference search."""
+"""Optional general-question answers using local or hosted models."""
 import json
 import os
 import re
@@ -10,6 +10,17 @@ from src.reference_search import search_references
 
 OLLAMA_URL = 'http://127.0.0.1:11434/api/chat'
 MODEL = 'qwen3:4b'
+
+
+def _model_setting(name, default=''):
+    """Use Streamlit Cloud secrets, with an explicit environment override."""
+    if name in os.environ:
+        return os.environ[name]
+    try:
+        import streamlit as st
+        return st.secrets.get(name, default)
+    except (FileNotFoundError, KeyError, RuntimeError):
+        return default
 QUESTION_START = re.compile(
     r'^(?:what|why|how|when|where|who|which|can|could|does|do|is|are|tell me|explain)\b', re.I
 )
@@ -81,10 +92,10 @@ def answer_general_question(question, state, data):
         f'Previously reported symptoms (context only): {symptoms}.\n'
         f'Reference notes:\n{source_text or "None for this topic."}'
     )
-    backend = os.environ.get('MRS_LLM_BACKEND', 'ollama').lower()
-    endpoint = os.environ.get('MRS_LLM_URL') or (OLLAMA_URL if backend == 'ollama' else '')
-    model = os.environ.get('MRS_LLM_MODEL') or MODEL
-    key = os.environ.get('MRS_LLM_API_KEY', '')
+    backend = _model_setting('MRS_LLM_BACKEND', 'ollama').lower()
+    endpoint = _model_setting('MRS_LLM_URL') or (OLLAMA_URL if backend == 'ollama' else '')
+    model = _model_setting('MRS_LLM_MODEL') or MODEL
+    key = _model_setting('MRS_LLM_API_KEY')
     parsed = urlparse(endpoint)
     local = parsed.hostname in {'localhost', '127.0.0.1', '::1'}
     if (backend not in {'ollama', 'openai'} or not model or

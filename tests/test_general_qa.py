@@ -1,6 +1,8 @@
 import json
 import os
+import sys
 import unittest
+from types import SimpleNamespace
 from urllib.error import HTTPError, URLError
 from unittest.mock import Mock, patch
 
@@ -114,6 +116,26 @@ class GeneralQuestionTests(unittest.TestCase):
         payload = json.loads(request.data)
         self.assertEqual(payload['model'], 'hosted-qwen')
         self.assertEqual(payload['messages'][-1]['content'], 'How can I support gut health?')
+
+    def test_streamlit_secrets_configure_hosted_endpoint(self):
+        response = Mock()
+        response.__enter__ = Mock(return_value=response)
+        response.__exit__ = Mock(return_value=None)
+        response.read = Mock(return_value=json.dumps({
+            'choices': [{'message': {'content': 'A short answer.'}}]
+        }).encode())
+        settings = {'MRS_LLM_BACKEND': 'openai',
+                    'MRS_LLM_URL': 'https://example.test/v1/chat/completions',
+                    'MRS_LLM_MODEL': 'hosted-qwen', 'MRS_LLM_API_KEY': 'secret-key'}
+        env = {key: value for key, value in os.environ.items() if key not in settings}
+        with patch.dict(os.environ, env, clear=True), \
+                patch.dict(sys.modules, {'streamlit': SimpleNamespace(secrets=settings)}), \
+                patch('src.general_qa.urlopen', return_value=response) as send:
+            result = answer_general_question('How can I stay healthy?', new_state(), self.data)
+        self.assertEqual(result['text'], 'A short answer.')
+        request = send.call_args.args[0]
+        self.assertEqual(request.full_url, settings['MRS_LLM_URL'])
+        self.assertEqual(request.get_header('Authorization'), 'Bearer secret-key')
 
     def test_hosted_endpoint_requires_configuration(self):
         with patch.dict(os.environ, {'MRS_LLM_BACKEND': 'openai',
