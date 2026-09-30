@@ -118,8 +118,9 @@ def sidebar(chat):
                 st.button(label, icon=f':material/{icon}:', on_click=navigate, args=(page,),
                           use_container_width=True)
         st.markdown('<div class="sidebar-note">For educational information.<br>Not a diagnosis or prescription.'
-                    '<br><br>Conversation history lasts for this app session. General-answer messages may be sent '
-                    'to a hosted model. Anonymous activity counts are saved on the app server.</div>', unsafe_allow_html=True)
+                    '<br><br>Your conversation stays here while this session is open. Some questions may be shared '
+                    'with Groq to provide an answer. Please leave out names and other identifying details.</div>',
+                    unsafe_allow_html=True)
 
 
 def page_header():
@@ -145,9 +146,9 @@ def welcome(chat):
                     ('I have stomach pain and nausea', 'healing')]
         for col, (text, icon) in zip(st.columns(3), examples):
             col.button(text, icon=f':material/{icon}:', on_click=queue_prompt, args=(text,), use_container_width=True)
-    st.caption('Privacy: symptom matching runs in this app. General questions and contextual descriptions may be '
-               'sent to the hosted Qwen service (Groq) to generate an answer. Avoid sharing identifying details. '
-               'Conversation history is kept for this app session; anonymous counts are stored on the app server.')
+    st.caption('Privacy: some questions and relevant symptom details may be shared with Groq to provide an answer. '
+               'Please leave out names and other identifying details. Your conversation stays here while this '
+               'session is open. We keep anonymous activity counts.')
 
 
 def welcome_details(chat):
@@ -346,9 +347,8 @@ def analytics_page():
     page_header()
     st.title('Conversation analytics')
     st.write('A clear view of activity, symptom patterns and medicine references offered.')
-    st.caption('Anonymous sessions are visits, not verified patients. One person can have several sessions. '
-               'Counts are stored in this app server’s local SQLite file, not in visitors’ browsers. '
-               'Cloud restarts may reset this file; earlier conversations are not backfilled.')
+    st.caption('These are anonymous activity counts, not patient records. One person can have several sessions. '
+               'Counts may reset when the app restarts; earlier conversations are not included.')
     period = st.selectbox('Time period', ['Last 7 days', 'Last 30 days', 'All time'], index=1)
     days = {'Last 7 days': 7, 'Last 30 days': 30}.get(period)
     since = (datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=days - 1)).isoformat() if days else None
@@ -418,7 +418,7 @@ def health_context_page(chat):
     st.title('Your health context')
     st.write('A little context helps us know when medicine information should be withheld.')
     st.caption('Optional and specific to this conversation. This does not check medicine safety or interactions. '
-               'If you ask a general question, relevant symptom labels may be sent to the hosted answer provider.')
+               'If you ask a general question, relevant symptoms may be shared with Groq to provide an answer.')
     with st.form('context_' + chat['id']):
         profile = {}
         profile['allergies'] = st.text_input('Known medicine allergies', value=chat['profile'].get('allergies', ''), placeholder='For example, penicillin')
@@ -553,20 +553,11 @@ def about_page(data):
             st.markdown(f"[{record['name']} — {source['publisher']}]({source['url']}) · {date}")
     st.caption('These additional NHS and FDA records are reference-only. They are not included in classifier predictions.')
     st.subheader('Your conversation')
-    st.write('Conversation history and health context are held in this app session, not saved as a medical record. '
-             'General questions and contextual descriptions may be sent to Groq to generate an answer; the prompt '
-             'can include symptom labels from this conversation. Do not enter identifying details. You can export '
-             'your conversation before leaving. Anonymous analytics counts are saved in the app server’s local SQLite '
-             'file; no message text, names or health-profile values are stored there. On Streamlit Cloud, that file may '
-             'be lost when the app restarts.')
-    with st.expander('Technical details & project resources'):
-        from src.general_qa import _model_setting
-        hosted = _model_setting('MRS_LLM_BACKEND', 'ollama').lower() == 'openai'
-        st.write('The app uses a locally fine-tuned MiniLM classifier for symptom matches, '
-                 'MedEmbed for source-linked reference search, and ' +
-                 ('hosted Qwen through Groq' if hosted else 'local Qwen through Ollama') +
-                 ' for informational questions. '
-                 'The training data contains 304 unique symptom patterns, not independently validated clinical cases.')
+    st.write('Your conversation and health context stay here while this session is open; they are not saved as a '
+             'medical record. Some questions and relevant symptoms may be shared with Groq to provide an answer. '
+             'Please leave out names and other identifying details. You can download your conversation before '
+             'leaving. We keep anonymous activity counts, but not your messages or health context in those counts.')
+    with st.expander('Project resources'):
         st.markdown('[MiniLM model card](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)')
         st.button('Dataset Preview', on_click=navigate, args=('Dataset Preview',))
         st.button('Model Evaluation', on_click=navigate, args=('Model Evaluation',))
