@@ -139,6 +139,14 @@ class DialogueTests(unittest.TestCase):
         self.assertIn('do you also have', answer['text'])
         self.assertNotIn('Common Cold', answer['text'])
 
+    def test_pregnancy_ibuprofen_question_uses_curated_safety_source(self):
+        answer = respond('Can I take ibuprofen while pregnant?', self.state, self.data, self.predict)
+        self.assertEqual(answer['intent'], 'medicine_safety')
+        self.assertTrue(answer['medicine_withheld'])
+        self.assertIn('20 weeks', answer['text'])
+        self.assertEqual(answer['source_details'][0]['publisher'], 'FDA')
+        self.predict.assert_not_called()
+
     def test_split_has_no_pattern_overlap(self):
         split=json.loads((ARTIFACT_DIR/'splits.json').read_text())
         a,b,c=[set(split[k]) for k in ['train','validation','test']]

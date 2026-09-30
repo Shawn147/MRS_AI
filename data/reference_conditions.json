@@ -111,5 +111,57 @@
     "review_status": "source_summarized; pending clinical and local applicability review",
     "data_type": "reference_summary",
     "scope": "Non-exhaustive educational summary; consult linked guidance for age-specific details. No doses or prescribing rules."
+  },
+  {
+    "name": "Headaches",
+    "description": "Headaches have many causes, and symptoms alone do not establish which one applies.",
+    "symptom_terms": ["headache", "head pain"],
+    "care_notes": ["Drink water, keep regular meals and rest if you are also unwell. A headache diary can help identify patterns."],
+    "seek_help_notes": ["Seek medical assessment for headaches that persist, worsen or recur.", "A sudden extremely painful headache, or headache with weakness, confusion, loss of vision or seizure needs emergency assessment."],
+    "sources": [{"publisher": "NHS", "url": "https://www.nhs.uk/symptoms/headaches/", "accessed_on": "2026-09-30", "page_last_reviewed": "2024-04-17"}],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Non-exhaustive educational summary; not a diagnosis or medicine suitability check."
+  },
+  {
+    "name": "Sore throat",
+    "description": "A sore throat is common and often improves by itself within about a week.",
+    "symptom_terms": ["sore throat", "throat pain", "painful swallowing"],
+    "care_notes": ["Drink water, rest, avoid smoke and consider cool or soft foods. Ask a pharmacist before taking a medicine, especially during pregnancy."],
+    "seek_help_notes": ["Seek assessment if it does not improve after a week, frequently recurs or you have dehydration or a very high temperature.", "Difficulty breathing, inability to swallow, drooling or rapidly worsening severe symptoms need emergency assessment."],
+    "sources": [{"publisher": "NHS", "url": "https://www.nhs.uk/symptoms/sore-throat/", "accessed_on": "2026-09-30", "page_last_reviewed": "2024-04-08"}],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Non-exhaustive educational summary; not a prescription."
+  },
+  {
+    "name": "Hepatitis B",
+    "description": "Hepatitis B is a liver infection spread through blood and body fluids. Many people have no symptoms or only mild symptoms; a test is needed to know whether it is present.",
+    "symptom_terms": ["fatigue", "fever", "upper abdominal pain", "nausea", "jaundice", "dark urine", "pale stools"],
+    "care_notes": ["If hepatitis B is suspected, ask a clinician about testing and vaccination. The source advises rest and hydration for people with the infection and discussing pain relief with a doctor."],
+    "seek_help_notes": ["See a clinician if you think you may have hepatitis B or are at higher risk. Treatment and follow-up depend on test results and whether infection persists."],
+    "sources": [{"publisher": "NHS", "url": "https://www.nhs.uk/conditions/hepatitis-b/", "accessed_on": "2026-09-30", "page_last_reviewed": "2025-11-17"}],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Non-exhaustive educational summary; no diagnosis or treatment selection."
+  },
+  {
+    "name": "NSAIDs in pregnancy",
+    "description": "Ibuprofen belongs to the NSAID medicine group. The FDA warns against NSAID use at around 20 weeks of pregnancy or later unless a healthcare professional specifically advises it.",
+    "symptom_terms": [],
+    "care_notes": ["Ask a pharmacist or pregnancy clinician before using ibuprofen or another NSAID. Check the label because NSAIDs can also be ingredients in combination medicines."],
+    "seek_help_notes": ["A clinician must consider pregnancy stage and personal circumstances before advising on treatment. This app cannot determine personal medicine suitability."],
+    "sources": [{"publisher": "FDA", "url": "https://www.fda.gov/drugs/drug-safety-and-availability/fda-recommends-avoiding-use-nsaids-pregnancy-20-weeks-or-later-because-they-can-result-low-amniotic", "accessed_on": "2026-09-30", "updated_on": "2022-09-01"}],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "medicine_safety_reference",
+    "scope": "General safety information only; no personal medicine or dose recommendation."
   }
 ]

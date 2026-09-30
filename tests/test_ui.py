@@ -1,6 +1,8 @@
 import unittest
 import os
 import tempfile
+from urllib.error import HTTPError
+from unittest.mock import Mock
 from unittest.mock import patch
 from streamlit.testing.v1 import AppTest
 
@@ -121,6 +123,25 @@ class UITests(unittest.TestCase):
         message = at.session_state['chats'][key]['messages'][-1]
         self.assertEqual(message['intent'], 'summary')
         self.assertIn('runny nose', message['content'])
+        self.assertFalse(at.exception)
+
+    def test_retry_replaces_failed_general_answer(self):
+        settings = {'MRS_LLM_BACKEND': 'openai', 'MRS_LLM_MODEL': 'test-model',
+                    'MRS_LLM_URL': 'https://example.test/chat', 'MRS_LLM_API_KEY': 'test-key'}
+        response = Mock()
+        response.__enter__ = Mock(return_value=response)
+        response.__exit__ = Mock(return_value=None)
+        response.read = Mock(return_value=b'{"choices":[{"message":{"content":"A helpful answer."}}]}')
+        error = HTTPError(settings['MRS_LLM_URL'], 429, 'Rate limited', {}, None)
+        with patch.dict(os.environ, settings), patch('src.general_qa.urlopen', side_effect=[error, response]):
+            at = self.app()
+            at.chat_input[0].set_value('How can I stay healthy?').run()
+            key = at.session_state['active_chat']
+            self.assertTrue(at.session_state['chats'][key]['messages'][-1]['retryable'])
+            click(at, 'Retry answer')
+        messages = at.session_state['chats'][key]['messages']
+        self.assertEqual(len(messages), 2)
+        self.assertEqual(messages[-1]['content'], 'A helpful answer.')
         self.assertFalse(at.exception)
 
     def test_edit_last_message_replaces_reply_and_restores_state(self):

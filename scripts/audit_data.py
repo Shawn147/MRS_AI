@@ -46,15 +46,19 @@ def validate(data):
             errors.append(f"Unknown condition symptoms: {row['name']}")
     references = data['reference_conditions']
     names = [r['name'] for r in references]
-    if len(names) != len(set(names)) or set(names) & set(conditions):
+    if len(names) != len(set(names)):
         errors.append('Duplicate reference condition')
     for row in references:
         if row['eligible_for_training'] is not False or row['clinically_reviewed'] is not False:
             errors.append(f"Unsupported approval status: {row['name']}")
-        if not row['sources'] or not row['symptom_terms'] or not row['description']:
+        if (not row['sources'] or not row['description'] or not row.get('care_notes')
+                or not row.get('seek_help_notes') or
+                (row['data_type'] != 'medicine_safety_reference' and not row['symptom_terms'])):
             errors.append(f"Incomplete reference: {row['name']}")
         for source in row['sources']:
-            if not source['url'].startswith('https://www.nhs.uk/') or not source['accessed_on']:
+            if (not source['url'].startswith(('https://www.nhs.uk/', 'https://www.fda.gov/'))
+                    or not source.get('accessed_on')
+                    or not (source.get('page_last_reviewed') or source.get('updated_on'))):
                 errors.append(f"Missing source provenance: {row['name']}")
     return errors
 

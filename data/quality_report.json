@@ -2,7 +2,7 @@
   "schema_version": 1,
   "errors": [],
   "classifier_conditions": 41,
-  "reference_only_conditions": 3,
+  "reference_only_conditions": 7,
   "unique_patterns_per_condition": {
     "(vertigo) Paroymsal Positional Vertigo": 7,
     "AIDS": 5,

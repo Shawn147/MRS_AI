@@ -75,6 +75,7 @@ def summarize(since=None, path=None):
             medicine_conversations.setdefault(medicine, set()).add(row['conversation_id'])
     return {
         'sessions': len({r['session_id'] for r in rows}), 'conversations': len(activity), 'responses': len(rows),
+        'model_failures': intents['general_question_unavailable'],
         'urgent_conversations': len({r['conversation_id'] for r in rows if r['urgent']}),
         'withheld_responses': sum(r['withheld'] for r in rows),
         'uncertain_responses': sum(r['uncertain'] for r in rows),

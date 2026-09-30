@@ -143,7 +143,7 @@ class GeneralQuestionTests(unittest.TestCase):
                 patch('src.general_qa.urlopen') as send:
             result = answer_general_question('How can I support gut health?', new_state(), self.data)
         self.assertEqual(result['intent'], 'general_question_unavailable')
-        self.assertIn('hosted language model', result['text'])
+        self.assertIn('General answers are temporarily unavailable', result['text'])
         send.assert_not_called()
 
     def test_hosted_http_error_reports_status_without_leaking_response(self):
@@ -153,7 +153,7 @@ class GeneralQuestionTests(unittest.TestCase):
         error = HTTPError(settings['MRS_LLM_URL'], 403, 'Forbidden', {}, None)
         with patch.dict(os.environ, settings), patch('src.general_qa.urlopen', side_effect=error):
             result = answer_general_question('How can I stay healthy?', new_state(), self.data)
-        self.assertIn('HTTP 403', result['text'])
+        self.assertIn('General answers are temporarily unavailable', result['text'])
         self.assertNotIn('test-key', result['text'])
 
     def test_hosted_connection_error_redacts_key(self):
@@ -163,8 +163,33 @@ class GeneralQuestionTests(unittest.TestCase):
         with patch.dict(os.environ, settings), patch('src.general_qa.urlopen',
                 side_effect=URLError('proxy failed for test-key')):
             result = answer_general_question('How can I stay healthy?', new_state(), self.data)
-        self.assertIn('proxy failed', result['text'])
+        self.assertIn('Please retry', result['text'])
         self.assertNotIn('test-key', result['text'])
+
+    def test_rate_limit_is_retryable_without_exposing_provider_response(self):
+        settings = {'MRS_LLM_BACKEND': 'openai',
+                    'MRS_LLM_URL': 'https://example.test/v1/chat/completions',
+                    'MRS_LLM_MODEL': 'hosted-qwen', 'MRS_LLM_API_KEY': 'test-key'}
+        error = HTTPError(settings['MRS_LLM_URL'], 429, 'Too Many Requests', {}, None)
+        with patch.dict(os.environ, settings), patch('src.general_qa.urlopen', side_effect=error):
+            result = answer_general_question('How can I stay healthy?', new_state(), self.data)
+        self.assertTrue(result['retryable'])
+        self.assertIn('busy', result['text'])
+
+    def test_curated_reference_has_review_date_and_help_notes(self):
+        response = Mock()
+        response.__enter__ = Mock(return_value=response)
+        response.__exit__ = Mock(return_value=None)
+        response.read = Mock(return_value=json.dumps({
+            'choices': [{'message': {'content': 'Hepatitis B is a liver infection.'}}]
+        }).encode())
+        settings = {'MRS_LLM_BACKEND': 'openai',
+                    'MRS_LLM_URL': 'https://example.test/v1/chat/completions',
+                    'MRS_LLM_MODEL': 'hosted-qwen', 'MRS_LLM_API_KEY': 'test-key'}
+        with patch.dict(os.environ, settings), patch('src.general_qa.urlopen', return_value=response) as send:
+            result = answer_general_question('What is hepatitis B?', new_state(), self.data)
+        self.assertEqual(result['source_details'][0]['page_last_reviewed'], '2025-11-17')
+        self.assertIn('When to seek help', json.loads(send.call_args.args[0].data)['messages'][0]['content'])
 
     def test_reference_summary_fallback_without_downloaded_medembed(self):
         response = Mock()

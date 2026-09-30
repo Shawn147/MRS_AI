@@ -55,3 +55,8 @@ class AnalyticsTests(unittest.TestCase):
             self.assertNotIn('content', dumped)
         finally:
             connection.close()
+
+    def test_model_failures_are_counted_without_question_text(self):
+        self.event('failed', condition=None, intent='general_question_unavailable')
+        self.assertEqual(summarize(path=self.path)['model_failures'], 1)
+        self.assertNotIn('Private patient message', self.path.read_bytes().decode('latin1'))

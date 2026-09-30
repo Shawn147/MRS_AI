@@ -1,5 +1,6 @@
 """Optional general-question answers using local or hosted models."""
 import json
+import logging
 import os
 import re
 from urllib.error import HTTPError, URLError
@@ -10,6 +11,7 @@ from src.reference_search import search_references
 
 OLLAMA_URL = 'http://127.0.0.1:11434/api/chat'
 MODEL = 'qwen3:4b'
+LOG = logging.getLogger(__name__)
 
 
 def _model_setting(name, default=''):
@@ -35,6 +37,11 @@ UNRECOGNIZED_HEALTH_REPORT = re.compile(
 CONTEXTUAL_REPORT = re.compile(r'\b(?:after|during|when|while|following)\b', re.I)
 
 
+def _unavailable(message, retryable=False):
+    return {'text': message, 'predictions': [], 'intent': 'general_question_unavailable',
+            'retryable': retryable}
+
+
 def is_information_question(text):
     """Keep first-person symptom reports in the existing symptom flow."""
     message = text.strip()
@@ -56,7 +63,10 @@ def _matched_references(question, records):
     """Require an explicit reference topic before claiming a source supports an answer."""
     aliases = {'Influenza (flu)': ('flu', 'influenza'),
                'COVID-19': ('covid', 'coronavirus'),
-               'Sinusitis': ('sinusitis', 'sinus infection')}
+               'Sinusitis': ('sinusitis', 'sinus infection'),
+               'Headaches': ('headache', 'headaches', 'head pain'),
+               'Sore throat': ('sore throat', 'throat pain'),
+               'Hepatitis B': ('hepatitis b', 'hep b')}
     selected = [record for record in records if any(
         re.search(r'(?<!\w)' + re.escape(alias) + r'(?!\w)', question, re.I)
         for alias in aliases.get(record['name'], (record['name'],))
@@ -66,16 +76,21 @@ def _matched_references(question, records):
 
 def answer_general_question(question, state, data):
     records = _matched_references(question, data['reference_conditions'])
-    try:
-        passages = search_references(question, records, limit=3) if records else []
-    except (FileNotFoundError, ImportError):
-        # Deployed copies may have source summaries but no downloaded MedEmbed weights.
-        passages = [
-            {'text': record['name'] + ': ' + record['description'] + ' Symptoms: ' +
-             ', '.join(record.get('symptom_terms', [])),
-             'source': record['sources'][0]['url']}
-            for record in records if record.get('sources')
-        ]
+    # Keep every field of a directly matched reference so self-care and when-to-seek-help
+    # notes cannot be lost to similarity ranking or missing embedding weights.
+    passages = [
+        {'text': record['name'] + ': ' + record['description'] + '\nSymptoms: ' +
+         ', '.join(record.get('symptom_terms', [])) + '\nSelf-care: ' +
+         ' '.join(record.get('care_notes', [])) + '\nWhen to seek help: ' +
+         ' '.join(record.get('seek_help_notes', [])),
+         'source': record['sources'][0]['url']}
+        for record in records if record.get('sources')
+    ]
+    if len(passages) > 3:
+        try:
+            passages = search_references(question, records, limit=3)
+        except (FileNotFoundError, ImportError):
+            passages = passages[:3]
     source_text = '\n'.join(f'- {item["text"]}' for item in passages)
     symptoms = ', '.join(data['by_symptom'][key]['label'] for key in state['symptoms']) or 'none reported'
     system = (
@@ -84,7 +99,7 @@ def answer_general_question(question, state, data):
         'clarifying question about timing, severity, or other symptoms. '
         'Do not diagnose the user, infer a disease from symptoms, recommend a medicine, '
         'give doses, or claim to have checked personal safety. If urgent symptoms are described, advise urgent '
-        'medical assessment. The reference notes below are the only verified source material supplied to you. '
+        'medical assessment. The source-linked reference notes below are the only source material supplied to you. '
         'Use them when relevant and do not claim they cover other conditions. Reply directly with the final answer; '
         'do not show reasoning, planning, or instructions. If there are no reference notes, '
         'give cautious general information and say that this app has no reviewed source for the topic. '
@@ -102,9 +117,8 @@ def answer_general_question(question, state, data):
             (backend == 'openai' and not key) or
             parsed.scheme not in {'http', 'https'} or not parsed.netloc or
             (parsed.scheme != 'https' and not local)):
-        return {'text': 'This app needs a hosted language model to answer general questions. '
-                        'The app owner must configure its model endpoint and API key.',
-                'predictions': [], 'intent': 'general_question_unavailable'}
+        LOG.warning('General-answer model configuration is incomplete')
+        return _unavailable('General answers are temporarily unavailable. Symptom guidance still works.')
     messages = [{'role': 'system', 'content': system},
                 {'role': 'user', 'content': question + ('\n/no_think' if backend == 'ollama' else '')}]
     if backend == 'ollama':
@@ -118,17 +132,27 @@ def answer_general_question(question, state, data):
         headers['Authorization'] = 'Bearer ' + key
     request = Request(endpoint, data=json.dumps(payload).encode(), headers=headers, method='POST')
     try:
-        with urlopen(request, timeout=120) as response:
+        with urlopen(request, timeout=25 if backend == 'openai' else 120) as response:
             result = json.load(response)
     except HTTPError as error:
-        return {'text': f'The hosted language model rejected this request (HTTP {error.code}). '
-                        'The app owner should check the provider key, model access, and rate limits.',
-                'predictions': [], 'intent': 'general_question_unavailable'}
+        LOG.warning('General-answer provider returned HTTP %s', error.code)
+        if error.code == 429:
+            return _unavailable('The answer service is busy right now. Please retry in a moment. '
+                                'Symptom guidance is still available.', retryable=True)
+        if error.code >= 500:
+            return _unavailable('The answer service is temporarily unavailable. Please retry shortly. '
+                                'Symptom guidance is still available.', retryable=True)
+        return _unavailable('General answers are temporarily unavailable. Symptom guidance still works.')
     except (URLError, TimeoutError, OSError) as error:
-        reason = getattr(error, 'reason', error)
-        detail = str(reason).replace(key, '[redacted]')[:120] if key else str(reason)[:120]
-        return {'text': 'The language model connection failed: ' + detail,
-                'predictions': [], 'intent': 'general_question_unavailable'}
+        LOG.warning('General-answer connection failed (%s)', type(error).__name__)
+        return _unavailable('The answer service did not respond. Please retry. '
+                            'Symptom guidance is still available.', retryable=True)
+    except (ValueError, TypeError):
+        LOG.warning('General-answer provider returned an invalid response')
+        return _unavailable('The answer service returned an unreadable response. Please retry.', retryable=True)
+    if not isinstance(result, dict):
+        LOG.warning('General-answer provider returned an unexpected response shape')
+        return _unavailable('The answer service returned an unreadable response. Please retry.', retryable=True)
     if backend == 'ollama':
         answer = result.get('message', {}).get('content', '').strip()
     else:
@@ -139,7 +163,10 @@ def answer_general_question(question, state, data):
     elif answer.startswith('<think>') or answer.startswith('Okay, the user'):
         answer = ''
     if not answer:
-        return {'text': 'The local model did not return an answer. Please try again.',
-                'predictions': [], 'intent': 'general_question_unavailable'}
+        LOG.warning('General-answer provider returned no usable answer')
+        return _unavailable('The answer service returned no answer. Please retry.', retryable=True)
     sources = list(dict.fromkeys(item['source'] for item in passages))
-    return {'text': answer, 'predictions': [], 'intent': 'general_question', 'sources': sources}
+    source_details = [source for record in records for source in record.get('sources', [])
+                      if source['url'] in sources]
+    return {'text': answer, 'predictions': [], 'intent': 'general_question',
+            'sources': sources, 'source_details': source_details}

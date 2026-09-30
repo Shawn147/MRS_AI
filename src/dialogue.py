@@ -196,6 +196,21 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
             sources=['https://www.mayoclinic.org/diseases-conditions/sex-headaches/symptoms-causes/syc-20377477',
                      'https://www.nhs.uk/conditions/subarachnoid-haemorrhage/'],
         )
+    pregnancy_mention = re.search(r'\b(?:pregnant|pregnancy)\b', text, re.I)
+    pregnancy_context = bool(profile and profile.get('pregnancy') == 'Yes')
+    if (re.search(r'\b(?:ibuprofen|nsaids?)\b', text, re.I)
+            and ((pregnancy_mention and not negated(text, pregnancy_mention.start())) or pregnancy_context)
+            and re.search(r'\b(?:can|could|should|safe|take|use)\b', text, re.I)):
+        source = next(record['sources'][0] for record in data['reference_conditions']
+                      if record['name'] == 'NSAIDs in pregnancy')
+        return _reply(
+            'Ibuprofen is an NSAID. The FDA advises avoiding NSAIDs at around 20 weeks of pregnancy '
+            'or later unless a healthcare professional specifically advises them. I cannot tell whether '
+            'ibuprofen is suitable for you. Please ask your pregnancy clinician or pharmacist before taking it. '
+            'How many weeks pregnant are you?',
+            intent='medicine_safety', medicine_withheld=True,
+            sources=[source['url']], source_details=[source],
+        )
     from src.conversation import remember_details, context_reply
     remember_details(text, state)
     norm = normalize(text)

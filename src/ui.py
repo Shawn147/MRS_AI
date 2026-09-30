@@ -76,6 +76,10 @@ def queue_prompt(text):
     st.session_state.queued_prompt = text
 
 
+def queue_retry():
+    st.session_state.retry_last = True
+
+
 def begin_edit(chat):
     chat['editing_last'] = True
 
@@ -87,7 +91,7 @@ def cancel_edit(chat):
 def sidebar(chat):
     with st.sidebar:
         st.markdown(f'<div class="brand">{LOGO}<div><strong>MRS AI</strong>'
-                    '<span>Medicine &amp; Symptom Guide</span></div></div>', unsafe_allow_html=True)
+                    '<span>Health information &amp; symptom guidance</span></div></div>', unsafe_allow_html=True)
         st.button('New conversation', icon=':material/add:', on_click=create_chat,
                   type='primary', use_container_width=True)
         with st.container(key='recent_chats'):
@@ -114,7 +118,8 @@ def sidebar(chat):
                 st.button(label, icon=f':material/{icon}:', on_click=navigate, args=(page,),
                           use_container_width=True)
         st.markdown('<div class="sidebar-note">For educational information.<br>Not a diagnosis or prescription.'
-                    '<br><br>Chats stay in this browser session. Anonymous activity counts are saved locally.</div>', unsafe_allow_html=True)
+                    '<br><br>Conversation history lasts for this app session. General-answer messages may be sent '
+                    'to a hosted model. Anonymous activity counts are saved on the app server.</div>', unsafe_allow_html=True)
 
 
 def page_header():
@@ -140,6 +145,9 @@ def welcome(chat):
                     ('I have stomach pain and nausea', 'healing')]
         for col, (text, icon) in zip(st.columns(3), examples):
             col.button(text, icon=f':material/{icon}:', on_click=queue_prompt, args=(text,), use_container_width=True)
+    st.caption('Privacy: symptom matching runs in this app. General questions and contextual descriptions may be '
+               'sent to the hosted Qwen service (Groq) to generate an answer. Avoid sharing identifying details. '
+               'Conversation history is kept for this app session; anonymous counts are stored on the app server.')
 
 
 def welcome_details(chat):
@@ -164,14 +172,21 @@ def symptom_tags(symptoms, data):
 
 
 def render_sources(message):
-    for source in message.get('sources', []):
-        if source.startswith('https://www.nhs.uk/'):
-            st.link_button('Read NHS source', source)
-        elif source.startswith('https://www.mayoclinic.org/'):
-            st.link_button('Read Mayo Clinic source', source)
+    details = message.get('source_details') or [{'url': url} for url in message.get('sources', [])]
+    for source in details:
+        url = source['url']
+        publisher = source.get('publisher') or ('NHS' if 'nhs.uk' in url else
+                                                'Mayo Clinic' if 'mayoclinic.org' in url else 'Source')
+        if url.startswith('https://'):
+            st.link_button('Read ' + publisher + ' source', url)
+            date = source.get('page_last_reviewed')
+            if date:
+                st.caption(f'{publisher} · page last reviewed {date}')
+            elif source.get('updated_on'):
+                st.caption(f'{publisher} · updated {source["updated_on"]}')
 
 
-def render_message(message, chat, data, editable=False):
+def render_message(message, chat, data, editable=False, latest=False):
     is_user = message['role'] == 'user'
     with st.chat_message(message['role'], avatar=':material/person:' if is_user else str(ASSETS / 'logo.svg')):
         author = 'You' if is_user else 'MRS AI'
@@ -197,6 +212,7 @@ def render_message(message, chat, data, editable=False):
                         f'<div class="result-title">{escape(record["name"])}</div>', unsafe_allow_html=True)
             st.write(record['description'])
             st.caption('A possible match from your symptoms, not a diagnosis. A healthcare professional can assess the cause.')
+            st.caption('Source: original symptom and medicine dataset · clinical review date unavailable.')
             context = {**chat['state']['context'], **chat['profile']}
             withheld = message.get('medicine_withheld') or profile_has_context(context) or chat['state']['urgent']
             if withheld:
@@ -219,6 +235,9 @@ def render_message(message, chat, data, editable=False):
         else:
             st.markdown(message['content'])
             render_sources(message)
+        if latest and message.get('retryable'):
+            st.button('Retry answer', icon=':material/refresh:', key='retry_' + chat['id'],
+                      on_click=queue_retry)
 
 
 def chat_page(chat, data, version):
@@ -229,6 +248,17 @@ def chat_page(chat, data, version):
         bundle = cached_models(version, (ARTIFACT_DIR / 'metrics.json').stat().st_mtime_ns)
         return predict(bundle, symptoms, chat['model'])
 
+    retry_prompt = None
+    if (st.session_state.pop('retry_last', False) and len(chat['messages']) >= 2
+            and chat['messages'][-1].get('retryable')):
+        from src.chat_edit import replace_last_turn
+        retry_prompt = chat['messages'][-2]['content']
+        old_event_id = replace_last_turn(chat, data, predictor)
+        try:
+            from src.analytics import delete_event
+            delete_event(old_event_id)
+        except (OSError, sqlite3.Error):
+            logging.exception('Unable to remove retried analytics event')
     if not chat['messages']:
         welcome(chat)
     else:
@@ -236,7 +266,8 @@ def chat_page(chat, data, version):
                     '<p>You can add details or correct a symptom at any time.</p></div>', unsafe_allow_html=True)
     for index, message in enumerate(chat['messages']):
         editable = (index == len(chat['messages']) - 2 and message['role'] == 'user')
-        render_message(message, chat, data, editable=editable)
+        render_message(message, chat, data, editable=editable,
+                       latest=index == len(chat['messages']) - 1)
     edited_prompt = None
     if chat.get('editing_last'):
         with st.form('edit_form_' + chat['id']):
@@ -278,7 +309,7 @@ def chat_page(chat, data, version):
         with st.container(key='welcome_composer'):
             entered = st.chat_input('Describe what you’re experiencing…', max_chars=2000)
         welcome_details(chat)
-    prompt = edited_prompt or st.session_state.pop('queued_prompt', None) or entered
+    prompt = retry_prompt or edited_prompt or st.session_state.pop('queued_prompt', None) or entered
     if prompt:
         chat['messages'].append({'role': 'user', 'content': prompt,
                                  'state_before': deepcopy(chat['state']),
@@ -316,7 +347,8 @@ def analytics_page():
     st.title('Conversation analytics')
     st.write('A clear view of activity, symptom patterns and medicine references offered.')
     st.caption('Anonymous sessions are visits, not verified patients. One person can have several sessions. '
-               'Counts start when analytics is enabled; earlier conversations are not backfilled.')
+               'Counts are stored in this app server’s local SQLite file, not in visitors’ browsers. '
+               'Cloud restarts may reset this file; earlier conversations are not backfilled.')
     period = st.selectbox('Time period', ['Last 7 days', 'Last 30 days', 'All time'], index=1)
     days = {'Last 7 days': 7, 'Last 30 days': 30}.get(period)
     since = (datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=days - 1)).isoformat() if days else None
@@ -334,6 +366,8 @@ def analytics_page():
     if not report['responses']:
         st.info('No activity in this period yet. Start a conversation and your real usage will appear here.')
         return
+    st.metric('General-answer service failures', report['model_failures'],
+              help='Provider errors, timeouts, rate limits or invalid responses. No question text is stored in analytics.')
     overview, medicines, conversations = st.tabs(['Overview', 'Medicine references', 'Conversation activity'])
     with overview:
         st.subheader('Activity over time')
@@ -383,7 +417,8 @@ def health_context_page(chat):
     page_header()
     st.title('Your health context')
     st.write('A little context helps us know when medicine information should be withheld.')
-    st.caption('Optional and specific to this conversation. This does not check medicine safety or interactions.')
+    st.caption('Optional and specific to this conversation. This does not check medicine safety or interactions. '
+               'If you ask a general question, relevant symptom labels may be sent to the hosted answer provider.')
     with st.form('context_' + chat['id']):
         profile = {}
         profile['allergies'] = st.text_input('Known medicine allergies', value=chat['profile'].get('allergies', ''), placeholder='For example, penicillin')
@@ -453,7 +488,8 @@ def evaluation_page(version):
             'Recall': item['report']['macro avg']['recall'],
         })
     st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
-    st.warning('These template-like symptom records are not clinical validation. High scores do not establish real-world diagnosis or medicine safety.')
+    st.warning('This is a technical benchmark on 61 template-like held-out records, not a clinical validation. '
+               'Perfect scores do not establish real-world diagnosis, triage or medicine safety.')
     chosen = st.selectbox('Inspect model', list(EVAL_NAMES), format_func=lambda k: EVAL_NAMES[k])
     item = metrics['models'][chosen]
     st.metric('Test accuracy', f"{item['accuracy']:.2%}")
@@ -500,26 +536,36 @@ def history_page():
 def about_page(data):
     page_header()
     st.title('About & sources')
-    st.write('MRS AI helps you explore symptom patterns and read educational medicine information, one conversation at a time.')
+    st.write('MRS AI offers health information and symptom guidance. It is not a diagnosis or treatment recommendation service.')
     with st.container(border=True):
         st.subheader('What to expect')
-        st.write('Describe your symptoms, answer follow-up questions, and review possible condition matches. '
-                 'The assistant supports 41 condition labels. Its matches are not diagnoses, and its medicine information is not a prescription.')
+        st.write('Describe your symptoms, answer brief follow-up questions, and read educational information. '
+                 'The classifier covers 41 condition labels, but its matches are not clinically validated diagnoses.')
         st.write('Health context can withhold medicine information. The system cannot verify doses, interactions or personal suitability.')
     st.subheader('Where the information comes from')
     st.markdown('[Original symptom and medicine dataset](https://github.com/dr-mushtaq/Medicine-Recommendation-System)')
     st.caption('Medicine mappings in this dataset have not been clinically reviewed.')
     for record in data['reference_conditions']:
         for source in record['sources']:
-            st.markdown(f"[{record['name']} — {source['publisher']}]({source['url']})")
-    st.caption('These additional NHS records are reference-only. They are not included in classifier predictions.')
+            date = ('page reviewed ' + source['page_last_reviewed'] if source.get('page_last_reviewed')
+                    else 'source updated ' + source['updated_on'] if source.get('updated_on')
+                    else 'review date unavailable')
+            st.markdown(f"[{record['name']} — {source['publisher']}]({source['url']}) · {date}")
+    st.caption('These additional NHS and FDA records are reference-only. They are not included in classifier predictions.')
     st.subheader('Your conversation')
-    st.write('History and health context are kept in the current browser session. They are not a saved medical record. '
-             'You can download your conversation history before leaving. Anonymous analytics counts persist locally; '
-             'they contain no message text, names or health-profile values.')
+    st.write('Conversation history and health context are held in this app session, not saved as a medical record. '
+             'General questions and contextual descriptions may be sent to Groq to generate an answer; the prompt '
+             'can include symptom labels from this conversation. Do not enter identifying details. You can export '
+             'your conversation before leaving. Anonymous analytics counts are saved in the app server’s local SQLite '
+             'file; no message text, names or health-profile values are stored there. On Streamlit Cloud, that file may '
+             'be lost when the app restarts.')
     with st.expander('Technical details & project resources'):
+        from src.general_qa import _model_setting
+        hosted = _model_setting('MRS_LLM_BACKEND', 'ollama').lower() == 'openai'
         st.write('The app uses a locally fine-tuned MiniLM classifier for symptom matches, '
-                 'MedEmbed for source-linked reference search, and local Qwen for informational questions. '
+                 'MedEmbed for source-linked reference search, and ' +
+                 ('hosted Qwen through Groq' if hosted else 'local Qwen through Ollama') +
+                 ' for informational questions. '
                  'The training data contains 304 unique symptom patterns, not independently validated clinical cases.')
         st.markdown('[MiniLM model card](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)')
         st.button('Dataset Preview', on_click=navigate, args=('Dataset Preview',))

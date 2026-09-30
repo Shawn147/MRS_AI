@@ -1,14 +1,17 @@
 # MRS AI BOT
 
-Local Streamlit chatbot: symptom assessment through a MiniLM classifier, plus
-local Qwen answers to informational questions with MedEmbed reference search.
+Streamlit chatbot for health information and symptom guidance. A MiniLM classifier
+supports symptom follow-ups; Qwen answers informational questions with optional
+source-linked reference notes. Condition matches are not clinically validated diagnoses.
 
 ```bash
 source .venv/bin/activate
 streamlit run app.py
 ```
 
-On Windows: `.venv\Scripts\activate`. No API key is needed. Chat history stays in the browser session.
+On Windows: `.venv\Scripts\activate`. No API key is needed for local Ollama use.
+Chat history lasts for the app session. With the hosted Groq configuration, general
+questions and contextual descriptions are sent to Groq; avoid entering identifying details.
 
 ## Live deployment and Qwen
 
@@ -148,8 +151,9 @@ symptom IDs, training patterns and model fingerprints are preserved. Severity is
 still provenance metadata, not a triage score. Dataset Preview and downloads show
 the corrected values.
 
-`data/reference_conditions.json` adds **flu, sinusitis and COVID-19**, summarized
-from linked NHS pages accessed on 2026-09-21. Each record contains symptom terms,
+`data/reference_conditions.json` contains source-linked records for flu, sinusitis,
+COVID-19, headaches, sore throat, hepatitis B and NSAID safety in pregnancy,
+summarized from linked NHS and FDA pages. Each record contains symptom terms,
 care notes, help-seeking notes, source review dates and review status. These are
 manually maintained reference records, visible and downloadable in Dataset
 Preview; the CSV importer does not overwrite them. COVID-19's source page has a
@@ -159,19 +163,20 @@ Optional local semantic search uses `abhinand/MedEmbed-small-v0.1` at pinned rev
 `40a5850d046cfdb56154e332b4d7099b63e8d50e`. Run
 `python scripts/download_medembed.py` once, then call
 `search_references(question, data['reference_conditions'])` from
-`src.reference_search`. It ranks passages from the three source-linked summaries
+`src.reference_search`. It ranks passages from the source-linked summaries
 and returns their URLs; similarity is not diagnostic confidence. It does not
 extend the condition classifier.
 
-For informational questions and personal health descriptions with contextual details, the chat
-calls local Ollama `qwen3:4b` and supplies
-matching MedEmbed passages when a question explicitly names flu, sinusitis or
-COVID-19. Run Ollama locally and download the model with `ollama pull qwen3:4b`.
+For informational questions and personal health descriptions with contextual details,
+the chat calls local Ollama `qwen3:4b` by default, or the hosted provider configured
+above on the live app. Directly named reference topics supply their complete curated
+notes, including self-care and when-to-seek-help guidance. Run Ollama locally and
+download the model with `ollama pull qwen3:4b` when using the local configuration.
 Questions about other topics receive a clearly unverified general answer, with no
 invented source link. The symptom flow, emergency handling and medicine/dose guards
 remain separate. These generated answers have not been clinically validated.
 
-Coverage is **41 classifier labels plus 3 reference-only conditions**. The new
+Coverage is **41 classifier labels plus 7 reference-only records**. The new
 records do not supply patient observations, classifier training rows, doses or
 verified prescribing rules. Clinical review and local applicability review are
 pending. Expanding classifier labels requires appropriately licensed, labeled
@@ -209,10 +214,14 @@ history before restarting if you want to retain a copy.
 
 The **Analytics** page reports anonymous sessions, conversations, assistant replies,
 urgent conversations, common condition matches and symptoms, medicine references
-offered, and the most active conversations. Filter by 7 days, 30 days or all time;
+offered, failed general-answer calls, and the most active conversations. Filter by 7 days, 30 days or all time;
 export medicine counts as CSV or the aggregate summary as JSON.
 
 Events persist locally in `artifacts/analytics/events.sqlite3` (excluded from git).
+This means local storage on the **app server**, not browser `localStorage`. Streamlit
+Community Cloud may reset this file when the app restarts; use a durable database
+for long-term metrics. The dashboard is enabled, but has no authentication for a
+public deployment.
 Each assistant turn has a unique event ID, so Streamlit reruns do not add counts.
 No message text, patient names or profile values are stored. Session identifiers
 are random and reset with the browser session: they do **not** identify unique
