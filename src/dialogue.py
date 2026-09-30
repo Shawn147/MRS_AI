@@ -25,6 +25,11 @@ NO_CONTEXT = {'', 'none', 'no', 'no known allergies', 'no allergies', 'n/a', 'no
 SKIP_WORDS = {'show results', 'results', 'continue', 'skip', 'show matches'}
 YES = {'yes', 'yes i do', 'yes i have', 'yeah', 'yep'}
 NO = {'no', 'no i do not', "no i don't", 'nope'}
+QUALIFIED_YES = {'a little', 'a little bit', 'little bit', 'a bit', 'somewhat',
+                 'slightly', 'kind of', 'sort of', 'mildly'}
+QUESTION_EXCLUDE = {'family_history'}
+COMMON_HEADACHE_SYMPTOMS = {'headache', 'fatigue', 'loss_of_appetite', 'nausea', 'dizziness'}
+MAX_FOLLOWUP_QUESTIONS = 2
 MIN_PROBABILITY = 0.45
 MIN_MARGIN = 0.10
 INPUT_CORRECTIONS = load_corrections()
@@ -121,7 +126,7 @@ def next_question(state, predictions, data):
     candidates = []
     for rank, pred in enumerate(predictions):
         for position, symptom in enumerate(data['by_condition'][pred['condition']]['symptoms']):
-            if symptom not in seen:
+            if symptom not in seen and symptom not in QUESTION_EXCLUDE:
                 candidates.append((rank * 20 + position, symptom))
     return min(candidates)[1] if candidates else None
 
@@ -240,7 +245,8 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
         return answer_general(text, state, data)
     positive, negative = extract_symptoms(text, data['symptoms'])
     pending = state['pending']
-    if pending and (norm in YES or re.match(r'^(yes|yeah|yep)\b', norm)):
+    qualified_answer = pending and norm in QUALIFIED_YES
+    if pending and (norm in YES or re.match(r'^(yes|yeah|yep)\b', norm) or qualified_answer):
         positive.add(pending)
     elif pending and (norm in NO or norm in {'not really', 'not at all', 'i do not', "i don't"}):
         negative.add(pending)
@@ -257,6 +263,8 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
             state['denied'].remove(symptom)
         if symptom not in state['symptoms']:
             state['symptoms'].append(symptom)
+    if qualified_answer:
+        state['details'].setdefault('qualified_symptoms', {})[pending] = 'a little'
     if positive & EMERGENCY_SYMPTOMS:
         state['urgent'] = True
         state['pending'] = None
@@ -294,7 +302,15 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
         if infer_profile(text):
             return _reply('I’ve noted that context. Medicine suitability requires a clinician’s review. Add any remaining symptoms, or update your Health context.')
         if norm not in SKIP_WORDS:
-            return _reply('I couldn’t identify a new symptom in that message. Your earlier symptoms are retained. Name another symptom, answer the pending question, or type “show results”.')
+            if state['details'].get('duration') and len(state['questions_asked']) >= MAX_FOLLOWUP_QUESTIONS:
+                state['pending'] = None
+                labels = natural_list([data['by_symptom'][s]['label'] for s in state['symptoms']])
+                return _reply(f'You mentioned **{labels}** for **{state["details"]["duration"]}**. '
+                              'These symptoms can have several causes, so I cannot name a reliable condition '
+                              'from this information alone. If they persist, worsen, or concern you, '
+                              'a healthcare professional can assess them.', uncertain=True)
+            return _reply('I may have missed that detail. You can answer the last question in your own words '
+                          'or tell me what else you are experiencing.')
     predictions = predictor(state['symptoms'])
     state['last_condition'] = None
     state['last_predictions'] = predictions
@@ -309,7 +325,7 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
     low = best['probability'] < MIN_PROBABILITY or best['probability'] - predictions[1]['probability'] < MIN_MARGIN
     labels = natural_list([data['by_symptom'][s]['label'] for s in state['symptoms']])
     if (len(state['symptoms']) == 1 and missing and norm not in SKIP_WORDS
-            and len(state['questions_asked']) < 2):
+            and len(state['questions_asked']) < MAX_FOLLOWUP_QUESTIONS):
         state['pending'] = missing
         state['questions_asked'].append(missing)
         return _reply(
@@ -327,7 +343,7 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
             'You can answer briefly, such as “two days” or “since this morning”.',
             uncertain=True,
         )
-    if len(state['symptoms']) < 3 and missing and norm not in SKIP_WORDS and len(state['questions_asked']) < 2:
+    if len(state['symptoms']) < 3 and missing and norm not in SKIP_WORDS and len(state['questions_asked']) < MAX_FOLLOWUP_QUESTIONS:
         state['pending'] = missing
         state['questions_asked'].append(missing)
         return _reply(
@@ -344,12 +360,31 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
             'a healthcare professional can assess them.',
             uncertain=True,
         )
+    if set(state['symptoms']) <= COMMON_HEADACHE_SYMPTOMS:
+        source = next((record['sources'][0] for record in data['reference_conditions']
+                       if record['name'] == 'Headaches'), None)
+        duration = state['details'].get('duration', 'some time')
+        if re.fullmatch(r'1 week (?:before|ago)', normalize(duration)):
+            duration = 'about a week'
+        described = natural_list([
+            ('a little ' if state['details'].get('qualified_symptoms', {}).get(symptom) else '') +
+            data['by_symptom'][symptom]['label'] for symptom in state['symptoms']
+        ])
+        return _reply(
+            f'You’ve had **{described}** for **{duration}**. These symptoms '
+            'can have several causes; there is not enough information here to identify a specific condition. '
+            'Rest, regular meals and enough fluids may help. Because the symptoms are continuing, '
+            'consider speaking with a healthcare professional, especially if they are worsening or unusual for you. '
+            'Seek urgent help for a sudden, extremely painful headache or new weakness, confusion, or vision loss.',
+            uncertain=True, sources=[source['url']] if source else [],
+            source_details=[source] if source else [],
+        )
     if low:
         answer = (f'You mentioned **{labels}**. These symptoms can happen for different reasons, '
                   'so I need a little more detail before discussing possible conditions or medicine information.')
         if state.get('details', {}).get('duration'):
             answer += ' I’ve also noted how long this has been going on.'
-        if missing and len(state['questions_asked']) < 3:
+        if missing and len(state['questions_asked']) < MAX_FOLLOWUP_QUESTIONS:
             state['pending'] = missing
             state['questions_asked'].append(missing)
             answer += f'\n\nHave you also had **{data["by_symptom"][missing]["label"]}**?'

@@ -3,7 +3,7 @@ import unittest
 from unittest.mock import Mock
 
 from src.data import ARTIFACT_DIR, fingerprint, load_data
-from src.dialogue import emergency, extract_symptoms, new_state, respond
+from src.dialogue import emergency, extract_symptoms, new_state, next_question, respond
 
 
 class DialogueTests(unittest.TestCase):
@@ -123,6 +123,40 @@ class DialogueTests(unittest.TestCase):
         self.assertEqual(self.state['details']['duration'], 'two days')
         self.assertNotIn('Common Cold', second['text'])
         self.assertNotIn('Educational medicine information', second['text'])
+
+    def test_partial_yes_completes_headache_followup(self):
+        self.state['symptoms'] = ['headache', 'fatigue']
+        self.state['details']['duration'] = '1 week before'
+        self.state['pending'] = 'loss_of_appetite'
+        self.state['questions_asked'] = ['loss_of_appetite']
+        answer = respond('little bit', self.state, self.data, self.predict)
+        self.assertIn('loss_of_appetite', self.state['symptoms'])
+        self.assertIsNone(self.state['pending'])
+        self.assertTrue(answer['uncertain'])
+        self.assertIn('a little loss of appetite', answer['text'])
+        self.assertIn('about a week', answer['text'])
+        self.assertNotIn('do you also have', answer['text'])
+        self.assertNotIn('Common Cold', answer['text'])
+
+    def test_family_history_is_not_asked_as_symptom(self):
+        predictions = [{'condition': 'Heart attack', 'probability': .6}]
+        self.assertNotEqual(next_question(self.state, predictions, self.data), 'family_history')
+
+    def test_two_followups_end_with_guidance_not_a_named_condition(self):
+        self.predict.return_value = [
+            {'condition': 'Hepatitis C', 'probability': .75},
+            {'condition': 'Chicken pox', 'probability': .12},
+            {'condition': 'Hypertension', 'probability': .03},
+        ]
+        respond('I have a headache and feel tired', self.state, self.data, self.predict)
+        respond('1 week before', self.state, self.data, self.predict)
+        respond('no', self.state, self.data, self.predict)
+        answer = respond('little bit', self.state, self.data, self.predict)
+        self.assertTrue(answer['uncertain'])
+        self.assertIn('about a week', answer['text'])
+        self.assertIn('a little nausea', answer['text'])
+        self.assertNotIn('Hepatitis C', answer['text'])
+        self.assertIsNone(self.state['pending'])
 
     def test_affirming_urgent_followup_triggers_urgent_response(self):
         respond('cough', self.state, self.data, self.predict)
