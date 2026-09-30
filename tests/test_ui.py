@@ -59,6 +59,16 @@ class UITests(unittest.TestCase):
         self.assertEqual(at.session_state['active_chat'], first)
         self.assertEqual(len(at.session_state['chats'][first]['messages']), 2)
 
+    def test_clear_saved_conversations_resets_session(self):
+        at = self.app()
+        at.chat_input[0].set_value('cough').run()
+        click(at, 'Conversation history')
+        click(at, 'Clear saved conversations')
+        self.assertEqual(len(at.session_state['chats']), 1)
+        active = at.session_state['active_chat']
+        self.assertEqual(at.session_state['chats'][active]['messages'], [])
+        self.assertFalse(at.exception)
+
     def test_starter_and_followup_are_functional(self):
         at = self.app()
         click(at, 'I have a cough and a sore throat')

@@ -10,7 +10,7 @@ streamlit run app.py
 ```
 
 On Windows: `.venv\Scripts\activate`. No API key is needed for local Ollama use.
-Chat history lasts for the app session. With the hosted Groq configuration, general
+Chat history is saved in the visitor's browser local storage. With the hosted Groq configuration, general
 questions and contextual descriptions are sent to Groq; avoid entering identifying details.
 
 ## Live deployment and Qwen
@@ -207,8 +207,9 @@ diagnoses are not included. Predictions come from the existing saved model.
 Model scores and model selection are not shown in the main conversation.
 
 Use `streamlit run app.py` to start the interface. Restart the process after Python
-changes because file watching is disabled. Conversations are session-only; download
-history before restarting if you want to retain a copy.
+changes because file watching is disabled. Conversations are saved in browser local
+storage and can be cleared or downloaded from Conversation history. Browser storage
+may be unavailable in private browsing or restrictive settings.
 
 ## Analytics
 

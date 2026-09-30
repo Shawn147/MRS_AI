@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Conversation storage</title></head>
+<body style="margin:0;padding:0">
+<script>
+(() => {
+  const send = (type, details = {}) => window.parent.postMessage(
+    {isStreamlitMessage: true, type, ...details}, '*'
+  );
+  let lastWrite = '';
+  window.addEventListener('message', (event) => {
+    if (event.source !== window.parent || event.data?.type !== 'streamlit:render') return;
+    const {action, storage_key: key, payload} = event.data.args || {};
+    try {
+      if (action === 'read') {
+        const raw = window.localStorage.getItem(key);
+        send('streamlit:setComponentValue', {
+          dataType: 'json', value: {status: 'loaded', data: raw ? JSON.parse(raw) : null}
+        });
+      } else if (action === 'clear') {
+        window.localStorage.removeItem(key);
+        lastWrite = '';
+      } else if (action === 'write') {
+        const serialized = JSON.stringify(payload);
+        if (serialized !== lastWrite) {
+          window.localStorage.setItem(key, serialized);
+          lastWrite = serialized;
+        }
+      }
+    } catch (error) {
+      send('streamlit:setComponentValue', {
+        dataType: 'json', value: {status: 'error', reason: error?.name || 'StorageError'}
+      });
+    }
+  });
+  send('streamlit:componentReady', {apiVersion: 1});
+  send('streamlit:setFrameHeight', {height: 0});
+})();
+</script>
+</body>
+</html>

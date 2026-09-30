@@ -13,6 +13,7 @@ import streamlit as st
 
 from src.data import ARTIFACT_DIR, DATA_DIR, fingerprint, load_data
 from src.dialogue import new_state, respond, profile_has_context
+from src.browser_history import read_history, write_history, valid_history
 
 MODEL_NAMES = {
     'transformer': 'MiniLM · fine-tuned transformer',
@@ -51,6 +52,12 @@ def create_chat():
     }
     st.session_state.active_chat = key
     st.session_state.navigation = 'Chat'
+
+
+def clear_saved_conversations():
+    st.session_state.chats = {}
+    create_chat()
+    st.session_state.clear_browser_history = True
 
 
 def choose_chat(key):
@@ -118,8 +125,8 @@ def sidebar(chat):
                 st.button(label, icon=f':material/{icon}:', on_click=navigate, args=(page,),
                           use_container_width=True)
         st.markdown('<div class="sidebar-note">For educational information.<br>Not a diagnosis or prescription.'
-                    '<br><br>Your conversation stays here while this session is open. Some questions may be shared '
-                    'with Groq to provide an answer. Please leave out names and other identifying details.</div>',
+                    '<br><br>Conversations are saved in this browser. Some questions may be shared with Groq '
+                    'to provide an answer. Please leave out names and other identifying details.</div>',
                     unsafe_allow_html=True)
 
 
@@ -147,8 +154,8 @@ def welcome(chat):
         for col, (text, icon) in zip(st.columns(3), examples):
             col.button(text, icon=f':material/{icon}:', on_click=queue_prompt, args=(text,), use_container_width=True)
     st.caption('Privacy: some questions and relevant symptom details may be shared with Groq to provide an answer. '
-               'Please leave out names and other identifying details. Your conversation stays here while this '
-               'session is open. We keep anonymous activity counts.')
+               'Please leave out names and other identifying details. Conversations are saved in this browser '
+               'until you clear them. We keep anonymous activity counts.')
 
 
 def welcome_details(chat):
@@ -514,7 +521,12 @@ def evaluation_page(version):
 def history_page():
     st.title('History')
     page_header()
-    st.write('Your conversations from this browser session. Download a copy to keep for yourself.')
+    st.write('Your conversations are saved in this browser so you can return to them later. '
+             'Anyone using this browser can see them. Download a copy if you want to keep one elsewhere.')
+    if st.session_state.get('browser_history_error'):
+        st.warning('This browser is not allowing conversation saving. You can still download a copy below.')
+    st.button('Clear saved conversations', icon=':material/delete_outline:',
+              on_click=clear_saved_conversations)
     chats = list(st.session_state.chats.values())
     st.download_button(
         'Export history as JSON',
@@ -553,8 +565,9 @@ def about_page(data):
             st.markdown(f"[{record['name']} — {source['publisher']}]({source['url']}) · {date}")
     st.caption('These additional NHS and FDA records are reference-only. They are not included in classifier predictions.')
     st.subheader('Your conversation')
-    st.write('Your conversation and health context stay here while this session is open; they are not saved as a '
-             'medical record. Some questions and relevant symptoms may be shared with Groq to provide an answer. '
+    st.write('Your conversations are saved in this browser so you can return to them. Anyone using this browser '
+             'can see them, and you can clear them from Conversation history. They are not medical records. '
+             'Some questions and relevant symptoms may be shared with Groq to provide an answer. '
              'Please leave out names and other identifying details. You can download your conversation before '
              'leaving. We keep anonymous activity counts, but not your messages or health context in those counts.')
     with st.expander('Project resources'):
@@ -572,6 +585,19 @@ def main():
     if 'chats' not in st.session_state:
         st.session_state.chats = {}
         create_chat()
+    if not st.session_state.get('browser_history_loaded'):
+        stored = read_history()
+        if isinstance(stored, dict) and stored.get('status') == 'loaded':
+            restored = valid_history(stored.get('data'))
+            if restored and not any(chat['messages'] for chat in st.session_state.chats.values()):
+                chats, active = restored
+                if chats:
+                    st.session_state.chats = chats
+                    st.session_state.active_chat = active
+            st.session_state.browser_history_loaded = True
+        elif isinstance(stored, dict) and stored.get('status') == 'error':
+            st.session_state.browser_history_loaded = True
+            st.session_state.browser_history_error = True
     chat = st.session_state.chats[st.session_state.active_chat]
     sidebar(chat)
     try:
@@ -597,3 +623,8 @@ def main():
         analytics_page()
     else:
         about_page(data)
+    if st.session_state.get('browser_history_loaded'):
+        result = write_history(st.session_state.chats, st.session_state.active_chat,
+                               clear=st.session_state.pop('clear_browser_history', False))
+        if isinstance(result, dict) and result.get('status') == 'error':
+            st.session_state.browser_history_error = True
