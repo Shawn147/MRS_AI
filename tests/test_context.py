@@ -34,7 +34,7 @@ class ContextTests(unittest.TestCase):
         self.assertIn(pending, self.state['symptoms'])
 
     def test_summary_and_explanation_do_not_repredict(self):
-        self.say('cough and fever')
+        self.say('cough, fever and runny nose for two days')
         self.predict.reset_mock()
         summary = self.say('Summarize my symptoms')
         explanation = self.say('Explain the previous result')
@@ -44,7 +44,7 @@ class ContextTests(unittest.TestCase):
         self.predict.assert_not_called()
 
     def test_medicine_and_dose_requests_respect_context(self):
-        self.say('cough and fever')
+        self.say('cough, fever and runny nose for two days')
         answer = self.say('What medicine can I take?', {'allergies': 'penicillin'})
         self.assertTrue(answer['medicine_withheld'])
         self.assertNotIn('condition', answer)

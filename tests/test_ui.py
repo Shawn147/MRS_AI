@@ -25,7 +25,7 @@ class UITests(unittest.TestCase):
 
     def test_chat_navigation_and_isolated_history(self):
         at = self.app()
-        at.chat_input[0].set_value('I have a runny nose, sneezing and cough').run()
+        at.chat_input[0].set_value('I have a runny nose, sneezing and cough for two days').run()
         self.assertFalse(at.exception)
         first = at.session_state['active_chat']
         messages = at.session_state['chats'][first]['messages']
@@ -74,7 +74,7 @@ class UITests(unittest.TestCase):
 
     def test_context_hides_previous_medicines_and_is_isolated(self):
         at = self.app()
-        at.chat_input[0].set_value('runny nose, sneezing and cough').run()
+        at.chat_input[0].set_value('runny nose, sneezing and cough for two days').run()
         key = at.session_state['active_chat']
         click(at, 'Health context')
         next(t for t in at.text_input if t.label == 'Known medicine allergies').set_value('penicillin')

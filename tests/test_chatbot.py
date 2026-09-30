@@ -31,12 +31,14 @@ class DialogueTests(unittest.TestCase):
 
     def test_followup_yes_and_memory(self):
         respond('I have cough',self.state,self.data,self.predict)
+        self.state['pending'] = 'runny_nose'
         pending=self.state['pending']
         self.assertIsNotNone(pending)
         answer=respond('yes',self.state,self.data,self.predict)
         self.assertIn('cough',self.state['symptoms'])
         self.assertIn(pending,self.state['symptoms'])
-        self.assertIn('Common Cold',answer['text'])
+        self.assertNotIn('Common Cold',answer['text'])
+        self.assertNotIn('Educational medicine information',answer['text'])
 
     def test_correction_removes_symptom(self):
         respond('cough and fever',self.state,self.data,self.predict)
@@ -80,10 +82,10 @@ class DialogueTests(unittest.TestCase):
 
     def test_low_confidence_has_no_medicine_list(self):
         self.predict.return_value[0]['probability']=.3
-        answer=respond('cough and fever',self.state,self.data,self.predict)
+        answer=respond('cough and fever for two days',self.state,self.data,self.predict)
         self.assertTrue(answer['uncertain'])
         self.assertIn('You mentioned **cough and high fever**', answer['text'])
-        self.assertIn('Have you also had', answer['text'])
+        self.assertIn('do you also have', answer['text'])
         self.assertNotIn('model', answer['text'].lower())
         self.assertNotIn('Educational medicine information',answer['text'])
 
@@ -97,13 +99,13 @@ class DialogueTests(unittest.TestCase):
         self.assertNotIn('medicine information from', answer['text'].lower())
 
     def test_context_withholds_medicine_names(self):
-        answer=respond('cough and fever',self.state,self.data,self.predict,{'allergies':'penicillin'})
+        answer=respond('cough, fever and runny nose for two days',self.state,self.data,self.predict,{'allergies':'penicillin'})
         self.assertIn('withheld',answer['text'])
         self.assertNotIn('Educational medicine information',answer['text'])
 
     def test_chat_allergy_is_retained(self):
         respond('I am allergic to penicillin',self.state,self.data,self.predict)
-        answer=respond('cough and fever',self.state,self.data,self.predict)
+        answer=respond('cough, fever and runny nose for two days',self.state,self.data,self.predict)
         self.assertIn('withheld',answer['text'])
 
     def test_context_does_not_leak_between_chats(self):
@@ -111,6 +113,31 @@ class DialogueTests(unittest.TestCase):
         other=new_state()
         self.assertFalse(other['context'])
         self.assertFalse(other['symptoms'])
+
+    def test_common_symptoms_require_context_before_naming_condition(self):
+        first = respond('headache and fatigue', self.state, self.data, self.predict)
+        self.assertTrue(first['uncertain'])
+        self.assertIn('When did they start', first['text'])
+        self.assertNotIn('Common Cold', first['text'])
+        second = respond('two days', self.state, self.data, self.predict)
+        self.assertEqual(self.state['details']['duration'], 'two days')
+        self.assertNotIn('Common Cold', second['text'])
+        self.assertNotIn('Educational medicine information', second['text'])
+
+    def test_affirming_urgent_followup_triggers_urgent_response(self):
+        respond('cough', self.state, self.data, self.predict)
+        self.state['pending'] = 'chest_pain'
+        answer = respond('yes', self.state, self.data, self.predict)
+        self.assertTrue(answer['urgent'])
+        self.assertTrue(self.state['urgent'])
+        self.assertNotIn('condition', answer)
+
+    def test_not_sure_does_not_trap_user_in_duration_question(self):
+        respond('headache and fatigue', self.state, self.data, self.predict)
+        answer = respond('not sure', self.state, self.data, self.predict)
+        self.assertIsNone(self.state['pending_detail'])
+        self.assertIn('do you also have', answer['text'])
+        self.assertNotIn('Common Cold', answer['text'])
 
     def test_split_has_no_pattern_overlap(self):
         split=json.loads((ARTIFACT_DIR/'splits.json').read_text())

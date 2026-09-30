@@ -12,6 +12,7 @@ EMERGENCY_PHRASES = (
     'fainted', 'seizure', 'suicidal', 'coughing blood', 'coughing up blood',
 )
 EMERGENCY_LABELS = {'Heart attack', 'Paralysis (brain hemorrhage)'}
+EMERGENCY_SYMPTOMS = {'chest_pain', 'breathlessness', 'weakness_of_one_body_side'}
 SEX_HEADACHE = re.compile(
     r'(?=.*\b(?:headache|head pain|pain in (?:my |the )?head)\b)'
     r'(?=.*\b(?:sex|sexual activity|intercourse|orgasm)\b)', re.I,
@@ -93,7 +94,8 @@ def extract_symptoms(text, symptoms):
 
 def new_state():
     return {
-        'symptoms': [], 'denied': [], 'pending': None, 'questions_asked': [],
+        'symptoms': [], 'denied': [], 'pending': None, 'pending_detail': None,
+        'questions_asked': [],
         'context': {}, 'last_predictions': [], 'urgent': False,
         'details': {}, 'last_condition': None,
     }
@@ -159,6 +161,7 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
     if emergency(text):
         state['urgent'] = True
         state['pending'] = None
+        state['pending_detail'] = None
         state['last_predictions'] = []
         return _reply(
             'These symptoms may need urgent assessment. Contact local emergency services or seek urgent medical care. I will not suggest medicines for this conversation.',
@@ -196,6 +199,15 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
     from src.conversation import remember_details, context_reply
     remember_details(text, state)
     norm = normalize(text)
+    detail_answered = False
+    if state.get('pending_detail') == 'duration':
+        if (re.search(r'\b(?:\d+|one|two|three|four|five|few|several|a)\s+'
+                      r'(?:hours?|days?|weeks?|months?|years?)\b|'
+                      r'\b(?:today|yesterday|this morning|this week|last night|suddenly|gradually)\b', norm)
+                or norm in {'not sure', 'unsure', "don't know", 'i do not know', 'a while'}):
+            state['details']['duration'] = text.strip()[:100]
+            state['pending_detail'] = None
+            detail_answered = True
     if norm in {'hi', 'hello', 'hey', 'hola', 'holla', 'good morning', 'salam', 'assalam o alaikum'}:
         return _reply('Hello! Tell me which symptoms you have. You can add details over several messages, and correct a symptom by saying, for example, “no cough”.')
     if norm in {'thanks', 'thank you', 'ok', 'okay'}:
@@ -230,6 +242,14 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
             state['denied'].remove(symptom)
         if symptom not in state['symptoms']:
             state['symptoms'].append(symptom)
+    if positive & EMERGENCY_SYMPTOMS:
+        state['urgent'] = True
+        state['pending'] = None
+        state['pending_detail'] = None
+        state['last_predictions'] = []
+        return _reply('These symptoms may need urgent assessment. Contact local emergency services '
+                      'or seek urgent medical care. I will not suggest medicines for this conversation.',
+                      urgent=True)
     ulcers = ulcer_mentions(text)
     if any(match.group().lower() in {'ulcer', 'ulcers'} for match in ulcers):
         state['pending'] = None
@@ -245,7 +265,7 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
     if not state['symptoms'] and infer_profile(text):
         return _reply('I’ve noted that medical context. What symptoms are you experiencing now?')
     medication_request = re.search(r'\b(dose|dosage|dosing|tablet|pill|medicine|medication|milligrams|mg|paracetamol|ibuprofen)\w*\b', norm)
-    if (not (positive or negative) or medication_request) and not infer_profile(text) and norm not in SKIP_WORDS | YES | NO:
+    if (not (positive or negative) or medication_request) and not detail_answered and not infer_profile(text) and norm not in SKIP_WORDS | YES | NO:
         followup = context_reply(text, state, data, profile_has_context(context))
         if followup:
             return followup
@@ -255,7 +275,7 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
     if not state['symptoms']:
         state['last_predictions'] = []
         return _reply('I don’t have an active symptom to check yet. Try describing it directly, such as “cough”, “fever”, “itching”, or “stomach pain”.')
-    if not (positive or negative):
+    if not (positive or negative) and not detail_answered:
         if infer_profile(text):
             return _reply('I’ve noted that context. Medicine suitability requires a clinician’s review. Add any remaining symptoms, or update your Health context.')
         if norm not in SKIP_WORDS:
@@ -273,11 +293,41 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
     missing = next_question(state, predictions, data)
     low = best['probability'] < MIN_PROBABILITY or best['probability'] - predictions[1]['probability'] < MIN_MARGIN
     labels = natural_list([data['by_symptom'][s]['label'] for s in state['symptoms']])
-    if len(state['symptoms']) < 2 and missing and norm not in SKIP_WORDS:
+    if (len(state['symptoms']) == 1 and missing and norm not in SKIP_WORDS
+            and len(state['questions_asked']) < 2):
         state['pending'] = missing
         state['questions_asked'].append(missing)
         return _reply(
-            f'You mentioned **{labels}**. To understand what else may be going on, do you also have **{data["by_symptom"][missing]["label"]}**?\n\nYou can answer yes or no, or tell me about another symptom.'
+            f'You mentioned **{labels}**. Several conditions can share this sign. '
+            f'To narrow the possibilities, do you also have **{data["by_symptom"][missing]["label"]}**?\n\n'
+            'You can answer yes or no, or tell me about another symptom.',
+            uncertain=True,
+        )
+    if not state['details'].get('duration') and norm not in SKIP_WORDS:
+        state['pending'] = None
+        state['pending_detail'] = 'duration'
+        return _reply(
+            f'You mentioned **{labels}**. These can have several causes, and I need a little context '
+            'before discussing a possible condition. **When did they start, and how long have you had them?** '
+            'You can answer briefly, such as “two days” or “since this morning”.',
+            uncertain=True,
+        )
+    if len(state['symptoms']) < 3 and missing and norm not in SKIP_WORDS and len(state['questions_asked']) < 2:
+        state['pending'] = missing
+        state['questions_asked'].append(missing)
+        return _reply(
+            f'You mentioned **{labels}**. Several conditions can share these signs. '
+            f'To narrow the possibilities, do you also have **{data["by_symptom"][missing]["label"]}**?\n\n'
+            'You can answer yes or no, or tell me about another symptom.',
+            uncertain=True,
+        )
+    if len(state['symptoms']) < 3:
+        state['pending'] = None
+        return _reply(
+            f'You mentioned **{labels}**. I still do not have enough information to name a reliable '
+            'condition match or show medicine information. If symptoms persist or worry you, '
+            'a healthcare professional can assess them.',
+            uncertain=True,
         )
     if low:
         answer = (f'You mentioned **{labels}**. These symptoms can happen for different reasons, '
