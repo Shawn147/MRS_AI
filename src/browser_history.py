@@ -20,6 +20,12 @@ def write_history(chats, active_chat, clear=False):
                       key='history_writer', default=None)
 
 
+def scroll_to_message(anchor, smooth=True):
+    """Ask the browser bridge to reveal a newly inserted message."""
+    return _component(action='scroll', anchor=anchor, smooth=smooth,
+                      key='message_scroll_' + anchor + ('_new' if smooth else '_landing'), default=None)
+
+
 def valid_history(value):
     if not isinstance(value, dict) or value.get('version') != 1:
         return None

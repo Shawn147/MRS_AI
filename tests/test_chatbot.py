@@ -158,6 +158,27 @@ class DialogueTests(unittest.TestCase):
         self.assertNotIn('Hepatitis C', answer['text'])
         self.assertIsNone(self.state['pending'])
 
+    def test_two_denied_followups_show_uncertain_results(self):
+        respond('I have a headache and feel tired', self.state, self.data, self.predict)
+        respond('around 1 week', self.state, self.data, self.predict)
+        respond('no', self.state, self.data, self.predict)
+        answer = respond('no', self.state, self.data, self.predict)
+        self.assertTrue(answer['result_ready'])
+        self.assertTrue(answer['uncertain'])
+        self.assertTrue(answer['medicine_withheld'])
+        self.assertEqual(answer['predictions'], self.state['last_predictions'])
+        self.assertIn('available dataset matches', answer['text'])
+        self.assertIsNone(self.state['pending'])
+        self.assertIsNone(self.state['last_condition'])
+
+    def test_show_results_uses_same_uncertain_result_path(self):
+        respond('headache and fatigue', self.state, self.data, self.predict)
+        answer = respond('show results', self.state, self.data, self.predict)
+        self.assertTrue(answer['result_ready'])
+        self.assertEqual(answer['predictions'], self.predict.return_value)
+        self.assertTrue(answer['medicine_withheld'])
+        self.assertNotIn('condition', answer)
+
     def test_affirming_urgent_followup_triggers_urgent_response(self):
         respond('cough', self.state, self.data, self.predict)
         self.state['pending'] = 'chest_pain'
@@ -185,7 +206,7 @@ class DialogueTests(unittest.TestCase):
         split=json.loads((ARTIFACT_DIR/'splits.json').read_text())
         a,b,c=[set(split[k]) for k in ['train','validation','test']]
         self.assertFalse(a&b or a&c or b&c)
-        self.assertEqual(len(a|b|c),304)
+        self.assertEqual(len(a|b|c),self.data['manifest']['unique_rows'])
         self.assertEqual(self.data['manifest']['duplicates_removed'],4616)
 
     def test_duplicate_csv_feature_is_merged(self):
@@ -230,8 +251,8 @@ class DialogueTests(unittest.TestCase):
         m=json.loads((ARTIFACT_DIR/'metrics.json').read_text())
         self.assertEqual(m['data_fingerprint'],fingerprint())
         self.assertTrue(m['training']['encoder_fine_tuned'])
-        self.assertEqual(m['split_sizes'],{'train':182,'validation':61,'test':61})
-        self.assertEqual(len(self.data['by_condition']),41)
+        self.assertEqual(m['split_sizes'],{'train':2918,'validation':61,'test':61})
+        self.assertEqual(len(self.data['by_condition']),51)
 
 
 if __name__=='__main__':unittest.main()

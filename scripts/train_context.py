@@ -27,9 +27,13 @@ def main():
     for regularization in [1., 10., 100.]:
         model = LogisticRegression(C=regularization, max_iter=2000, random_state=42).fit(x[parts['train']], labels[parts['train']])
         score = accuracy_score(labels[parts['validation']], model.predict(x[parts['validation']]))
-        candidates.append((float(score), regularization, model))
-    # Ties prefer the first (more regularized) model. Test set is untouched during selection.
-    score, regularization, model = max(candidates, key=lambda item: item[0])
+        probabilities = np.sort(model.predict_proba(x[parts['validation']]), axis=1)
+        accepted = (probabilities[:, -1] >= .60) & ((probabilities[:, -1] - probabilities[:, -2]) >= .15)
+        correct = model.predict(x[parts['validation']]) == labels[parts['validation']]
+        routing_score = int((accepted & correct).sum()) - int((accepted & ~correct).sum())
+        candidates.append((float(score), routing_score, regularization, model))
+    # Validation accuracy first, then correct gated routes minus incorrect routes. Test is untouched.
+    score, routing_score, regularization, model = max(candidates, key=lambda item: item[:2])
     predicted = model.predict(x[parts['test']])
     threshold = .60
     test_prob = model.predict_proba(x[parts['test']])
@@ -40,6 +44,7 @@ def main():
                'trained_component': 'multiclass logistic regression intent head',
                'split_sizes': {k: len(v) for k, v in parts.items()},
                'selected_C': regularization, 'validation_accuracy': score,
+               'selection_policy': 'Validation accuracy, then correct accepted routes minus incorrect accepted routes at fixed gates',
                'test_accuracy': float(accuracy_score(labels[parts['test']], predicted)),
                'test_report': classification_report(labels[parts['test']], predicted, output_dict=True, zero_division=0),
                'threshold': threshold, 'accepted_test_examples': int(accepted.sum()),

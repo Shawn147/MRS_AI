@@ -1,0 +1,1160 @@
+{
+  "schema_version": 1,
+  "accessed_on": "2026-10-01",
+  "sources": [
+    {
+      "id": "pakistan_yicss",
+      "name": "YICSS Pakistan site dataset (version 2)",
+      "country": "Pakistan",
+      "institutions": [
+        "Aga Khan University Department of Paediatrics and Child Health",
+        "Aga Khan University Hospital primary healthcare centres"
+      ],
+      "setting": "Community and primary-care field sites in Karachi; referrals to National Institute of Child Health. Not a tertiary-hospital inpatient cohort.",
+      "source_url": "https://data.mendeley.com/datasets/3pgb37wck4/2",
+      "doi": "10.17632/3pgb37wck4.2",
+      "attribution": "Muhammad Imran Nisar (2021), YICSS Pakistan site dataset, version 2, Mendeley Data. Shahid et al. (2021), Clinical signs predictive of severe illness in young Pakistani infants.",
+      "provenance_urls": [
+        "https://link.springer.com/article/10.1186/s13104-021-05486-y"
+      ],
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "expected_rows": 2950,
+      "format": "xlsx",
+      "sheet_path": "xl/worksheets/sheet1.xml",
+      "source_columns": [
+        "id1",
+        "t",
+        "a",
+        "b",
+        "c",
+        "f",
+        "ttrig",
+        "tsex",
+        "tage",
+        "tresc",
+        "tout",
+        "thosp",
+        "tfctly",
+        "tprev",
+        "tcgntl",
+        "tchek",
+        "tcnsnt",
+        "atime_dec",
+        "acry",
+        "afeed",
+        "afeed2",
+        "adiar",
+        "adiar2",
+        "adiar3",
+        "afit",
+        "aresp",
+        "aresp2",
+        "amove",
+        "aleth",
+        "arstl",
+        "temp_low",
+        "temp_high",
+        "acapr",
+        "aresphi",
+        "agrnt",
+        "aidrw",
+        "afont",
+        "aturg",
+        "astfl",
+        "aabdn",
+        "asunk",
+        "aflar",
+        "acyan",
+        "fdwl_bin",
+        "avomit",
+        "apust",
+        "apete",
+        "askhd",
+        "aeyep",
+        "aearp",
+        "aured",
+        "audis",
+        "ajfac",
+        "ajgum",
+        "ajcst",
+        "ajplm",
+        "afdwl",
+        "amove_bin",
+        "awgt",
+        "atemp",
+        "bsex",
+        "bfeed",
+        "bplce",
+        "bwho",
+        "bbwgt",
+        "bbwgt2",
+        "bprty",
+        "bgrvd",
+        "bpdth",
+        "bgest",
+        "bgest_low",
+        "bcare",
+        "bcare2",
+        "anc_ge3",
+        "buti",
+        "banma",
+        "bhypt",
+        "bfevr",
+        "blabr",
+        "brupt",
+        "bliqr",
+        "bdvry",
+        "bdvry2",
+        "bcry",
+        "bresp",
+        "btemp_low",
+        "btemp_high",
+        "bresp_bin",
+        "bwgt",
+        "btemp",
+        "bcirc",
+        "bpuls",
+        "blgth",
+        "boxim",
+        "bjfac",
+        "bjgum",
+        "bjcst",
+        "bjplm",
+        "bprem",
+        "blbw",
+        "basph",
+        "binjr",
+        "bseiz",
+        "bapna",
+        "btaky",
+        "brdist",
+        "bmeco",
+        "bseps",
+        "bmeng",
+        "bpneu",
+        "biumb",
+        "bieye",
+        "biskn",
+        "biskn1",
+        "biskn2",
+        "biskn3",
+        "biskn4",
+        "biskn5",
+        "bsknc",
+        "bcolic",
+        "burti",
+        "bfprob",
+        "btherm",
+        "bglyc",
+        "bbili",
+        "bdiar",
+        "bdys",
+        "bpdiar",
+        "bdehyd",
+        "bmalf",
+        "besyph",
+        "bmalr",
+        "both1",
+        "bconc",
+        "bconc1",
+        "bconc2",
+        "btreat",
+        "cprem",
+        "clbw",
+        "casph",
+        "cinjr",
+        "cseiz",
+        "capna",
+        "ctaky",
+        "crdist",
+        "cmeco",
+        "cseps",
+        "cmeng",
+        "cpneu",
+        "ciumb",
+        "cieye",
+        "ciskn",
+        "ciskn1",
+        "ciskn2",
+        "ciskn3",
+        "ciskn4",
+        "ciskn5",
+        "csknc",
+        "ccolic",
+        "curti",
+        "cfprob",
+        "ctherm",
+        "cglyc",
+        "cbili",
+        "cdiar",
+        "cdys",
+        "cpdiar",
+        "cdehyd",
+        "cmalf",
+        "cesyph",
+        "coth",
+        "coth1",
+        "cout",
+        "fret",
+        "frety",
+        "fretn",
+        "fcond",
+        "fsourc",
+        "fprem",
+        "flbw",
+        "fasph",
+        "finjr",
+        "fseiz",
+        "fapna",
+        "ftaky",
+        "frdist",
+        "fmeco",
+        "fseps",
+        "fmeng",
+        "fpneu",
+        "fiumb",
+        "fieye",
+        "fiskn",
+        "fiskn1",
+        "fiskn2",
+        "fiskn3",
+        "fiskn4",
+        "fiskn5",
+        "fsknc",
+        "fcolic",
+        "furti",
+        "ffprob",
+        "ftherm",
+        "fglyc",
+        "fbili",
+        "fdiar",
+        "fdys",
+        "fpdiar",
+        "fdehyd",
+        "fmalf",
+        "fesyph",
+        "foth",
+        "eclass",
+        "ediag1",
+        "ediag2",
+        "r",
+        "compage",
+        "agegroup",
+        "b_diag",
+        "sdjaun",
+        "sdbabces",
+        "sdceph",
+        "sdchd",
+        "sdcons",
+        "sdhern",
+        "sdintobs",
+        "sdthur",
+        "sdgurge",
+        "sdumb",
+        "sdeinf",
+        "sdlary",
+        "sdnaso",
+        "sdsub",
+        "sdwell",
+        "agegrp3",
+        "presentingcomplaints",
+        "pc1",
+        "pc2",
+        "pc3",
+        "pc4",
+        "pc5",
+        "pc6",
+        "pc7",
+        "pc8",
+        "bconc_exj",
+        "site",
+        "feedingproblems",
+        "fever",
+        "resp2"
+      ],
+      "features": [
+        "tsex",
+        "compage",
+        "acry",
+        "afeed",
+        "afeed2",
+        "adiar",
+        "adiar2",
+        "adiar3",
+        "afit",
+        "aresp",
+        "aresp2",
+        "amove",
+        "aleth",
+        "arstl",
+        "temp_low",
+        "temp_high",
+        "acapr",
+        "aresphi",
+        "agrnt",
+        "aidrw",
+        "afont",
+        "aturg",
+        "astfl",
+        "aabdn",
+        "asunk",
+        "aflar",
+        "acyan",
+        "avomit",
+        "apust",
+        "apete",
+        "askhd",
+        "aeyep",
+        "aearp",
+        "aured",
+        "audis",
+        "ajfac",
+        "ajgum",
+        "ajcst",
+        "ajplm",
+        "afdwl",
+        "awgt",
+        "atemp"
+      ],
+      "targets": [
+        "bconc_exj"
+      ],
+      "target_values": {
+        "bconc_exj": [
+          "0",
+          "1"
+        ]
+      },
+      "target_meaning": "Revised clinician conclusion about urgent hospital management, excluding jaundice; 1=yes, 0=no. Not a general disease diagnosis.",
+      "task": "infant_hospital_referral",
+      "population": "Infants in a study reported as 0-59 days, enrolled September 2003-November 2004. Four released records have computed age 60 days; retained and flagged in audit.",
+      "limitations": [
+        "Infant-only study; not applicable to adult symptom diagnosis.",
+        "Raw categorical codes are preserved. Codebook provides labels but does not define every encoding. Verify against study forms before modelling.",
+        "Columns limited to initial clinical observations and computed age; identifiers, site, administration fields, free text and later clinical outcomes excluded.",
+        "Independent participants cannot be verified from the identifier-free prepared file."
+      ],
+      "feature_definitions": {
+        "tsex": {
+          "description": "Gender",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "compage": {
+          "description": "Computed age in days",
+          "units": "days",
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "acry": {
+          "description": "Did baby cry immediately after birth?",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "afeed": {
+          "description": "Is baby having difficulty feeding?",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "afeed2": {
+          "description": "If yes: Has this been a problem since",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "adiar": {
+          "description": "Does your baby have diarrhoea?",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "adiar2": {
+          "description": "If yes: Has this lasted more than",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "adiar3": {
+          "description": "If yes: Is there blood in the stool?",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "afit": {
+          "description": "Has baby had convulsions (fits)?",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "aresp": {
+          "description": "Respiratory rate per minute",
+          "units": "breaths/minute",
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "aresp2": {
+          "description": "Respiratory rate per minute if first count >=60",
+          "units": "breaths/minute",
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "amove": {
+          "description": "Observe baby's movement.",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "aleth": {
+          "description": "Is the baby lethargic?",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "arstl": {
+          "description": "Is the baby restless and irritable?",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "temp_low": {
+          "description": "Temperature < 35.5 (Person A)",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "temp_high": {
+          "description": "Temperature >= 37.5 (Person A)",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "acapr": {
+          "description": "Prolonged capillary refill",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "aresphi": {
+          "description": "Respiratory rate >= 60 (Person A)",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "agrnt": {
+          "description": "Is the baby grunting?",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "aidrw": {
+          "description": "Does baby have severe chest indrawing?",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "afont": {
+          "description": "Does baby have a bulging fontanelle?",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "aturg": {
+          "description": "Reduced skin turgor",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "astfl": {
+          "description": "Does baby have stiff limbs?",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "aabdn": {
+          "description": "Abdominal distension",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "asunk": {
+          "description": "Does baby have sunken eyes?",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "aflar": {
+          "description": "Does baby have nasal flaring?",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "acyan": {
+          "description": "Is the baby centrally cyanosed?",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "avomit": {
+          "description": "Does the baby vomit everything?",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "apust": {
+          "description": "Many or severe skin pustules",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "apete": {
+          "description": "Petechiae?",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "askhd": {
+          "description": "Hardening of skin",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "aeyep": {
+          "description": "Purulent drainage from the eyes",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "aearp": {
+          "description": "Purulent drainage from the ears",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "aured": {
+          "description": "Redness extending from umbilicus",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "audis": {
+          "description": "Discharge of pus from umbilicus",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "ajfac": {
+          "description": "Jaundice on face",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "ajgum": {
+          "description": "Jaundice on gums/sclerae",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "ajcst": {
+          "description": "Jaundice on chest/abdomen",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "ajplm": {
+          "description": "Jaundice on palms/soles",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "afdwl": {
+          "description": "Is the baby able to feed well?",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "awgt": {
+          "description": "Current weight (kg)",
+          "units": "kg",
+          "encoding": "Source value preserved; no new clinical interpretation."
+        },
+        "atemp": {
+          "description": "Temperature",
+          "units": null,
+          "encoding": "Source value preserved; no new clinical interpretation."
+        }
+      },
+      "target_definition": {
+        "bconc_exj": "Revised conclusion variable,  excluding jaundice"
+      },
+      "eligible_for_classifier_training": false,
+      "file": {
+        "local_name": "mrs-yicss.xlsx",
+        "download_url": "https://data.mendeley.com/public-files/datasets/3pgb37wck4/files/5f433ff3-45d2-4a8b-a036-1e57af8eb0d2/file_downloaded",
+        "sha256": "d9295da466e04d883139c6c6e3b846679e282954c16b82049bec285f7b0b4aa0"
+      },
+      "codebook": {
+        "source_url": "https://data.mendeley.com/datasets/3pgb37wck4/2",
+        "download_url": "https://data.mendeley.com/public-files/datasets/3pgb37wck4/files/efd8fd35-b0dd-473a-8ffe-f535cd17325e/file_downloaded",
+        "sha256": "0c3a03838fa6f3c0722353c7e77011e445cb024d37b150cc791a06313540edf0"
+      },
+      "changes_made": [
+        "Retained only allowlisted clinical features and original study targets.",
+        "Removed repeated feature observations within the cohort; kept all original row references.",
+        "Trimmed whitespace and converted empty, ?, NaN and nan values to null. No imputation, augmentation or generated records.",
+        "Excluded identifiers and non-allowlisted columns; no diagnosis or treatment labels added."
+      ]
+    },
+    {
+      "id": "pakistan_heart_failure",
+      "name": "Heart Failure Clinical Records",
+      "country": "Pakistan",
+      "institutions": [
+        "Faisalabad Institute of Cardiology",
+        "Allied Hospital, Faisalabad"
+      ],
+      "source_url": "https://archive.ics.uci.edu/dataset/519/heart+failure+clinical+records",
+      "doi": "10.24432/C5Z89R",
+      "attribution": "Heart Failure Clinical Records (2020), Heart Failure Clinical Records, UCI Machine Learning Repository. 10.24432/C5Z89R",
+      "provenance_urls": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC6380566/"
+      ],
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "expected_rows": 299,
+      "format": "csv",
+      "source_columns": [
+        "age",
+        "anaemia",
+        "creatinine_phosphokinase",
+        "diabetes",
+        "ejection_fraction",
+        "high_blood_pressure",
+        "platelets",
+        "serum_creatinine",
+        "serum_sodium",
+        "sex",
+        "smoking",
+        "time",
+        "death_event"
+      ],
+      "features": [
+        "age",
+        "anaemia",
+        "creatinine_phosphokinase",
+        "diabetes",
+        "ejection_fraction",
+        "high_blood_pressure",
+        "platelets",
+        "serum_creatinine",
+        "serum_sodium",
+        "sex",
+        "smoking",
+        "time"
+      ],
+      "targets": [
+        "death_event"
+      ],
+      "target_values": {
+        "death_event": [
+          "0",
+          "1"
+        ]
+      },
+      "target_meaning": "Death during follow-up in an already diagnosed heart-failure cohort; not a heart-failure diagnosis label.",
+      "task": "heart_failure_survival",
+      "population": "Heart-failure patients age 40+ followed in 2015.",
+      "feature_definitions": {
+        "age": {
+          "description": "age of the patient",
+          "units": "years",
+          "type": "Integer",
+          "missing_values": "no"
+        },
+        "anaemia": {
+          "description": "decrease of red blood cells or hemoglobin",
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        },
+        "creatinine_phosphokinase": {
+          "description": "level of the CPK enzyme in the blood",
+          "units": "mcg/L",
+          "type": "Integer",
+          "missing_values": "no"
+        },
+        "diabetes": {
+          "description": "if the patient has diabetes",
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        },
+        "ejection_fraction": {
+          "description": "percentage of blood leaving the heart at each contraction",
+          "units": "%",
+          "type": "Integer",
+          "missing_values": "no"
+        },
+        "high_blood_pressure": {
+          "description": "if the patient has hypertension",
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        },
+        "platelets": {
+          "description": "platelets in the blood",
+          "units": "kiloplatelets/mL",
+          "type": "Continuous",
+          "missing_values": "no"
+        },
+        "serum_creatinine": {
+          "description": "level of serum creatinine in the blood",
+          "units": "mg/dL",
+          "type": "Continuous",
+          "missing_values": "no"
+        },
+        "serum_sodium": {
+          "description": "level of serum sodium in the blood",
+          "units": "mEq/L",
+          "type": "Integer",
+          "missing_values": "no"
+        },
+        "sex": {
+          "description": "woman or man",
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        },
+        "smoking": {
+          "description": "if the patient smokes or not",
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        },
+        "time": {
+          "description": "follow-up period",
+          "units": "days",
+          "type": "Integer",
+          "missing_values": "no"
+        }
+      },
+      "eligible_for_classifier_training": false,
+      "limitations": [
+        "Study-specific population and target; no validated mapping to the 41-class symptom model.",
+        "All source values retained as strings or null; whitespace stripped and empty/?/NaN values set to null. No imputation.",
+        "Distinct rows do not establish independent patients.",
+        "The time column is observed follow-up duration, not a baseline predictor. Use a survival-analysis design and prevent follow-up/outcome leakage when modelling."
+      ],
+      "file": {
+        "local_name": "mrs-heart-failure.csv",
+        "download_url": "https://archive.ics.uci.edu/static/public/519/data.csv",
+        "sha256": "54349729933cffdde5c92068572a89761bb53df50cc28250b0915fd18066976c"
+      },
+      "changes_made": [
+        "Retained only allowlisted clinical features and original study targets.",
+        "Removed repeated feature observations within the cohort; kept all original row references.",
+        "Trimmed whitespace and converted empty, ?, NaN and nan values to null. No imputation, augmentation or generated records.",
+        "Excluded identifiers and non-allowlisted columns; no diagnosis or treatment labels added."
+      ]
+    },
+    {
+      "id": "bangladesh_sylhet_diabetes",
+      "name": "Early Stage Diabetes Risk Prediction",
+      "country": "Bangladesh",
+      "institutions": [
+        "Sylhet Diabetes Hospital"
+      ],
+      "source_url": "https://archive.ics.uci.edu/dataset/529/early+stage+diabetes+risk+prediction+dataset",
+      "doi": "10.24432/C5VG8H",
+      "attribution": "Early Stage Diabetes Risk Prediction (2020), Early Stage Diabetes Risk Prediction, UCI Machine Learning Repository. 10.24432/C5VG8H",
+      "provenance_urls": [
+        "https://archive.ics.uci.edu/dataset/529/early+stage+diabetes+risk+prediction+dataset"
+      ],
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "expected_rows": 520,
+      "format": "csv",
+      "source_columns": [
+        "age",
+        "gender",
+        "polyuria",
+        "polydipsia",
+        "sudden_weight_loss",
+        "weakness",
+        "polyphagia",
+        "genital_thrush",
+        "visual_blurring",
+        "itching",
+        "irritability",
+        "delayed_healing",
+        "partial_paresis",
+        "muscle_stiffness",
+        "alopecia",
+        "obesity",
+        "class"
+      ],
+      "features": [
+        "age",
+        "gender",
+        "polyuria",
+        "polydipsia",
+        "sudden_weight_loss",
+        "weakness",
+        "polyphagia",
+        "genital_thrush",
+        "visual_blurring",
+        "itching",
+        "irritability",
+        "delayed_healing",
+        "partial_paresis",
+        "muscle_stiffness",
+        "alopecia",
+        "obesity"
+      ],
+      "targets": [
+        "class"
+      ],
+      "target_values": {
+        "class": [
+          "Positive",
+          "Negative"
+        ]
+      },
+      "target_meaning": "Positive or negative diabetes label; a negative label is not a diagnosis of another condition.",
+      "task": "diabetes_binary_classification",
+      "population": "Hospital questionnaire respondents.",
+      "feature_definitions": {
+        "age": {
+          "description": null,
+          "units": null,
+          "type": "Integer",
+          "missing_values": "no"
+        },
+        "gender": {
+          "description": null,
+          "units": null,
+          "type": "Categorical",
+          "missing_values": "no"
+        },
+        "polyuria": {
+          "description": null,
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        },
+        "polydipsia": {
+          "description": null,
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        },
+        "sudden_weight_loss": {
+          "description": null,
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        },
+        "weakness": {
+          "description": null,
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        },
+        "polyphagia": {
+          "description": null,
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        },
+        "genital_thrush": {
+          "description": null,
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        },
+        "visual_blurring": {
+          "description": null,
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        },
+        "itching": {
+          "description": null,
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        },
+        "irritability": {
+          "description": null,
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        },
+        "delayed_healing": {
+          "description": null,
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        },
+        "partial_paresis": {
+          "description": null,
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        },
+        "muscle_stiffness": {
+          "description": null,
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        },
+        "alopecia": {
+          "description": null,
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        },
+        "obesity": {
+          "description": null,
+          "units": null,
+          "type": "Binary",
+          "missing_values": "no"
+        }
+      },
+      "eligible_for_classifier_training": false,
+      "limitations": [
+        "Study-specific population and target; no validated mapping to the 41-class symptom model.",
+        "All source values retained as strings or null; whitespace stripped and empty/?/NaN values set to null. No imputation.",
+        "Distinct rows do not establish independent patients."
+      ],
+      "file": {
+        "local_name": "mrs-sylhet-diabetes.csv",
+        "download_url": "https://archive.ics.uci.edu/static/public/529/data.csv",
+        "sha256": "f6bf14c5d2e939feccd78750da2542f131b78d80355ccf35f29554b1f03fcb97"
+      },
+      "changes_made": [
+        "Retained only allowlisted clinical features and original study targets.",
+        "Removed repeated feature observations within the cohort; kept all original row references.",
+        "Trimmed whitespace and converted empty, ?, NaN and nan values to null. No imputation, augmentation or generated records.",
+        "Excluded identifiers and non-allowlisted columns; no diagnosis or treatment labels added."
+      ]
+    },
+    {
+      "id": "india_chronic_kidney_disease",
+      "name": "Chronic Kidney Disease",
+      "country": "India",
+      "institutions": [
+        "Apollo Hospitals, Tamil Nadu (as reported in the linked study)"
+      ],
+      "source_url": "https://archive.ics.uci.edu/dataset/336/chronic+kidney+disease",
+      "doi": "10.24432/C5G020",
+      "attribution": "L. Rubini, P. Soundarapandian, P. Eswaran (2015), Chronic Kidney Disease, UCI Machine Learning Repository. 10.24432/C5G020",
+      "provenance_urls": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC8075287/"
+      ],
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "expected_rows": 400,
+      "format": "csv",
+      "source_columns": [
+        "age",
+        "bp",
+        "sg",
+        "al",
+        "su",
+        "rbc",
+        "pc",
+        "pcc",
+        "ba",
+        "bgr",
+        "bu",
+        "sc",
+        "sod",
+        "pot",
+        "hemo",
+        "pcv",
+        "wbcc",
+        "rbcc",
+        "htn",
+        "dm",
+        "cad",
+        "appet",
+        "pe",
+        "ane",
+        "class"
+      ],
+      "features": [
+        "age",
+        "bp",
+        "sg",
+        "al",
+        "su",
+        "rbc",
+        "pc",
+        "pcc",
+        "ba",
+        "bgr",
+        "bu",
+        "sc",
+        "sod",
+        "pot",
+        "hemo",
+        "pcv",
+        "wbcc",
+        "rbcc",
+        "htn",
+        "dm",
+        "cad",
+        "appet",
+        "pe",
+        "ane"
+      ],
+      "targets": [
+        "class"
+      ],
+      "target_values": {
+        "class": [
+          "ckd",
+          "notckd"
+        ]
+      },
+      "target_meaning": "CKD versus non-CKD based on the source labels; laboratory-heavy binary task.",
+      "task": "ckd_binary_classification",
+      "population": "400 hospital patients sampled over approximately two months.",
+      "feature_definitions": {
+        "age": {
+          "description": null,
+          "units": "year",
+          "type": "Integer",
+          "missing_values": "yes"
+        },
+        "bp": {
+          "description": "blood pressure",
+          "units": "mm/Hg",
+          "type": "Integer",
+          "missing_values": "yes"
+        },
+        "sg": {
+          "description": "specific gravity",
+          "units": null,
+          "type": "Categorical",
+          "missing_values": "yes"
+        },
+        "al": {
+          "description": "albumin",
+          "units": null,
+          "type": "Categorical",
+          "missing_values": "yes"
+        },
+        "su": {
+          "description": "sugar",
+          "units": null,
+          "type": "Categorical",
+          "missing_values": "yes"
+        },
+        "rbc": {
+          "description": "red blood cells",
+          "units": null,
+          "type": "Binary",
+          "missing_values": "yes"
+        },
+        "pc": {
+          "description": "pus cell",
+          "units": null,
+          "type": "Binary",
+          "missing_values": "yes"
+        },
+        "pcc": {
+          "description": "pus cell clumps",
+          "units": null,
+          "type": "Binary",
+          "missing_values": "yes"
+        },
+        "ba": {
+          "description": "bacteria",
+          "units": null,
+          "type": "Binary",
+          "missing_values": "yes"
+        },
+        "bgr": {
+          "description": "blood glucose random",
+          "units": "mgs/dl",
+          "type": "Integer",
+          "missing_values": "yes"
+        },
+        "bu": {
+          "description": "blood urea",
+          "units": "mgs/dl",
+          "type": "Integer",
+          "missing_values": "yes"
+        },
+        "sc": {
+          "description": "serum creatinine",
+          "units": "mgs/dl",
+          "type": "Continuous",
+          "missing_values": "yes"
+        },
+        "sod": {
+          "description": "sodium",
+          "units": "mEq/L",
+          "type": "Integer",
+          "missing_values": "yes"
+        },
+        "pot": {
+          "description": "potassium",
+          "units": "mEq/L",
+          "type": "Continuous",
+          "missing_values": "yes"
+        },
+        "hemo": {
+          "description": "hemoglobin",
+          "units": "gms",
+          "type": "Continuous",
+          "missing_values": "yes"
+        },
+        "pcv": {
+          "description": "packed cell volume",
+          "units": null,
+          "type": "Integer",
+          "missing_values": "yes"
+        },
+        "wbcc": {
+          "description": "white blood cell count",
+          "units": "cells/cmm",
+          "type": "Integer",
+          "missing_values": "yes"
+        },
+        "rbcc": {
+          "description": "red blood cell count",
+          "units": "millions/cmm",
+          "type": "Continuous",
+          "missing_values": "yes"
+        },
+        "htn": {
+          "description": "hypertension",
+          "units": null,
+          "type": "Binary",
+          "missing_values": "yes"
+        },
+        "dm": {
+          "description": "diabetes mellitus",
+          "units": null,
+          "type": "Binary",
+          "missing_values": "yes"
+        },
+        "cad": {
+          "description": "coronary artery disease",
+          "units": null,
+          "type": "Binary",
+          "missing_values": "yes"
+        },
+        "appet": {
+          "description": "appetite",
+          "units": null,
+          "type": "Binary",
+          "missing_values": "yes"
+        },
+        "pe": {
+          "description": "pedal edema",
+          "units": null,
+          "type": "Binary",
+          "missing_values": "yes"
+        },
+        "ane": {
+          "description": "anemia",
+          "units": null,
+          "type": "Binary",
+          "missing_values": "yes"
+        }
+      },
+      "eligible_for_classifier_training": false,
+      "limitations": [
+        "Study-specific population and target; no validated mapping to the 41-class symptom model.",
+        "All source values retained as strings or null; whitespace stripped and empty/?/NaN values set to null. No imputation.",
+        "Distinct rows do not establish independent patients."
+      ],
+      "file": {
+        "local_name": "mrs-ckd.csv",
+        "download_url": "https://archive.ics.uci.edu/static/public/336/data.csv",
+        "sha256": "0eeea8d17f5ad8792d854999d6ddf1602ec4e116616f6ccdfdaef0ba8109e694"
+      },
+      "changes_made": [
+        "Retained only allowlisted clinical features and original study targets.",
+        "Removed repeated feature observations within the cohort; kept all original row references.",
+        "Trimmed whitespace and converted empty, ?, NaN and nan values to null. No imputation, augmentation or generated records.",
+        "Excluded identifiers and non-allowlisted columns; no diagnosis or treatment labels added."
+      ]
+    }
+  ]
+}

@@ -31,15 +31,44 @@ def validate(data):
             errors.append(f"Duplicate or conflicting pattern: {row['id']}")
         seen[pattern] = row['condition']
         source_rows.extend(row['source_rows'])
-    if sorted(source_rows) != list(range(2, data['manifest']['raw_rows'] + 2)):
+    manifest = data['manifest']
+    legacy = [r for r in data['training'] if r.get('data_type') != 'illustrative_symptom_pattern']
+    illustrative = [r for r in data['training'] if r.get('data_type') == 'illustrative_symptom_pattern']
+    legacy_raw = manifest.get('legacy_raw_rows', manifest['raw_rows'])
+    if sorted(source_rows) != list(range(2, legacy_raw + 2)):
         errors.append('Source-row provenance is incomplete or duplicated')
     for key, actual in [('unique_rows', len(seen)), ('condition_count', len(conditions)),
                         ('feature_count', len(symptoms)),
-                        ('duplicates_removed', len(source_rows) - len(seen))]:
+                        ('duplicates_removed', len(source_rows) - len(legacy))]:
         if data['manifest'][key] != actual:
             errors.append(f'Manifest count mismatch: {key}')
+    if manifest.get('schema_version') == 2:
+        parents = {r['id']: r for r in legacy}
+        profiles = {r['name']: r for r in data['conditions'] if r.get('data_type') == 'illustrative_condition_profile'}
+        for row in illustrative:
+            parent = parents.get(row.get('family_id'))
+            if parent:
+                valid = parent['split'] == 'train' and parent['condition'] == row['condition'] and set(row['symptoms']) <= set(parent['symptoms'])
+            else:
+                profile = profiles.get(row['condition'])
+                valid = bool(profile and row.get('family_id') == 'profile:' + row['condition'] and row.get('sources') == profile['sources'] and set(row['symptoms']) <= set(profile['symptoms']))
+            if not valid or row.get('split') != 'train' or row['source_rows'] or row.get('clinically_reviewed') is not False:
+                errors.append(f"Invalid illustrative provenance: {row['id']}")
+        fixed = json.loads((ROOT / 'data/legacy_splits.json').read_text())
+        for part, ids in fixed.items():
+            if set(ids) != {r['id'] for r in legacy if r.get('split') == part}:
+                errors.append('Legacy holdout provenance changed')
+        for key, count in [('legacy_unique_rows', len(legacy)), ('illustrative_rows', len(illustrative)), ('raw_rows', legacy_raw + len(illustrative))]:
+            if manifest.get(key) != count:
+                errors.append(f'Manifest count mismatch: {key}')
+        for filename, key in [('expansion_profiles.json', 'expansion_config_sha256'), ('legacy_splits.json', 'legacy_splits_sha256')]:
+            if hashlib.sha256((ROOT / 'data' / filename).read_bytes()).hexdigest() != manifest.get(key):
+                errors.append(f'Expansion provenance checksum mismatch: {filename}')
     for row in data['conditions']:
-        for field in ['description', 'medications', 'diet', 'precautions', 'workout', 'symptoms']:
+        fields = ['description', 'precautions', 'symptoms'] if row.get('data_type') == 'illustrative_condition_profile' else ['description', 'medications', 'diet', 'precautions', 'workout', 'symptoms']
+        if row.get('data_type') == 'illustrative_condition_profile' and (not row.get('sources') or row['medications'] or row.get('clinically_reviewed') is not False):
+            errors.append(f"Invalid illustrative condition provenance: {row['name']}")
+        for field in fields:
             if not row[field]:
                 errors.append(f"Missing {field}: {row['name']}")
         if set(row['symptoms']) - set(symptoms):
@@ -56,9 +85,9 @@ def validate(data):
                 (row['data_type'] != 'medicine_safety_reference' and not row['symptom_terms'])):
             errors.append(f"Incomplete reference: {row['name']}")
         for source in row['sources']:
-            if (not source['url'].startswith(('https://www.nhs.uk/', 'https://www.fda.gov/'))
+            if (not source['url'].startswith(('https://www.nhs.uk/', 'https://www.fda.gov/', 'https://hospitals.aku.edu/pakistan/'))
                     or not source.get('accessed_on')
-                    or not (source.get('page_last_reviewed') or source.get('updated_on'))):
+                    or not (source.get('page_last_reviewed') or source.get('updated_on') or source.get('date_not_published') is True)):
                 errors.append(f"Missing source provenance: {row['name']}")
     return errors
 
@@ -79,11 +108,12 @@ def main():
     report = {
         'schema_version': 1, 'errors': errors,
         'classifier_conditions': len(data['conditions']),
-        'reference_only_conditions': len(data['reference_conditions']),
+        'source_linked_reference_records': len(data['reference_conditions']),
         'unique_patterns_per_condition': dict(sorted(counts.items())),
         'missing_severity_metadata': [r['id'] for r in data['symptoms'] if r['source_severity_weight'] is None],
         'warnings': [
-            'Only 5–10 unique patterns per class; repeated source rows are not additional evidence.',
+            'Illustrative subsets increase pattern coverage, not independent clinical evidence. Some labels still have few patterns.',
+            'New condition profiles have no independent held-out evaluation; original holdouts are preserved.',
             'All legacy medicine mappings need clinical review before recommendation use.',
             'Reference symptom lists are not patient observations or validated training examples.',
             'NHS guidance is UK-specific; local prescribing and eligibility require separate review.'

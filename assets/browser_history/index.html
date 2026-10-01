@@ -10,9 +10,37 @@
   let lastWrite = '';
   window.addEventListener('message', (event) => {
     if (event.source !== window.parent || event.data?.type !== 'streamlit:render') return;
+    // Keep custom chat surfaces in step with Streamlit's selected native theme.
+    const theme = event.data.theme;
+    if (theme) {
+      const root = window.parent.document.documentElement;
+      for (const [property, key] of [['--mrs-background','backgroundColor'],
+          ['--mrs-secondary','secondaryBackgroundColor'], ['--mrs-text','textColor'], ['--mrs-primary','primaryColor']]) {
+        if (theme[key]) root.style.setProperty(property, theme[key]);
+      }
+      const dark = theme.base === 'dark' || /^#(?:0e1117|262730)$/i.test(theme.backgroundColor || '');
+      root.style.setProperty('--composer-icon', dark ? '#4ade80' : '#16803d');
+      root.style.setProperty('--danger', dark ? '#ff6b6b' : '#c62828');
+    }
     const {action, storage_key: key, payload} = event.data.args || {};
     try {
-      if (action === 'read') {
+      if (action === 'scroll') {
+        const anchor = event.data.args.anchor;
+        if (!/^chat-message-[a-f0-9]{32}$/.test(anchor || '')) return;
+        const doc = window.parent.document;
+        const reduced = window.parent.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let attempts = 0;
+        const reveal = () => {
+          const element = doc.getElementById(anchor);
+          const message = element?.closest('[data-testid="stChatMessage"]');
+          if (message) {
+            message.scrollIntoView({behavior: reduced || !event.data.args.smooth ? 'auto' : 'smooth', block: 'end'});
+          } else if (++attempts < 180) {
+            window.parent.requestAnimationFrame(reveal);
+          }
+        };
+        window.parent.requestAnimationFrame(reveal);
+      } else if (action === 'read') {
         const raw = window.localStorage.getItem(key);
         send('streamlit:setComponentValue', {
           dataType: 'json', value: {status: 'loaded', data: raw ? JSON.parse(raw) : null}

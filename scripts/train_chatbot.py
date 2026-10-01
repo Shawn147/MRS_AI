@@ -1,4 +1,4 @@
-"""Train with deduplicated 60/20/20 splits; tune only on train/validation, then evaluate test."""
+"""Train with fixed legacy holdouts and family weights; illustrative variants stay in training."""
 import argparse
 import json
 import os
@@ -6,6 +6,7 @@ import random
 import sys
 import time
 from pathlib import Path
+from collections import Counter, defaultdict
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -17,7 +18,7 @@ import torch
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, log_loss
-from sklearn.model_selection import GridSearchCV, StratifiedKFold, train_test_split
+from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from safetensors.torch import load_file, save_file
 from transformers import AutoModel, AutoTokenizer
@@ -49,8 +50,15 @@ def main():
     labels = sorted({r['condition'] for r in rows})
     indices = np.arange(len(rows))
     target = np.array([r['condition'] for r in rows])
-    trainval, test = train_test_split(indices, test_size=0.2, stratify=target, random_state=42)
-    train, val = train_test_split(trainval, test_size=0.25, stratify=target[trainval], random_state=42)
+    if all('split' in r for r in rows):
+        train, val, test = [np.array([i for i, r in enumerate(rows) if r['split'] == part])
+                            for part in ['train', 'validation', 'test']]
+        families = [{rows[i]['family_id'] for i in part} for part in [train, val, test]]
+        if families[0] & families[1] or families[0] & families[2] or families[1] & families[2]:
+            raise ValueError('Training families overlap held-out examples')
+    else:
+        trainval, test = train_test_split(indices, test_size=0.2, stratify=target, random_state=42)
+        train, val = train_test_split(trainval, test_size=0.25, stratify=target[trainval], random_state=42)
     assert not (set(train) & set(test) or set(train) & set(val) or set(val) & set(test))
     texts = [symptom_text(r['symptoms']) for r in rows]
     out = ARTIFACT_DIR
@@ -63,13 +71,28 @@ def main():
     splits = {name: [rows[i]['id'] for i in part] for name, part in [('train',train),('validation',val),('test',test)]}
     (out/'splits.json').write_text(json.dumps(splits, indent=2)+'\n')
     print('SPLITS', {k:len(v) for k,v in splits.items()}, flush=True)
-    fold = StratifiedKFold(n_splits=2, shuffle=True, random_state=42)
+    family_counts = Counter(rows[i].get('family_id', rows[i]['id']) for i in train)
+    label_families = defaultdict(set)
+    for i in train:
+        label_families[target[i]].add(rows[i].get('family_id', rows[i]['id']))
+    weights = np.ones(len(rows), dtype=np.float32)
+    for i in train:
+        weights[i] = 1 / (family_counts[rows[i].get('family_id', rows[i]['id'])] * len(label_families[target[i]]))
+    weights[train] *= len(train) / weights[train].sum()
+    def select(factory, training_x, validation_x, pipeline=False):
+        candidates = []
+        for regularization in [1., 10., 100.]:
+            candidate = factory(regularization)
+            candidate.fit(training_x, target[train], **({'clf__sample_weight': weights[train]} if pipeline else {'sample_weight': weights[train]}))
+            score = float(accuracy_score(target[val], candidate.predict(validation_x)))
+            candidates.append((score, regularization, candidate))
+        return max(candidates, key=lambda item: item[0])
     baseline = Pipeline([('tfidf', TfidfVectorizer(ngram_range=(1,2))),
                          ('clf', LogisticRegression(max_iter=2000, random_state=42))])
     start = time.perf_counter()
-    search = GridSearchCV(baseline, {'clf__C':[1.0,10.0,100.0]}, cv=fold, scoring='f1_macro')
-    search.fit([texts[i] for i in train], target[train])
-    baseline = search.best_estimator_
+    from sklearn.base import clone
+    baseline_val, baseline_c, baseline = select(lambda c: clone(baseline).set_params(clf__C=c),
+        [texts[i] for i in train], [texts[i] for i in val], pipeline=True)
     baseline_seconds = time.perf_counter()-start
     joblib.dump(baseline, out/'baseline.joblib')
     pretrained = ROOT/'artifacts/pretrained/minilm'
@@ -90,11 +113,9 @@ def main():
     model.eval()
     with torch.inference_mode():
         embeddings = torch.cat([model.embed(batch(indices[i:i+16])) for i in range(0,len(rows),16)]).numpy()
-    # A pretrained frozen encoder has seen no project labels. Head tuning uses training folds only.
-    head_search = GridSearchCV(LogisticRegression(max_iter=2000, random_state=42), {'C':[1.,10.,100.]},
-                               cv=fold, scoring='f1_macro')
-    head_search.fit(embeddings[train], target[train])
-    head = head_search.best_estimator_
+    # Selection uses the fixed original validation examples; generated siblings never become holdouts.
+    frozen_val, head_c, head = select(lambda c: LogisticRegression(C=c, max_iter=2000, random_state=42),
+                                     embeddings[train], embeddings[val])
     joblib.dump(head, out/'frozen_head.joblib')
     assert list(head.classes_) == labels
     with torch.no_grad():
@@ -111,7 +132,8 @@ def main():
         for offset in range(0,len(shuffled),16):
             part = shuffled[offset:offset+16]
             optimizer.zero_grad()
-            loss = torch.nn.functional.cross_entropy(model(batch(part)), y[part])
+            per_row = torch.nn.functional.cross_entropy(model(batch(part)), y[part], reduction='none')
+            loss = (per_row * torch.from_numpy(weights[part])).mean()
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(),1.0)
             optimizer.step()
@@ -143,9 +165,14 @@ def main():
         'training':{'epochs_requested':args.epochs,'best_epoch':best_epoch,'learning_rate':args.learning_rate,
                     'head_learning_rate':1e-3,'batch_size':16,'max_length':MAX_LENGTH,
                     'encoder_fine_tuned':True,'seconds':training_seconds,'history':history},
-        'optimization':{'baseline_best_C':search.best_params_['clf__C'],
-                        'baseline_cv_macro_f1':float(search.best_score_),
-                        'frozen_head_best_C':head_search.best_params_['C'],
+        'data_provenance':data['manifest'].get('provenance_counts', {}),
+        'split_policy':data['manifest'].get('split_policy', 'Stratified 60/20/20'),
+        'unevaluated_labels':sorted(set(labels) - set(target[test])),
+        'limitations':'Held-out template examples are not clinical validation. Illustrative subsets are not hospital cases. New labels lack independent evaluation.',
+        'optimization':{'baseline_best_C':baseline_c,
+                        'baseline_validation_accuracy':baseline_val,
+                        'selection':'Fixed legacy validation; equal total weight per label and per training family',
+                        'frozen_head_best_C':head_c,
                         'frozen_validation_accuracy':frozen_val,
                         'transformer_validation_accuracy':best_score[0]},
         'models':{'ml':evaluate(target[test],baseline.predict_proba([texts[i] for i in test]),labels),

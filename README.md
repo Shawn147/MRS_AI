@@ -105,25 +105,65 @@ Pinned revision: `aa6b145d4838ac1dd6fd21b4db7a43c3098e19f9`
 
 `scripts/prepare_json.py` reads `references/supervisor/dataset` and writes `data/*.json`. The app reads JSON only.
 
-- 4,920 source rows → 304 unique symptom patterns (4,616 repeats removed before splitting)
-- 41 conditions, 131 symptom features
+- 4,920 original rows → 304 original patterns; 4,616 repeats removed
+- 2,736 explicitly illustrative additions → **3,040 unique patterns (10× the original)**
+- 7,656 total input rows, 51 conditions, 156 symptom features and 17 reference records
+- Original rows are preserved; generated examples are not counted as hospital cases
 - Duplicate `fluid_overload` columns merged by OR; `Peptic ulcer diseae` corrected so tables join
 - Severity weights stored as metadata, not used as triage
 - Medicine/diet/exercise/precaution rows are unreviewed educational source data
 
 `data/input_corrections.json` is spelling help only (`dirhea` → `diarrhea`). Editing it does not require retraining.
 
+`data/regional/` adds **3,900 distinct public clinical observations** from hospital
+and primary-care studies in Pakistan, Bangladesh and India (4,169 source rows,
+269 repeats removed). Sources include Aga Khan University Hospital primary-care
+sites, Faisalabad Institute of Cardiology/Allied Hospital, Sylhet Diabetes Hospital,
+and an Indian CKD cohort reported as Apollo Hospitals. Licences, original study
+targets, variable definitions, source links and checksums accompany the prepared
+JSONL files. See [the regional data guide](data/regional/README.md).
+
+These cohorts are research-only because their outcomes and features differ from
+the general symptom-classification task. They are not relabelled as disease
+examples. The classifier expansion uses labelled illustrative patterns separately;
+Dataset Preview shows hospital-data counts and downloads separately.
+Run `python3 scripts/collect_regional_data.py --download` to reproduce the pinned
+imports and `python3 scripts/audit_regional_data.py` to validate the collection.
+
 ## Models
 
-60/20/20 stratified split: 182 train, 61 validation, 61 test.
+Fixed original holdouts: **2,918 train, 61 validation, 61 test**. All generated
+subsets stay in training, with their original training parent or source profile.
+Each label and training family receives equal total training weight. Head
+regularization and transformer checkpoint selection use the original validation
+set; the test set is untouched during selection. Ten added labels have no
+independent evaluation. See [the expansion guide](data/EXPANSION.md).
 
 | Model | Correct / test | Accuracy |
 |---|---:|---:|
-| TF-IDF Logistic Regression | 60/61 | 98.36% |
-| Frozen MiniLM + learned head | 61/61 | 100% |
-| Fine-tuned MiniLM | 61/61 | 100% |
+| TF-IDF Logistic Regression | 61/61 | 100% |
+| Frozen MiniLM + learned head | 60/61 | 98.36% |
+| Fine-tuned MiniLM | 60/61 | 98.36% |
 
 These repetitive educational patterns do not establish clinical generalization. Class probabilities are not calibrated.
+
+Three separate research models also benchmark original published hospital tasks.
+They use 950 distinct observations across Pakistan heart failure, Bangladesh
+diabetes and India CKD cohorts. Exact duplicates are removed before stratified
+60/20/20 splits. Imputation, scaling and categorical encoding are fitted on train
+only; model selection uses validation balanced accuracy. Test results are
+evaluated once. Follow-up `time` is excluded from the heart-failure features.
+
+```bash
+.venv/bin/python scripts/benchmark_hospital_models.py
+```
+
+`artifacts/research/metrics.json` preserves source checksums, split IDs, validation
+choices, per-class metrics, ROC AUC, majority baselines and limitations. The Model
+Evaluation page displays these results and offers the full JSON download.
+These are internal single-source research benchmarks, not external clinical
+validation. Their models are separate from chatbot symptom inference. The infant
+cohort remains excluded until coded features and timing have been reviewed.
 
 ## Conversation
 
@@ -176,13 +216,14 @@ Questions about other topics receive a clearly unverified general answer, with n
 invented source link. The symptom flow, emergency handling and medicine/dose guards
 remain separate. These generated answers have not been clinically validated.
 
-Coverage is **41 classifier labels plus 7 reference-only records**. The new
-records do not supply patient observations, classifier training rows, doses or
-verified prescribing rules. Clinical review and local applicability review are
-pending. Expanding classifier labels requires appropriately licensed, labeled
-examples, deduplication, independent evaluation and retraining; symptom lists
-must not be multiplied into purported patient cases. Existing medicine mappings
-remain unreviewed, and only 5–10 unique patterns support each current label.
+Coverage is **51 classifier labels and 17 source-linked reference records**.
+Ten new condition inventories and 25 symptom terms are summarized from NHS and
+Aga Khan University Hospital Pakistan sources. Generated symptom subsets are
+explicitly illustrative and not observed patient cases. The ten new labels have
+no independent test cohort and cannot establish clinical accuracy. Their
+medicine mappings are empty and medicine output is withheld. Existing medicine
+mappings remain unreviewed. Some legacy classes still have only five patterns;
+augmentation cannot create independent clinical evidence.
 
 ## Interface
 
@@ -191,6 +232,27 @@ and local CSS in `assets/style.css`; no separate frontend or JavaScript framewor
 is needed. The local SVG logo is in `assets/logo.svg`.
 
 Starter prompts and yes/no follow-up buttons submit real chatbot messages.
+The More options control has been removed; summary and explanation requests can
+still be typed in chat. Voice to text uses the microphone immediately left of
+Send. Recording shows a timer, live transcript, Stop and Cancel. Stopping adds an
+editable transcript inside the composer; its close button removes it. The user
+can send a transcript alone or with typed text and files. Nothing is sent to the
+chat model until Send is pressed. Recordings stop automatically after 60 seconds;
+MRS AI does not store audio.
+
+Voice input requires microphone permission and HTTPS or localhost. Browser
+support varies, and browsers may use an external speech service; see the
+[Web Speech API documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition).
+Permission failures and unsupported browsers show a clear typed-input fallback.
+Run `node tests/test_voice_component.cjs` for simulated recording lifecycle checks
+that never access a microphone.
+
+General answers use a professional plain-language prompt. If generation fails,
+named topics can use the bundled source summaries, and readable reports can show
+verbatim lab values with filenames/page references. These fallbacks do not
+interpret missing data or invent ranges. A full report explanation still needs
+the configured local/hosted model. Account-recovery and credential filenames are
+rejected as medical uploads, including legacy attachments before provider calls.
 The latest user message has an **Edit last prompt** control. Saving an edit restores
 conversation state from before that turn, regenerates its reply, and replaces its
 analytics event. Chats made before turn snapshots were added rebuild their state
@@ -235,20 +297,24 @@ private; authentication for shared or public deployments is not implemented.
 
 ## Context-aware follow-ups
 
-`data/context_intents.json` contains 180 authored language examples across nine
-intents: summary, match explanation, medicine information, dose questions, duration,
-severity, improving, worsening, and other. They are illustrative language examples,
-not patient cases or additional condition-training evidence.
+`data/context_intents.json` contains **450 authored illustrative language examples
+across 12 intents**: summary, match explanation, medicine information, dose
+questions, duration, severity, improving, worsening, other, greeting, gratitude
+and report-upload help. They are not patient cases. Two original training
+utterances were relabelled to the newly supported greeting and gratitude routes;
+original holdout labels were preserved.
 
 ```bash
+.venv/bin/python scripts/expand_context.py
 .venv/bin/python scripts/train_context.py
 ```
 
-The script trains a separate logistic-regression intent head over frozen pretrained
-MiniLM embeddings. The condition classifier and its existing artifacts are unchanged.
-Fixed splits: 108 train / 36 validation / 36 test. Regularization is selected on
-validation only. The saved run achieved 31/36 test accuracy (86.1%); the fixed 0.60
-score and 0.15 margin gates accepted 21/36 examples, all correct on this small test.
+A separate logistic-regression intent head uses frozen MiniLM embeddings.
+Fixed splits: **342 train / 54 validation / 54 test**. Regularization is selected
+on validation accuracy, with correct accepted routes minus incorrect routes as
+the tie-breaker. Test accuracy is **52/54 (96.3%)**. Fixed score and margin gates
+accepted 45/54 examples, 44 of them correct.
+
 These results are language-routing checks, not clinical validation or evidence of
 real-world generalization. Scores are not calibrated. Rejected intents fall back
 to the existing symptom dialogue.
@@ -260,3 +326,35 @@ replies, but are **not** inputs to the condition classifier. Medicine/dose reque
 have explicit guards; emergency handling takes precedence over intent routing.
 Replies remain constrained templates; no generative medical model was added.
 Training metrics and split IDs are in `artifacts/context/metrics.json`.
+
+
+### Medical report attachments
+
+Drop PDF, TXT, PNG or JPEG reports directly onto the chat input, or use its **+** menu.
+The input highlights while files are dragged over it. Dropped files use the same
+validation as selected uploads; dropping a file does not submit a chat message.
+Selected files appear automatically as square cards inside the composer. Use **×**
+to remove a draft, then press the send arrow with optional message text. Sending a
+file alone asks for a report explanation. Text-only messages work normally. Sent
+report text remains available for follow-up questions; drafts are not sent until
+you submit them. The three most recently sent reports are retained as context.
+Sent reports remain visible as file cards. Editing or retrying the last prompt
+preserves that turn's attached reports and their readable text.
+In the edit view, use **×** on a file card to exclude it from the regenerated
+message. **Cancel edit** keeps the original attachments unchanged.
+
+Limits: three files per message, 10 MB per file, 30 PDF pages and 18,000 extracted
+characters per report. PDFs must contain readable text on every page; scanned
+pages should be uploaded as clear photos instead. Encrypted and unreadable files
+are rejected rather than silently summarized.
+
+Photo OCR uses Apple Vision on macOS (requires the Swift developer tools), or
+`tesseract` on Linux. `packages.txt` installs Tesseract on Streamlit Community
+Cloud. OCR can misread values; the assistant asks users to verify unclear numbers.
+
+Readable report contents are sent to the configured general-answer AI provider
+when a question is submitted, and stored with browser conversation history.
+Original uploaded files are not deliberately saved to the project. OCR temporary
+files are deleted after extraction. Reports are treated as untrusted source data,
+not instructions, and do not feed the symptom classifier. Replies explain the
+report with filename/page references; they do not diagnose or prescribe.

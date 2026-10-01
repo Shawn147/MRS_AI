@@ -31,6 +31,12 @@ def context_reply(text, state, data, blocked):
         return {'text': content, 'predictions': [], 'intent': intent, **extra}
     details = state.setdefault('details', {})
     labels = [data['by_symptom'][key]['label'] for key in state['symptoms']]
+    if intent == 'greeting':
+        return reply('Hello. Tell me what you’re experiencing, or use the plus icon to add a report and ask about it.')
+    if intent == 'gratitude':
+        return reply('You’re welcome. You can add another detail or ask a follow-up question at any time.')
+    if intent == 'report_help':
+        return reply('Use the plus icon inside the input to choose a report. You can send it with a question or on its own. Remove it with the close icon before sending if needed.')
     if intent == 'dose_question':
         return reply('I can’t calculate a dose or dosing schedule from this conversation. '
                      'Please check the medicine’s leaflet and ask a pharmacist or clinician about the correct dose for you.', medicine_withheld=True)
@@ -67,6 +73,8 @@ def context_reply(text, state, data, blocked):
             return reply('I don’t have a clear symptom-based match to attach medicine information to. '
                          'Describe your symptoms first. I can show educational references, but cannot choose a medicine for you.', medicine_withheld=True)
         record = data['by_condition'][condition]
+        if not record['medications']:
+            return reply('This condition profile has no verified medicine mapping. Please ask a clinician or pharmacist about treatment.', medicine_withheld=True)
         return reply('**Educational medicine information for the previous possible match: ' + condition + '**\n\n' +
                      '\n'.join('- ' + name for name in record['medications'][:5]) +
                      '\n\nThese are unreviewed source references, not prescriptions or a suitability check.',

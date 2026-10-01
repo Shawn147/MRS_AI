@@ -1,87 +1,81 @@
-/* Native Streamlit interface, styled from the supplied Stitch design. */
-:root { --ink:#17243b; --muted:#697789; --teal:#006b62; --line:#e5e9ef; }
-.stApp { background:#fafbfe; color:var(--ink); }
+/* Native Streamlit theme with only chat layout and attachment styling. */
+:root {
+ --surface:var(--mrs-background, #0e1117);
+ --surface-raised:var(--mrs-secondary, #262730);
+ --ink:var(--mrs-text, #fafafa);
+ --muted:color-mix(in srgb, var(--ink) 65%, transparent);
+ --line:color-mix(in srgb, var(--ink) 18%, transparent);
+ --hover:color-mix(in srgb, var(--ink) 8%, var(--surface-raised));
+ --teal:var(--mrs-primary, #ff4b4b);
+ --composer-icon:#4ade80;
+ --danger:#ff6b6b;
+}
+.stApp { background:var(--surface); color:var(--ink); }
 [data-testid="stHeader"] { background:transparent; }
 [data-testid="stToolbar"], #MainMenu, footer { display:none; }
 [data-testid="stMainBlockContainer"] { max-width:960px; padding:2.1rem 2.8rem 3rem; }
-[data-testid="stSidebar"] { background:#f0f3f9; border-right:1px solid #e4e8ef; }
+[data-testid="stSidebar"] { background:var(--surface-raised); border-right:1px solid var(--line); }
 [data-testid="stSidebar"] > div:first-child { padding-top:1rem; }
 [data-testid="stSidebarUserContent"] { padding:1.5rem 1.15rem; }
-h1,h2,h3 { color:var(--ink); letter-spacing:-.035em; font-weight:650; }
+h1,h2,h3 { color:var(--ink); }
 p,li { line-height:1.65; }
-[data-testid="stButton"] button, [data-testid="stDownloadButton"] button { border-radius:11px; border-color:var(--line); min-height:44px; font-weight:500; transition:background .15s,border-color .15s; }
-[data-testid="stButton"] button:hover { color:var(--teal); border-color:#98cfc7; background:#eef8f5; }
-[data-testid="stButton"] button[kind="primary"] { background:var(--teal); border-color:var(--teal); color:white; }
-[data-testid="stButton"] button[kind="primary"]:hover { background:#00584f; color:white; }
-button:focus-visible, a:focus-visible { outline:3px solid #49aa9d!important; outline-offset:3px; }
 .brand { display:flex; align-items:center; gap:11px; margin:0 0 25px; }
 .brand svg { flex-shrink:0; width:39px; height:39px; }
 .brand strong { font-size:21px; letter-spacing:-.7px; display:block; line-height:1.25; }
 .brand span { color:var(--muted); font-size:11px; }
-.eyebrow { color:#7b8797; font-size:10px; text-transform:uppercase; letter-spacing:1.6px; font-weight:650; margin:24px 0 8px; }
+.eyebrow { color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:1.6px; font-weight:650; margin:24px 0 8px; }
 .st-key-recent_chats [data-testid="stButton"] button, .st-key-sidebar_links [data-testid="stButton"] button { text-align:left; justify-content:flex-start; border:0; background:transparent; font-size:13px; }
-.st-key-recent_chats [data-testid="stButton"] button[kind="primary"] { background:white; color:var(--teal); box-shadow:0 2px 9px #233b5010; }
+.st-key-recent_chats [data-testid="stButton"] button[kind="primary"] { background:var(--surface-raised); color:var(--teal); box-shadow:0 2px 9px transparent; }
 .st-key-recent_chats [data-testid="stButton"] button p { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:190px; }
-.st-key-sidebar_links { border-top:1px solid #dde4ed; margin-top:28px; padding-top:17px; }
-.sidebar-note { font-size:11px; color:#7c8796; line-height:1.6; padding:24px 8px 0; }
+.st-key-sidebar_links { border-top:1px solid var(--line); margin-top:28px; padding-top:17px; }
+.sidebar-note { font-size:11px; color:var(--muted); line-height:1.6; padding:24px 8px 0; }
 .topline { display:flex; align-items:center; gap:10px; min-height:44px; font-size:14px; }
 .topline strong { font-weight:650; }
-.topline span { color:#748193; font-size:13px; border-left:1px solid #d8e0e8; padding-left:11px; }
+.topline span { color:var(--muted); font-size:13px; border-left:1px solid var(--line); padding-left:11px; }
 .st-key-topbar { padding-bottom:15px; border-bottom:1px solid var(--line); margin-bottom:8px; }
-.st-key-topbar button { font-size:12px; background:white; }
+.st-key-topbar button { font-size:12px; background:var(--surface-raised); }
 .welcome { text-align:center; padding:52px 0 26px; }
 .welcome .welcome-mark { display:flex; justify-content:center; margin-bottom:19px; }
 .welcome svg { width:57px; height:57px; }
 .welcome .kicker { font-size:10px; font-weight:650; letter-spacing:2px; color:var(--teal); text-transform:uppercase; }
 .welcome h1 { font-size:39px; line-height:1.2; letter-spacing:-1.6px; margin:13px 0 12px; padding:0; }
 .welcome p { font-size:16px; color:var(--muted); max-width:490px; margin:0 auto; line-height:1.7; }
-.section-label { display:flex; justify-content:space-between; font-size:10px; color:#7b8797; letter-spacing:1.3px; text-transform:uppercase; margin:4px 0 10px; }
+.section-label { display:flex; justify-content:space-between; font-size:10px; color:var(--muted); letter-spacing:1.3px; text-transform:uppercase; margin:4px 0 10px; }
 .section-label span:last-child { text-transform:none; letter-spacing:0; }
-.st-key-starters [data-testid="stButton"] button { background:white; border:1px solid #e5eaf0; padding:20px 17px; min-height:112px; text-align:left; justify-content:flex-start; gap:13px; box-shadow:0 3px 12px #263b5105; }
+.st-key-starters [data-testid="stButton"] button { min-height:62px; text-align:left; justify-content:flex-start; padding:12px 16px; }
 .st-key-starters [data-testid="stButton"] button p { font-size:13px; line-height:1.55; }
-.st-key-starters [data-testid="stButton"] button:hover { background:#f1faf7; border-color:#83bfb6; }
-.how-it-works { margin:25px 0 17px; background:white; border:1px solid var(--line); border-radius:16px; padding:23px 25px; }
-.how-it-works h2 { font-size:15px; letter-spacing:-.2px; margin:0 0 20px; padding:0; }
-.steps { display:grid; grid-template-columns:repeat(3,1fr); gap:25px; }
-.step-number { color:var(--teal); background:#eaf5f1; width:25px; height:25px; display:inline-flex; align-items:center; justify-content:center; border-radius:8px; font-size:11px; margin-bottom:10px; font-weight:700; }
-.steps strong { display:block; font-size:12px; margin-bottom:5px; }
-.steps p { font-size:12px; color:var(--muted); margin:0; line-height:1.65; }
-.context-note { border-radius:12px; background:#eef3f8; padding:16px 20px; color:var(--muted); font-size:12px; line-height:1.6; }
-.context-note strong { display:block; color:var(--ink); font-size:12px; margin-bottom:3px; }
-.composer-note { text-align:center; font-size:10px; color:#7c8795; margin:15px 0 5px; }
-[data-testid="stBottom"] > div { background:#fafbfe; }
-[data-testid="stChatInput"] { border:1px solid #d9e3e8; border-radius:16px; background:white; box-shadow:0 4px 20px #283e5310; }
+.st-key-starters [data-testid="stButton"] button:hover { background:var(--hover); border-color:var(--line); }
+.composer-note { text-align:center; font-size:10px; color:var(--muted); margin:15px 0 5px; }
+[data-testid="stBottom"] > div { background:var(--surface); }
+[data-testid="stChatInput"] { border:1px solid var(--line); border-radius:16px; background:var(--surface-raised); box-shadow:0 4px 20px transparent; }
 [data-testid="stChatInput"] textarea { font-size:14px; padding-top:16px; padding-bottom:16px; }
 [data-testid="stChatInputSubmitButton"] { color:var(--teal); }
-[data-testid="stChatMessage"] { background:white; border:1px solid var(--line); border-radius:16px; padding:23px; margin:10px 0; }
-[data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) { background:#eef3f8; border:0; border-radius:16px 4px 16px 16px; margin-left:auto; max-width:86%; }
-[data-testid="stChatMessageAvatarAssistant"] { background:#dff2ec; color:var(--teal); }
-[data-testid="stChatMessageAvatarUser"] { background:#dbe3ef; color:#52647c; }
+[data-testid="stChatMessage"] { background:transparent; border:0; border-radius:8px; padding:16px; margin:10px 0; }
+[data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) { background:var(--surface-raised); border:0; border-radius:16px 4px 16px 16px; margin-left:auto; max-width:86%; }
+[data-testid="stChatMessageAvatarAssistant"] { background:var(--surface-raised); color:var(--teal); }
+[data-testid="stChatMessageAvatarUser"] { background:var(--surface-raised); color:var(--ink); }
 [data-testid="stChatMessage"] p { font-size:14px; }
-.message-author { font-size:11px; color:#617188; margin-bottom:13px; font-weight:650; letter-spacing:.2px; }
-.message-author span { color:#8c98a7; font-weight:400; margin-left:10px; font-size:10px; }
+.message-author { font-size:11px; color:var(--muted); margin-bottom:13px; font-weight:650; letter-spacing:.2px; }
+.message-author span { color:var(--muted); font-weight:400; margin-left:10px; font-size:10px; }
 .conversation-heading { margin:20px 0 17px; }
 .conversation-heading h1 { font-size:22px; margin:0; padding:0; letter-spacing:-.6px; }
 .conversation-heading p { font-size:12px; color:var(--muted); margin:5px 0 0; }
 .tags { display:flex; gap:6px; flex-wrap:wrap; margin:9px 0 17px; }
-.tag { background:#edf6f3; border:1px solid #dcece6; color:#386b60; border-radius:6px; padding:4px 10px; font-size:11px; }
+.tag { background:var(--surface-raised); border:1px solid var(--line); color:var(--ink); border-radius:6px; padding:4px 10px; font-size:11px; }
 .result-title { font-size:19px; color:var(--ink); font-weight:650; letter-spacing:-.4px; margin:4px 0 8px; }
 .result-label { color:var(--teal); text-transform:uppercase; font-size:9px; letter-spacing:1.4px; font-weight:650; margin:20px 0 6px; }
-[data-testid="stExpander"] details { background:#fbfcfe; border-color:var(--line); border-radius:10px; }
+[data-testid="stExpander"] details { background:var(--surface); border-color:var(--line); border-radius:10px; }
 [data-testid="stExpander"] summary p { font-size:13px; font-weight:550; }
 [data-testid="stAlert"] { border-radius:12px; }
 .st-key-followup { padding:5px 0 12px; }
-.st-key-followup button { font-size:12px; background:white; }
-[data-testid="stForm"] { background:white; border-radius:16px; border-color:var(--line); padding:24px; }
-[data-testid="stTextInput"] input { background:#f7f9fc; }
+.st-key-followup button { font-size:12px; background:var(--surface-raised); }
+[data-testid="stForm"] { background:var(--surface-raised); border-radius:16px; border-color:var(--line); padding:24px; }
+[data-testid="stTextInput"] input { background:var(--surface-raised); }
 @media (max-width:760px) {
  [data-testid="stMainBlockContainer"] { padding:2.4rem 1rem 2rem; }
  .welcome { padding-top:28px; }
  .welcome h1 { font-size:30px; letter-spacing:-1px; }
  .welcome p { font-size:14px; }
- .steps { grid-template-columns:1fr; gap:17px; }
- .steps .step-number { float:left; margin:0 12px 15px 0; }
- .how-it-works { padding:20px; }
  .st-key-starters [data-testid="stButton"] button { min-height:62px; padding:12px 16px; }
  .topline span { display:none; }
  [data-testid="stChatMessage"] { padding:15px; }
@@ -103,11 +97,6 @@ button:focus-visible, a:focus-visible { outline:3px solid #49aa9d!important; out
  .welcome h1 { font-size:32px; margin:8px 0; }
  .welcome p { font-size:14px; }
  .st-key-starters [data-testid="stButton"] button { min-height:76px; padding:12px 15px; }
- .how-it-works { margin:8px 0 4px; padding:17px 20px; }
- .how-it-works h2 { margin-bottom:13px; }
- .steps { gap:17px; }
- .step-number { margin-bottom:6px; }
- .context-note { padding:12px 16px; }
  .composer-note { margin:3px 0; }
 }
 @media (max-width:760px) {
@@ -127,5 +116,204 @@ button:focus-visible, a:focus-visible { outline:3px solid #49aa9d!important; out
  .welcome svg { width:46px; height:46px; }
  .welcome p { line-height:1.6; }
 }
-[data-testid="stChatMessage"]:has(.user-author) { background:#eef3f8; border:0; border-radius:16px 4px 16px 16px; margin-left:auto; max-width:86%; }
+[data-testid="stChatMessage"]:has(.user-author) { background:var(--surface-raised); border:0; border-radius:16px 4px 16px 16px; margin-left:auto; max-width:86%; }
 @media (max-width:760px) { [data-testid="stChatMessage"]:has(.user-author) { max-width:94%; } }
+
+/* The attachment control and text field share one composer surface. */
+.st-key-chat_composer {
+ background:var(--surface-raised); border:1px solid var(--line); border-radius:16px;
+ box-shadow:0 4px 20px transparent; padding:4px 8px;
+}
+.st-key-composer_input_row [data-testid="stHorizontalBlock"] {
+ flex-wrap:nowrap; align-items:center; gap:4px;
+}
+.st-key-composer_input_row [data-testid="stColumn"]:first-child {
+ flex:0 0 38px; min-width:38px!important;
+}
+.st-key-composer_input_row [data-testid="stColumn"]:last-child {
+ flex:1 1 0; min-width:0!important;
+}
+.st-key-chat_composer [data-testid="stChatInput"] {
+ border:0; border-radius:0; box-shadow:none; background:transparent;
+}
+.st-key-chat_composer [data-testid="stPopoverButton"] {
+ border:0; background:transparent; padding:0; width:36px; min-height:36px;
+ justify-content:center; color:var(--composer-icon);
+}
+.st-key-chat_composer [data-testid="stPopoverButton"] p { font-size:24px; }
+.st-key-chat_composer [data-testid="stPopoverButton"] svg { display:none; }
+.st-key-chat_composer [data-testid="stPopoverButton"]:hover { background:var(--hover); color:var(--composer-icon); }
+/* Keep the shared composer at the bottom of the visible chat area. */
+[data-testid="stMain"] { container-type:inline-size; }
+[data-testid="stMainBlockContainer"]:has(.st-key-chat_composer) { padding-bottom:130px; }
+.st-key-chat_composer {
+ position:fixed; bottom:max(16px, env(safe-area-inset-bottom)); z-index:99;
+ right:max(2.8rem, calc((100cqw - 960px) / 2 + 2.8rem));
+ width:min(calc(100cqw - 5.6rem), calc(960px - 5.6rem));
+}
+/* Stable composer slots prevent old controls moving into attachment cards on rerun. */
+.st-key-chat_composer [data-testid="stVerticalBlockBorderWrapper"]:has(> div > .st-key-composer_notice_slot):not(:has([data-testid="stAlert"])),
+.st-key-chat_composer [data-testid="stVerticalBlockBorderWrapper"]:has(> div > .st-key-composer_file_slot):not(:has(.st-key-draft_cards [data-stale="false"])),
+.st-key-chat_composer [data-testid="stVerticalBlockBorderWrapper"]:has(> div > .st-key-composer_transcript_slot):not(:has(.st-key-voice_draft)) {
+ display:none;
+}
+.st-key-chat_composer [data-testid="stElementContainer"][data-stale="true"] {
+ display:none;
+}
+.st-key-chat_composer:not(:has([data-testid="stElementContainer"][data-stale="false"] [data-testid="stTextInput"])),
+.st-key-chat_composer [data-testid="stVerticalBlockBorderWrapper"]:has(> div > .st-key-composer_input_row):not(:has([data-testid="stElementContainer"][data-stale="false"] [data-testid="stTextInput"])) {
+ display:none;
+}
+/* A drop target across the existing composer, without another upload button. */
+.st-key-chat_composer [data-testid="stVerticalBlockBorderWrapper"]:has(> div > .st-key-composer_drop) {
+ position:absolute; width:0; height:0; overflow:hidden; pointer-events:none;
+}
+.st-key-chat_composer.file-drag-over { outline:2px dashed var(--teal); outline-offset:3px; }
+.st-key-chat_composer.file-drag-over::after,
+.st-key-chat_composer.file-drop-busy::after {
+ content:"Drop files to attach"; position:absolute; inset:0; z-index:10;
+ display:flex; align-items:center; justify-content:center; border-radius:inherit;
+ background:var(--surface-raised); color:var(--teal); font-size:14px; font-weight:600; pointer-events:none;
+}
+.st-key-chat_composer.file-drop-busy::after { content:"Adding your files…"; pointer-events:auto; }
+[data-testid="stMainBlockContainer"]:has(.st-key-chat_composer) .composer-note {
+ position:fixed; bottom:86px; z-index:98;
+ right:max(2.8rem, calc((100cqw - 960px) / 2 + 2.8rem));
+ width:min(calc(100cqw - 5.6rem), calc(960px - 5.6rem));
+ margin:0; padding:4px 0; background:var(--surface);
+}
+@media (max-width:760px) {
+ .st-key-chat_composer,
+ [data-testid="stMainBlockContainer"]:has(.st-key-chat_composer) .composer-note {
+  right:1rem; width:calc(100cqw - 2rem);
+ }
+}
+
+/* Animate only newly submitted messages, not the saved conversation. */
+@keyframes message-user-enter {
+ from { opacity:0; transform:translateY(24px) scale(.98); }
+ to { opacity:1; transform:translateY(0) scale(1); }
+}
+@keyframes message-assistant-enter {
+ from { opacity:0; transform:translateY(12px); }
+ to { opacity:1; transform:translateY(0); }
+}
+[data-testid="stChatMessage"]:has(.message-enter-user) {
+ animation:message-user-enter 360ms cubic-bezier(.2,.8,.2,1) both;
+}
+[data-testid="stChatMessage"]:has(.message-enter-assistant) {
+ animation:message-assistant-enter 420ms ease-out both;
+}
+[data-testid="stChatMessage"] { scroll-margin-bottom:125px; }
+@media (prefers-reduced-motion:reduce) {
+ [data-testid="stChatMessage"] { animation:none!important; }
+}
+/* Short messages still need room for their author and edit action. */
+[data-testid="stChatMessage"]:has(.user-author) {
+ width:fit-content; min-width:min(300px, 86%);
+}
+@media (max-width:760px) {
+ [data-testid="stChatMessage"]:has(.user-author) { min-width:min(260px, 94%); }
+}
+
+/* Draft attachments live in the composer until Send is pressed. */
+.st-key-draft_cards, .st-key-edit_cards { padding:8px 4px 4px; }
+.st-key-draft_cards [data-testid="stHorizontalBlock"], .st-key-edit_cards [data-testid="stHorizontalBlock"] { flex-wrap:nowrap; gap:8px; }
+.st-key-draft_cards [data-testid="stColumn"], .st-key-edit_cards [data-testid="stColumn"] { min-width:0!important; flex:0 0 96px; }
+.st-key-draft_cards [data-testid="stColumn"]:last-child, .st-key-edit_cards [data-testid="stColumn"]:last-child { flex:1 1 auto; }
+.st-key-edit_panel { padding:0; background:transparent; }
+[class*="st-key-draft_tile_"] {
+ width:96px; height:96px; position:relative; border:1px solid var(--line);
+ border-radius:12px; background:var(--surface-raised); padding:8px; overflow:hidden;
+}
+.draft-file-icon { font-size:24px; line-height:28px; }
+.draft-file-kind { font-size:9px; color:var(--muted); font-weight:650; margin:2px 0; }
+.draft-file-name { font-size:10px; line-height:13px; overflow:hidden; display:-webkit-box;
+ -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow-wrap:anywhere; }
+.sent-file-cards { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; }
+.sent-file-card {
+ width:96px; height:96px; box-sizing:border-box; padding:8px; overflow:hidden;
+ border:1px solid var(--line); border-radius:12px; background:var(--surface-raised);
+}
+[class*="st-key-draft_tile_"] [data-testid="stButton"] { position:absolute; right:3px; top:3px; }
+[class*="st-key-draft_tile_"] [data-testid="stButton"] button {
+ width:22px; min-height:22px; padding:0; border:0; background:var(--surface-raised); border-radius:50%;
+}
+.st-key-chat_composer [data-testid="stForm"] { position:relative; border:0; padding:0; background:transparent; }
+.st-key-chat_composer [data-testid="stForm"] [data-testid="stVerticalBlock"] { gap:0; }
+.st-key-chat_composer [data-testid="stTextInput"] input {
+ background:var(--surface-raised); font-size:14px; padding:16px 92px 16px 8px; min-height:50px;
+}
+.st-key-chat_composer [data-testid="stTextInput"] [data-baseweb="input"] {
+ border:0; background:transparent; box-shadow:none; min-height:50px;
+}
+.st-key-chat_composer [data-testid="stFormSubmitButton"] button {
+ border:0; background:transparent; color:var(--composer-icon); width:40px; height:40px; min-height:40px; padding:0;
+ display:flex; align-items:center; justify-content:center;
+}
+.st-key-chat_composer [data-testid="stFormSubmitButton"] button p {
+ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap;
+}
+[data-testid="stMainBlockContainer"]:has(.st-key-draft_cards [data-stale="false"]) { padding-bottom:250px; }
+[data-testid="stMainBlockContainer"]:has(.st-key-draft_cards [data-stale="false"]) .composer-note { bottom:202px; }
+.st-key-chat_composer [data-testid="stForm"] [data-testid="stElementContainer"]:has([data-testid="stFormSubmitButton"]) {
+ position:absolute; top:50%; transform:translateY(-50%); right:4px; width:40px!important; height:40px;
+}
+.st-key-chat_composer [data-testid="stFormSubmitButton"] {
+ position:static; width:40px!important;
+}
+[class*="st-key-draft_tile_"] [data-testid="stElementContainer"]:has([data-testid="stButton"]) {
+ position:absolute; top:3px; right:3px; width:22px!important;
+}
+[class*="st-key-draft_tile_"] [data-testid="stButton"] { position:static; }
+.st-key-chat_composer:has(.st-key-draft_cards [data-stale="false"]) { min-height:178px; }
+.st-key-draft_cards { min-height:112px; flex-shrink:0; }
+[class*="st-key-draft_tile_"] {
+ min-height:96px; max-height:96px; flex-shrink:0; box-sizing:border-box;
+}
+[class*="st-key-draft_tile_"] [data-testid="stMarkdown"] { width:100%!important; }
+[class*="st-key-draft_tile_"] [data-testid="stButton"] { width:22px!important; }
+
+/* A visible close icon sits in the top-right corner of every draft file. */
+[class*="st-key-draft_tile_"] [data-testid="stElementContainer"]:has([data-testid="stButton"]) {
+ top:3px; right:3px; width:28px!important; z-index:2;
+}
+[class*="st-key-draft_tile_"] [data-testid="stButton"] { width:28px!important; }
+
+/* Voice sits immediately left of Send; its recording panel opens above the composer. */
+.st-key-composer_input_row [data-testid="stColumn"]:last-child { position:relative; }
+.st-key-composer_voice { position:static; width:100%; }
+.st-key-composer_input_row [data-testid="stVerticalBlockBorderWrapper"]:has(> div > .st-key-composer_voice) {
+ position:absolute; z-index:3; right:48px; top:50%; transform:translateY(-50%); width:40px; height:40px;
+}
+.st-key-composer_input_row [data-testid="stVerticalBlockBorderWrapper"]:has(> div > .st-key-composer_voice.voice-expanded) {
+ width:min(320px, calc(100cqw - 80px)); height:auto; top:auto; bottom:6px; transform:none;
+}
+.st-key-composer_voice iframe { width:100%!important; border:0; }
+.st-key-composer_voice [data-testid="stElementContainer"] { width:100%!important; }
+.st-key-voice_draft { padding:8px 8px 4px; background:var(--surface-raised); border-radius:12px; margin:4px 0; }
+.st-key-voice_draft [data-testid="stTextArea"] label { font-size:12px; color:var(--muted); }
+.st-key-voice_draft [data-testid="stButton"] button { width:28px; min-height:28px; padding:0; border:0; background:transparent; }
+.st-key-voice_draft [data-testid="stButton"] button p { display:none; }
+[data-testid="stMainBlockContainer"]:has(.st-key-voice_draft) { padding-bottom:260px; }
+[data-testid="stMainBlockContainer"]:has(.st-key-voice_draft) .composer-note { bottom:216px; }
+[data-testid="stMainBlockContainer"]:has(.st-key-voice_draft):has(.st-key-draft_cards [data-stale="false"]) { padding-bottom:380px; }
+[data-testid="stMainBlockContainer"]:has(.st-key-voice_draft):has(.st-key-draft_cards [data-stale="false"]) .composer-note { bottom:332px; }
+[class*="st-key-draft_tile_"] [data-testid="stButton"] button {
+ width:28px; height:28px; min-height:28px; color:var(--danger);
+ border:1px solid var(--line); background:var(--surface-raised); box-shadow:0 1px 3px transparent;
+ display:flex; align-items:center; justify-content:center; gap:0; padding:0;
+}
+[class*="st-key-draft_tile_"] [data-testid="stButton"] button > span {
+ display:flex; align-items:center; justify-content:center; width:18px; height:18px; margin:0;
+}
+[class*="st-key-draft_tile_"] [data-testid="stButton"] [data-testid="stMarkdownContainer"] {
+ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap;
+}
+[class*="st-key-draft_tile_"] [data-testid="stButton"] button p {
+ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap;
+}
+[class*="st-key-draft_tile_"] [data-testid="stButton"] [data-testid="stIconMaterial"] {
+ font-size:18px; line-height:18px; width:18px; height:18px; margin:0; color:var(--danger);
+}
+[class*="st-key-draft_tile_"] [data-testid="stButton"] button:hover { background:color-mix(in srgb, var(--danger) 12%, var(--surface-raised)); border-color:var(--danger); }

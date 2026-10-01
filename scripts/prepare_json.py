@@ -4,10 +4,12 @@ import csv
 import hashlib
 import json
 import re
+import sys
 from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 SOURCE = ROOT / 'references/supervisor/dataset'
 OUTPUT = ROOT / 'data'
 REVISION = 'aa6b145d4838ac1dd6fd21b4db7a43c3098e19f9'
@@ -123,6 +125,8 @@ def main():
                           'CSV medicine mappings are unreviewed educational reference data, not prescribing rules.',
                           'Severity weights are stored for provenance, not used as clinical triage thresholds.']}
     OUTPUT.mkdir(parents=True, exist_ok=True)
+    from scripts.expand_dataset import apply_expansion
+    apply_expansion(files, manifest)
     for name, value in files.items():
         (OUTPUT / name).write_text(json.dumps(value, indent=2, ensure_ascii=False) + '\n')
     manifest['json_sha256'] = {name: hashlib.sha256((OUTPUT/name).read_bytes()).hexdigest() for name in files}

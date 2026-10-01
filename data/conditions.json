@@ -224,6 +224,39 @@
     "clinically_reviewed": false
   },
   {
+    "name": "Appendicitis",
+    "description": "Inflammation of the appendix needs urgent hospital assessment and treatment.",
+    "medications": [],
+    "diet": [],
+    "workout": [],
+    "precautions": [
+      "Worsening or persistent abdominal pain, especially moving to the lower right, needs urgent assessment. Severe pain, confusion or breathing difficulty need emergency help."
+    ],
+    "symptoms": [
+      "abdominal_pain",
+      "lower_right_abdominal_pain",
+      "nausea",
+      "vomiting",
+      "loss_of_appetite",
+      "high_fever",
+      "constipation",
+      "diarrhoea"
+    ],
+    "medicine_order": "No medication mapping supplied",
+    "clinically_reviewed": false,
+    "data_type": "illustrative_condition_profile",
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/appendicitis/",
+        "accessed_on": "2026-10-01",
+        "page_last_reviewed": "2024-08-09"
+      }
+    ],
+    "reference_name": "Appendicitis",
+    "review_status": "Illustrative training coverage; not clinically validated"
+  },
+  {
     "name": "Arthritis",
     "description": "Arthritis is inflammation of one or more joints, causing pain and stiffness.",
     "medications": [
@@ -313,6 +346,46 @@
     ],
     "medicine_order": "source order; effectiveness and suitability not assessed",
     "clinically_reviewed": false
+  },
+  {
+    "name": "COVID-19",
+    "description": "An infection with symptoms that overlap with other respiratory illnesses; a symptom list alone cannot distinguish them.",
+    "medications": [],
+    "diet": [],
+    "workout": [],
+    "precautions": [
+      "Seek urgent assessment if symptoms worsen or fail to improve, especially in higher-risk people.",
+      "Sudden chest pain, severe breathing difficulty, coughing blood or collapse require emergency help."
+    ],
+    "symptoms": [
+      "high_fever",
+      "cough",
+      "loss_of_smell",
+      "loss_of_taste",
+      "breathlessness",
+      "fatigue",
+      "muscle_pain",
+      "headache",
+      "throat_irritation",
+      "runny_nose",
+      "loss_of_appetite",
+      "diarrhoea",
+      "nausea",
+      "vomiting"
+    ],
+    "medicine_order": "No medication mapping supplied",
+    "clinically_reviewed": false,
+    "data_type": "illustrative_condition_profile",
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/covid-19/covid-19-symptoms-and-what-to-do/",
+        "accessed_on": "2026-09-21",
+        "page_last_reviewed": "2023-03-21"
+      }
+    ],
+    "reference_name": "COVID-19",
+    "review_status": "Illustrative training coverage; not clinically validated"
   },
   {
     "name": "Cervical spondylosis",
@@ -458,6 +531,42 @@
     "clinically_reviewed": false
   },
   {
+    "name": "Chronic kidney disease",
+    "description": "Kidney function gradually declines. Early disease often has no symptoms; blood and urine tests are needed.",
+    "medications": [],
+    "diet": [],
+    "workout": [],
+    "precautions": [
+      "Seek medical assessment for concerning symptoms or suspected kidney problems."
+    ],
+    "symptoms": [
+      "fatigue",
+      "nausea",
+      "vomiting",
+      "loss_of_appetite",
+      "breathlessness",
+      "insomnia",
+      "muscle_twitching",
+      "cramps",
+      "swollen_legs",
+      "itching",
+      "drowsiness"
+    ],
+    "medicine_order": "No medication mapping supplied",
+    "clinically_reviewed": false,
+    "data_type": "illustrative_condition_profile",
+    "sources": [
+      {
+        "publisher": "Aga Khan University Hospital, Pakistan",
+        "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/chronic-kidney-disease.aspx",
+        "accessed_on": "2026-10-01",
+        "date_not_published": true
+      }
+    ],
+    "reference_name": "Chronic kidney disease",
+    "review_status": "Illustrative training coverage; not clinically validated"
+  },
+  {
     "name": "Common Cold",
     "description": "Common Cold is a viral infection of the upper respiratory tract.",
     "medications": [
@@ -513,6 +622,38 @@
     ],
     "medicine_order": "source order; effectiveness and suitability not assessed",
     "clinically_reviewed": false
+  },
+  {
+    "name": "Dehydration",
+    "description": "The body has lost more fluid than it takes in.",
+    "medications": [],
+    "diet": [],
+    "workout": [],
+    "precautions": [
+      "Persistent dizziness on standing, reduced urine or unusual drowsiness need urgent advice. Confusion, difficulty waking or breathing difficulty needs emergency help."
+    ],
+    "symptoms": [
+      "excessive_thirst",
+      "headache",
+      "dark_urine",
+      "reduced_urine_output",
+      "dizziness",
+      "fatigue",
+      "dry_mouth"
+    ],
+    "medicine_order": "No medication mapping supplied",
+    "clinically_reviewed": false,
+    "data_type": "illustrative_condition_profile",
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/dehydration/",
+        "accessed_on": "2026-10-01",
+        "page_last_reviewed": "2026-05-01"
+      }
+    ],
+    "reference_name": "Dehydration",
+    "review_status": "Illustrative training coverage; not clinically validated"
   },
   {
     "name": "Dengue",
@@ -707,6 +848,37 @@
     ],
     "medicine_order": "source order; effectiveness and suitability not assessed",
     "clinically_reviewed": false
+  },
+  {
+    "name": "Ear infection",
+    "description": "Infections can affect different parts of the ear; examination helps distinguish the cause.",
+    "medications": [],
+    "diet": [],
+    "workout": [],
+    "precautions": [
+      "Seek assessment for persistent symptoms. New hearing loss, swelling, discharge or severe illness need urgent advice."
+    ],
+    "symptoms": [
+      "ear_pain",
+      "high_fever",
+      "reduced_hearing",
+      "ear_discharge",
+      "ear_pressure",
+      "itching"
+    ],
+    "medicine_order": "No medication mapping supplied",
+    "clinically_reviewed": false,
+    "data_type": "illustrative_condition_profile",
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/ear-infections/",
+        "accessed_on": "2026-10-01",
+        "page_last_reviewed": "2025-01-16"
+      }
+    ],
+    "reference_name": "Ear infection",
+    "review_status": "Illustrative training coverage; not clinically validated"
   },
   {
     "name": "Fungal infection",
@@ -1332,6 +1504,77 @@
     "clinically_reviewed": false
   },
   {
+    "name": "Influenza (flu)",
+    "description": "A respiratory illness that often starts suddenly and can cause marked fatigue.",
+    "medications": [],
+    "diet": [],
+    "workout": [],
+    "precautions": [
+      "Seek urgent assessment for breathlessness, feeling very unwell, or failure to improve after seven days.",
+      "Sudden chest pain, severe breathing difficulty or coughing blood require emergency help."
+    ],
+    "symptoms": [
+      "high_fever",
+      "muscle_pain",
+      "fatigue",
+      "cough",
+      "throat_irritation",
+      "headache",
+      "insomnia",
+      "loss_of_appetite"
+    ],
+    "medicine_order": "No medication mapping supplied",
+    "clinically_reviewed": false,
+    "data_type": "illustrative_condition_profile",
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/flu/",
+        "accessed_on": "2026-09-21",
+        "page_last_reviewed": "2026-02-03"
+      }
+    ],
+    "reference_name": "Influenza (flu)",
+    "review_status": "Illustrative training coverage; not clinically validated"
+  },
+  {
+    "name": "Iron deficiency anaemia",
+    "description": "Low iron can reduce red blood cell production. Blood tests and assessment of the cause are needed.",
+    "medications": [],
+    "diet": [],
+    "workout": [],
+    "precautions": [
+      "Arrange assessment if you suspect anaemia; this summary does not select iron treatment."
+    ],
+    "symptoms": [
+      "fatigue",
+      "breathlessness",
+      "palpitations",
+      "pale_skin",
+      "headache",
+      "tinnitus",
+      "hair_loss",
+      "pica",
+      "restless_legs",
+      "sore_tongue",
+      "spoon_shaped_nails",
+      "mouth_corner_sores"
+    ],
+    "medicine_order": "No medication mapping supplied",
+    "clinically_reviewed": false,
+    "data_type": "illustrative_condition_profile",
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/iron-deficiency-anaemia/",
+        "accessed_on": "2026-10-01",
+        "page_last_reviewed": "2024-01-26"
+      }
+    ],
+    "reference_name": "Iron deficiency anaemia",
+    "review_status": "Illustrative training coverage; not clinically validated"
+  },
+  {
     "name": "Jaundice",
     "description": "Jaundice is a yellow discoloration of the skin and eyes, often indicating liver problems.",
     "medications": [
@@ -1475,6 +1718,38 @@
     ],
     "medicine_order": "source order; effectiveness and suitability not assessed",
     "clinically_reviewed": false
+  },
+  {
+    "name": "Norovirus infection",
+    "description": "A contagious infection that can cause sudden vomiting and diarrhoea.",
+    "medications": [],
+    "diet": [],
+    "workout": [],
+    "precautions": [
+      "Seek help for inability to retain fluids, dehydration, bloody diarrhoea, a child not feeding or persistent vomiting or diarrhoea."
+    ],
+    "symptoms": [
+      "nausea",
+      "vomiting",
+      "diarrhoea",
+      "high_fever",
+      "headache",
+      "abdominal_pain",
+      "muscle_pain"
+    ],
+    "medicine_order": "No medication mapping supplied",
+    "clinically_reviewed": false,
+    "data_type": "illustrative_condition_profile",
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/norovirus/",
+        "accessed_on": "2026-10-01",
+        "page_last_reviewed": "2024-12-31"
+      }
+    ],
+    "reference_name": "Norovirus infection",
+    "review_status": "Illustrative training coverage; not clinically validated"
   },
   {
     "name": "Osteoarthristis",
@@ -1708,6 +1983,79 @@
     ],
     "medicine_order": "source order; effectiveness and suitability not assessed",
     "clinically_reviewed": false
+  },
+  {
+    "name": "Sinusitis",
+    "description": "Inflammation of the sinuses, often following a respiratory infection.",
+    "medications": [],
+    "diet": [],
+    "workout": [],
+    "precautions": [
+      "Seek urgent assessment for severe illness, worsening symptoms, uncontrolled pain or a weakened immune system.",
+      "Persistent or recurring symptoms need professional assessment."
+    ],
+    "symptoms": [
+      "facial_pain",
+      "runny_nose",
+      "congestion",
+      "loss_of_smell",
+      "high_fever",
+      "headache",
+      "tooth_pain",
+      "cough",
+      "ear_pressure",
+      "bad_breath"
+    ],
+    "medicine_order": "No medication mapping supplied",
+    "clinically_reviewed": false,
+    "data_type": "illustrative_condition_profile",
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/sinusitis-sinus-infection/",
+        "accessed_on": "2026-09-21",
+        "page_last_reviewed": "2024-01-31"
+      }
+    ],
+    "reference_name": "Sinusitis",
+    "review_status": "Illustrative training coverage; not clinically validated"
+  },
+  {
+    "name": "Tonsillitis",
+    "description": "Inflamed tonsils can cause a sore throat and swallowing difficulty.",
+    "medications": [],
+    "diet": [],
+    "workout": [],
+    "precautions": [
+      "Seek urgent help if pain prevents drinking. Inability to swallow, breathing difficulty or rapidly worsening throat swelling needs emergency help."
+    ],
+    "symptoms": [
+      "throat_irritation",
+      "difficulty_swallowing",
+      "swollen_tonsils",
+      "high_fever",
+      "cough",
+      "headache",
+      "nausea",
+      "vomiting",
+      "ear_pain",
+      "fatigue",
+      "swelled_lymph_nodes",
+      "bad_breath"
+    ],
+    "medicine_order": "No medication mapping supplied",
+    "clinically_reviewed": false,
+    "data_type": "illustrative_condition_profile",
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/tonsillitis/",
+        "accessed_on": "2026-10-01",
+        "page_last_reviewed": "2024-03-08"
+      }
+    ],
+    "reference_name": "Tonsillitis",
+    "review_status": "Illustrative training coverage; not clinically validated"
   },
   {
     "name": "Tuberculosis",

@@ -12,8 +12,9 @@ import pandas as pd
 import streamlit as st
 
 from src.data import ARTIFACT_DIR, DATA_DIR, fingerprint, load_data
+from src.regional_data import load_regional_preview
 from src.dialogue import new_state, respond, profile_has_context
-from src.browser_history import read_history, write_history, valid_history
+from src.browser_history import read_history, write_history, valid_history, scroll_to_message
 
 MODEL_NAMES = {
     'transformer': 'MiniLM · fine-tuned transformer',
@@ -26,6 +27,17 @@ EVAL_NAMES = {
 }
 ASSETS = Path(__file__).resolve().parents[1] / 'assets'
 LOGO = (ASSETS / 'logo.svg').read_text()
+
+
+def model_privacy_notice():
+    from src.general_qa import _model_setting, OLLAMA_URL
+    from urllib.parse import urlparse
+    backend = _model_setting('MRS_LLM_BACKEND', 'ollama').lower()
+    host = urlparse(_model_setting('MRS_LLM_URL') or (OLLAMA_URL if backend == 'ollama' else '')).hostname
+    if host in {'localhost', '127.0.0.1', '::1'}:
+        return 'AI answers process your questions and readable report text using a model on this server.'
+    provider = 'Groq' if host == 'api.groq.com' else 'OpenAI' if host == 'api.openai.com' else 'the configured AI provider'
+    return 'Some questions and readable report text may be shared with ' + provider + ' to prepare an answer.'
 
 
 @st.cache_data
@@ -63,6 +75,7 @@ def clear_saved_conversations():
 def choose_chat(key):
     st.session_state.active_chat = key
     st.session_state.navigation = 'Chat'
+    st.session_state.chat_landing = True
 
 
 def model_metrics(version):
@@ -88,11 +101,16 @@ def queue_retry():
 
 
 def begin_edit(chat):
+    from src.chat_edit import turn_attachments
+    chat['edit_files'] = [dict(report, id=uuid4().hex) for report in
+                          turn_attachments(chat['messages'][-2], chat['state'])]
+    st.session_state['edit_text_' + chat['id']] = chat['messages'][-2]['content']
     chat['editing_last'] = True
 
 
 def cancel_edit(chat):
     chat['editing_last'] = False
+    chat.pop('edit_files', None)
 
 
 def sidebar(chat):
@@ -125,8 +143,8 @@ def sidebar(chat):
                 st.button(label, icon=f':material/{icon}:', on_click=navigate, args=(page,),
                           use_container_width=True)
         st.markdown('<div class="sidebar-note">For educational information.<br>Not a diagnosis or prescription.'
-                    '<br><br>Conversations are saved in this browser. Some questions may be shared with Groq '
-                    'to provide an answer. Please leave out names and other identifying details.</div>',
+                    '<br><br>Conversations are saved in this browser. ' + escape(model_privacy_notice()) +
+                    ' Please leave out names and other identifying details.</div>',
                     unsafe_allow_html=True)
 
 
@@ -153,23 +171,9 @@ def welcome(chat):
                     ('I have stomach pain and nausea', 'healing')]
         for col, (text, icon) in zip(st.columns(3), examples):
             col.button(text, icon=f':material/{icon}:', on_click=queue_prompt, args=(text,), use_container_width=True)
-    st.caption('Privacy: some questions and relevant symptom details may be shared with Groq to provide an answer. '
+    st.caption('Privacy: ' + model_privacy_notice() + ' '
                'Please leave out names and other identifying details. Conversations are saved in this browser '
                'until you clear them. We keep anonymous activity counts.')
-
-
-def welcome_details(chat):
-    st.markdown('<div class="how-it-works"><h2>A conversation, one step at a time</h2><div class="steps">'
-                '<div><span class="step-number">1</span><strong>Tell me what’s happening</strong>'
-                '<p>Start with your symptoms, using your own words.</p></div>'
-                '<div><span class="step-number">2</span><strong>Explore the details</strong>'
-                '<p>Answer a few follow-up questions to clarify what you’re feeling.</p></div>'
-                '<div><span class="step-number">3</span><strong>Understand the possibilities</strong>'
-                '<p>Review possible matches and educational information.</p></div></div></div>', unsafe_allow_html=True)
-    configured = profile_has_context(chat['profile'])
-    st.markdown('<div class="context-note"><strong>' + ('Your health context is saved' if configured else 'Your health context matters') +
-                '</strong>Allergies, current medicines or existing conditions can affect which information is shown. '
-                'You can add these in Health context.</div>', unsafe_allow_html=True)
 
 
 def symptom_tags(symptoms, data):
@@ -194,15 +198,34 @@ def render_sources(message):
                 st.caption(f'{publisher} · updated {source["updated_on"]}')
 
 
-def render_message(message, chat, data, editable=False, latest=False):
+def sent_file_cards(names):
+    if not names:
+        return
+    cards = []
+    for name in names:
+        kind = Path(name).suffix.lstrip('.').upper() or 'FILE'
+        cards.append('<div class="sent-file-card"><div class="draft-file-icon">📄</div>'
+                     f'<div class="draft-file-kind">{escape(kind)}</div>'
+                     f'<div class="draft-file-name" title="{escape(name, quote=True)}">{escape(name)}</div></div>')
+    st.markdown('<div class="sent-file-cards">' + ''.join(cards) + '</div>', unsafe_allow_html=True)
+
+
+def render_message(message, chat, data, editable=False, latest=False, animate=False):
     is_user = message['role'] == 'user'
     with st.chat_message(message['role'], avatar=':material/person:' if is_user else str(ASSETS / 'logo.svg')):
         author = 'You' if is_user else 'MRS AI'
         time = datetime.fromisoformat(message['timestamp']).astimezone().strftime('%H:%M') if message.get('timestamp') else ''
         role_class = ' user-author' if is_user else ''
-        st.markdown(f'<div class="message-author{role_class}">{author}<span>{time}</span></div>', unsafe_allow_html=True)
+        if animate:
+            role_class += ' message-enter-user' if is_user else ' message-enter-assistant'
+        anchor = 'chat-message-' + message.get('id', '')
+        st.markdown(f'<div id="{escape(anchor, quote=True)}" class="message-author{role_class}">{author}<span>{time}</span></div>', unsafe_allow_html=True)
         if is_user:
-            st.markdown(message['content'])
+            from src.chat_edit import REPORT_PROMPT, turn_attachments
+            names = message.get('attachments') or [r['name'] for r in turn_attachments(message, chat['state'])]
+            sent_file_cards(names)
+            if not message.get('file_only') and not (names and message['content'] == REPORT_PROMPT):
+                st.markdown(message['content'])
             if editable:
                 st.button('Edit last prompt', icon=':material/edit:', key='edit_last_' + chat['id'],
                           on_click=begin_edit, args=(chat,))
@@ -220,12 +243,19 @@ def render_message(message, chat, data, editable=False, latest=False):
                         f'<div class="result-title">{escape(record["name"])}</div>', unsafe_allow_html=True)
             st.write(record['description'])
             st.caption('A possible match from your symptoms, not a diagnosis. A healthcare professional can assess the cause.')
-            st.caption('Source: original symptom and medicine dataset · clinical review date unavailable.')
+            if record.get('data_type') == 'illustrative_condition_profile':
+                st.caption('This possibility comes from illustrative training examples and has no independent clinical evaluation.')
+                render_sources({'source_details': record['sources']})
+            else:
+                st.caption('Source: original symptom and medicine dataset · clinical review date unavailable.')
             context = {**chat['state']['context'], **chat['profile']}
             withheld = message.get('medicine_withheld') or profile_has_context(context) or chat['state']['urgent']
             if withheld:
-                st.info('Medicine information is withheld. Your health context or an urgent symptom report means '
-                        'these details need a clinician’s review.', icon=':material/info:')
+                text = ('No verified medicine information is available for this condition. A clinician or pharmacist can advise on treatment.'
+                        if not record['medications'] else
+                        'Medicine information is withheld because your health context needs a clinician’s review. '
+                        'A clinician or pharmacist can discuss suitable options with you.')
+                st.info(text, icon=':material/info:')
             else:
                 with st.expander('Medicine information · educational reference', icon=':material/medication:'):
                     st.caption('Unreviewed entries from the source dataset. Suitability and effectiveness have not been established.')
@@ -238,6 +268,17 @@ def render_message(message, chat, data, editable=False, latest=False):
                 with st.expander('Other possible matches'):
                     st.write(' · '.join(others))
                     st.caption('These are other possibilities to discuss with a healthcare professional, not confirmed conditions.')
+        elif message.get('result_ready'):
+            symptom_tags(message.get('symptoms', []), data)
+            st.markdown('### Available symptom matches')
+            st.info(message['content'], icon=':material/info:')
+            st.caption('Dataset matches are not confirmed conditions or clinically validated likelihoods. '
+                       'Medicine information is withheld because the result is uncertain.')
+            for prediction in message.get('predictions', [])[:3]:
+                record = data['by_condition'][prediction['condition']]
+                with st.expander(record['name']):
+                    st.write(record['description'])
+            render_sources(message)
         elif message.get('uncertain'):
             st.info('**Let’s understand this a little better**\n\n' + message['content'], icon=':material/info:')
         else:
@@ -248,8 +289,76 @@ def render_message(message, chat, data, editable=False, latest=False):
                       on_click=queue_retry)
 
 
-def chat_page(chat, data, version):
+def add_selected_files(chat, upload_key):
+    """Stage selected uploads before rendering the composer on its next run."""
+    uploads = st.session_state.get(upload_key, [])
+    if not uploads:
+        return
+    from src.medical_files import read_report, MAX_FILES
+    try:
+        drafts = chat.get('draft_files', [])
+        if len(drafts) + len(uploads) > MAX_FILES:
+            raise ValueError('Send up to 3 files at a time. Remove a file before adding another.')
+        reports = [dict(read_report(file.name, file.getvalue()), id=uuid4().hex) for file in uploads]
+        chat['draft_files'] = drafts + reports
+        chat['upload_version'] = chat.get('upload_version', 0) + 1
+        chat.pop('drop_error', None)
+    except (ValueError, ImportError) as error:
+        chat['drop_error'] = str(error)
+
+
+def attachment_menu(chat, disabled=False):
+    with st.popover(r'\+', help='Choose a medical file', disabled=disabled):
+        st.caption('PDF, TXT or report photo · up to 3 files, 10 MB each.')
+        st.caption('Files are sent to the configured AI provider only when you press Send. '
+                   'Readable contents are saved with this chat in your browser.')
+        upload_key = 'medical_upload_' + chat['id'] + '_' + str(chat.get('upload_version', 0))
+        st.file_uploader('Choose files', type=['pdf', 'txt', 'png', 'jpg', 'jpeg'],
+                         accept_multiple_files=True, key=upload_key, disabled=disabled,
+                         on_change=add_selected_files, args=(chat, upload_key))
+
+
+def remove_file_draft(chat, report_id):
+    chat['draft_files'] = [report for report in chat.get('draft_files', []) if report['id'] != report_id]
+
+
+def remove_edit_file(chat, report_id):
+    chat['edit_files'] = [report for report in chat.get('edit_files', []) if report['id'] != report_id]
+
+
+def remove_voice_draft(chat):
+    chat.pop('voice_draft', None)
+
+
+def draft_file_cards(chat, editing=False):
+    drafts = chat.get('edit_files' if editing else 'draft_files', [])
+    if not drafts:
+        return
+    with st.container(key='edit_cards' if editing else 'draft_cards'):
+        columns = st.columns([1, 1, 1, 5], gap='small')
+        for index, report in enumerate(drafts):
+            with columns[index], st.container(key='draft_tile_' + report['id']):
+                kind = Path(report['name']).suffix.lstrip('.').upper() or 'FILE'
+                st.markdown('<div class="draft-file-icon">📄</div>'
+                            f'<div class="draft-file-kind">{escape(kind)}</div>'
+                            f'<div class="draft-file-name" title="{escape(report["name"], quote=True)}">'
+                            f'{escape(report["name"])}</div>', unsafe_allow_html=True)
+                st.button('Remove file', icon=':material/close:', key='remove_draft_' + report['id'],
+                          help='Remove ' + report['name'],
+                          on_click=remove_edit_file if editing else remove_file_draft, args=(chat, report['id']))
+
+
+def chat_page(chat, data, version, landing=False):
     page_header()
+    if not chat.get('composer_files_v2'):
+        sent_names = {name for message in chat['messages'] if message['role'] == 'user'
+                      for name in message.get('attachments', [])}
+        old_reports = chat['state'].get('medical_files', [])
+        unsent = [dict(report, id=uuid4().hex) for report in old_reports if report['name'] not in sent_names]
+        if unsent:
+            chat['draft_files'] = (chat.get('draft_files', []) + unsent)[-3:]
+            chat['state']['medical_files'] = [report for report in old_reports if report['name'] in sent_names]
+        chat['composer_files_v2'] = True
     def predictor(symptoms):
         from src.models import predict
         model_metrics(version)
@@ -267,27 +376,53 @@ def chat_page(chat, data, version):
             delete_event(old_event_id)
         except (OSError, sqlite3.Error):
             logging.exception('Unable to remove retried analytics event')
-    if not chat['messages']:
-        welcome(chat)
-    else:
-        st.markdown('<div class="conversation-heading"><h1>Let’s understand how you’re feeling</h1>'
-                    '<p>You can add details or correct a symptom at any time.</p></div>', unsafe_allow_html=True)
-    for index, message in enumerate(chat['messages']):
-        editable = (index == len(chat['messages']) - 2 and message['role'] == 'user')
-        render_message(message, chat, data, editable=editable,
-                       latest=index == len(chat['messages']) - 1)
+    pending_prompt = chat.pop('pending_prompt', None)
+    animate_id = chat.pop('animate_message_id', None)
+    if landing and chat['messages']:
+        chat['messages'][-1].setdefault('id', uuid4().hex)
+    thread = st.container(key='conversation_thread')
+    with thread:
+        if not chat['messages']:
+            welcome(chat)
+        else:
+            st.markdown('<div class="conversation-heading"><h1>Let’s understand how you’re feeling</h1>'
+                        '<p>You can add details or correct a symptom at any time.</p></div>', unsafe_allow_html=True)
+        for index, message in enumerate(chat['messages']):
+            editable = (index == len(chat['messages']) - 2 and message['role'] == 'user')
+            render_message(message, chat, data, editable=editable,
+                           latest=index == len(chat['messages']) - 1,
+                           animate=bool(animate_id and message.get('id') == animate_id))
+        if animate_id:
+            scroll_to_message('chat-message-' + animate_id)
+        elif landing and chat['messages']:
+            scroll_to_message('chat-message-' + chat['messages'][-1]['id'], smooth=False)
     edited_prompt = None
     if chat.get('editing_last'):
-        with st.form('edit_form_' + chat['id']):
-            revised = st.text_area('Edit your last message', value=chat['messages'][-2]['content'], max_chars=2000)
-            save_edit = st.form_submit_button('Save and regenerate', type='primary')
+        from src.chat_edit import turn_attachments, REPORT_PROMPT
+        if 'edit_files' not in chat:
+            chat['edit_files'] = [dict(report, id=uuid4().hex) for report in
+                                  turn_attachments(chat['messages'][-2], chat['state'])]
+        with st.container(key='edit_panel', border=True):
+            with st.container(key='edit_file_slot'):
+                if chat['edit_files']:
+                    draft_file_cards(chat, editing=True)
+                else:
+                    st.empty()
+            edit_key = 'edit_text_' + chat['id']
+            if edit_key not in st.session_state:
+                st.session_state[edit_key] = chat['messages'][-2]['content']
+            revised = st.text_area('Edit your last message', key=edit_key, max_chars=2000)
+            save_edit = st.button('Save and regenerate', type='primary')
         st.button('Cancel edit', on_click=cancel_edit, args=(chat,))
         if save_edit:
             if not revised.strip():
                 st.warning('Enter a message before saving.')
+            elif not chat['edit_files'] and revised.strip() == REPORT_PROMPT:
+                st.warning('You removed all the files. Enter a new message before saving.')
             else:
                 from src.chat_edit import replace_last_turn
-                old_event_id = replace_last_turn(chat, data, predictor)
+                reports = [{key: report[key] for key in ('name', 'text')} for report in chat.pop('edit_files')]
+                old_event_id = replace_last_turn(chat, data, predictor, attachments=reports)
                 chat['editing_last'] = False
                 st.session_state.pop('queued_prompt', None)
                 edited_prompt = revised.strip()
@@ -300,32 +435,96 @@ def chat_page(chat, data, version):
         with st.container(key='followup'):
             for col, (label, prompt) in zip(st.columns(3), [('Yes, I do', 'yes'), ('No, I don’t', 'no'), ('Show matches', 'show results')]):
                 col.button(label, on_click=queue_prompt, args=(prompt,), use_container_width=True)
-    elif not chat.get('editing_last') and chat['messages'] and not chat['state']['urgent']:
-        with st.container(key='followup'):
-            for col, label in zip(st.columns(2), ['Summarize my symptoms', 'Explain the previous result']):
-                col.button(label, on_click=queue_prompt, args=(label,), use_container_width=True)
     if chat['state']['urgent']:
         st.warning('Medicine suggestions are paused for this conversation. Contact local emergency services or seek urgent care.')
     st.markdown('<div class="composer-note">For educational information. Not a diagnosis or prescription.</div>', unsafe_allow_html=True)
-    if chat.get('editing_last'):
-        entered = None
-    elif chat['messages']:
-        entered = st.chat_input('Describe what you’re experiencing…', max_chars=2000)
-    else:
-        # Inline on the welcome page avoids Streamlit scrolling past the greeting
-        # to its pinned composer before the first message has been sent.
-        with st.container(key='welcome_composer'):
-            entered = st.chat_input('Describe what you’re experiencing…', max_chars=2000)
-        welcome_details(chat)
-    prompt = retry_prompt or edited_prompt or st.session_state.pop('queued_prompt', None) or entered
-    if prompt:
-        chat['messages'].append({'role': 'user', 'content': prompt,
-                                 'state_before': deepcopy(chat['state']),
+    submitted, entered = False, ''
+    if not chat.get('editing_last'):
+        with st.container(key='chat_composer'):
+            from src.composer_drop import composer_drop, accept_drop
+            drop_disabled = bool(chat['state']['urgent'] or pending_prompt)
+            with st.container(key='composer_drop'):
+                drop_event = composer_drop(chat, disabled=drop_disabled)
+            accept_drop(chat, drop_event, disabled=drop_disabled)
+            with st.container(key='composer_notice_slot'):
+                if chat.get('drop_error'):
+                    st.warning(chat.pop('drop_error'))
+                else:
+                    st.empty()
+            with st.container(key='composer_file_slot'):
+                if chat.get('draft_files'):
+                    draft_file_cards(chat)
+                else:
+                    st.empty()
+            with st.container(key='composer_transcript_slot'):
+                if chat.get('voice_draft'):
+                    with st.container(key='voice_draft'):
+                        transcript_column, close_column = st.columns([15, 1])
+                        with transcript_column:
+                            chat['voice_draft'] = st.text_area('Voice transcript · review before sending',
+                                value=chat['voice_draft'], key='voice_draft_' + chat['id'] + '_' + chat['voice_event_id'],
+                                max_chars=2000, height=68)
+                        close_column.button('Remove voice transcript', icon=':material/close:', help='Delete the voice transcript',
+                                            on_click=remove_voice_draft, args=(chat,))
+                else:
+                    st.empty()
+            with st.container(key='composer_input_row'):
+                attachment_column, input_column = st.columns([1, 15], gap='small')
+                with attachment_column:
+                    attachment_menu(chat, disabled=drop_disabled)
+                with input_column:
+                    from src.voice_input import voice_input, accept_transcript
+                    with st.container(key='composer_voice'):
+                        voice_event = voice_input(chat['id'], disabled=bool(pending_prompt))
+                    if accept_transcript(chat, voice_event):
+                        st.rerun()
+                    with st.form('message_form_' + chat['id'], clear_on_submit=True, border=False):
+                        entered = st.text_input('Message', placeholder='Describe your symptoms or drop a file…',
+                                                key='message_' + chat['id'],
+                                                max_chars=2000, label_visibility='collapsed',
+                                                disabled=bool(pending_prompt))
+                        submitted = st.form_submit_button('Send', icon=':material/arrow_upward:',
+                                                          help='Send message or files', disabled=bool(pending_prompt))
+    prompt = retry_prompt or edited_prompt or st.session_state.pop('queued_prompt', None)
+    sending_files = chat.get('draft_files', []) if submitted else []
+    file_only = submitted and not entered.strip() and bool(sending_files)
+    if submitted:
+        voice_text = chat.get('voice_draft', '').strip()
+        combined = '\n'.join(part for part in [entered.strip(), voice_text] if part)
+        if len(combined) > 2000:
+            st.warning('Please shorten your message and voice transcript to 2,000 characters before sending.')
+            return
+        file_only = not combined and bool(sending_files)
+        prompt = combined or ('Please summarize and explain my attached medical reports.' if sending_files else None)
+    if prompt and not pending_prompt:
+        if submitted:
+            chat.pop('voice_draft', None)
+        replacement = chat.pop('replacement_turn', {}) if (retry_prompt or edited_prompt) else {}
+        reports = (replacement.get('attachment_reports', []) if replacement else
+                   [{key: report[key] for key in ('name', 'text')} for report in sending_files])
+        attached_names = replacement.get('attachments', []) if replacement else [report['name'] for report in reports]
+        if replacement:
+            file_only = bool(replacement.get('file_only') and prompt == replacement['content'])
+        state_before = deepcopy(chat['state'])
+        if reports:
+            existing = [r for r in chat['state'].get('medical_files', []) if r not in reports]
+            chat['state']['medical_files'] = (existing + reports)[-3:]
+        if sending_files:
+            chat['draft_files'] = []
+        user_message_id = uuid4().hex
+        chat['messages'].append({'role': 'user', 'content': prompt, 'id': user_message_id,
+                                 'state_before': state_before, 'file_only': file_only,
+                                 'attachments': attached_names, 'attachment_reports': deepcopy(reports),
                                  'timestamp': datetime.now(timezone.utc).isoformat()})
         if chat['title'] == 'New conversation':
-            chat['title'] = prompt[:64]
+            chat['title'] = attached_names[0] if file_only else prompt[:64]
+        chat['pending_prompt'] = prompt
+        chat['animate_message_id'] = user_message_id
+        st.rerun()
+    if pending_prompt:
+        prompt = pending_prompt
         try:
-            with st.spinner('Reviewing your symptoms…'):
+            with st.spinner('Preparing your response…'):
                 answer = respond(prompt, chat['state'], data, predictor, chat['profile'])
             message = {
                 **answer,
@@ -337,10 +536,11 @@ def chat_page(chat, data, version):
             logging.exception('Unable to prepare symptom response')
             message = {'role': 'assistant', 'content': 'I’m unable to review your symptoms right now. '
                        'Please try again later. If you feel very unwell, seek medical advice.'}
+        message['id'] = uuid4().hex
+        chat['animate_message_id'] = message['id']
         chat['messages'].append(message)
         if 'text' in message:
             from src.analytics import record_event
-            message['id'] = uuid4().hex
             try:
                 record_event(st.session_state.analytics_session, chat['id'], message, data)
             except (OSError, sqlite3.Error):
@@ -445,9 +645,9 @@ def health_context_page(chat):
 
 def dataset_page(data):
     st.title('Dataset Preview')
-    st.write('Supervisor CSV bundle, converted to JSON with source-row references.')
+    st.write('Original educational data and labelled illustrative additions, with separate hospital research cohorts.')
     stats = data['manifest']
-    labels = ['Source rows', 'Unique patterns', 'Conditions', 'Symptom features']
+    labels = ['Total input rows', 'Unique patterns', 'Conditions', 'Symptom features']
     values = [stats['raw_rows'], stats['unique_rows'], stats['condition_count'], stats['feature_count']]
     for col, label, value in zip(st.columns(4), labels, values):
         col.metric(label, value)
@@ -455,8 +655,8 @@ def dataset_page(data):
         f"{stats['duplicates_removed']:,} repeated patterns were removed before splitting. "
         'Repeated variants are not independent clinical cases.'
     )
-    st.info(f"{len(data['reference_conditions'])} additional source-linked conditions are reference-only; "
-            'they are not classifier predictions or clinically reviewed prescribing guidance.')
+    st.info(f"{len(data['reference_conditions'])} source-linked reference records provide educational summaries. "
+            'They are not clinically reviewed prescribing guidance or patient observations.')
     table = st.selectbox('JSON table', ['training', 'conditions', 'symptoms', 'manifest',
                                       'reference_conditions', 'symptom_metadata'])
     if table == 'manifest':
@@ -472,6 +672,46 @@ def dataset_page(data):
     counts = pd.Series([row['condition'] for row in data['training']]).value_counts().rename('Unique patterns')
     st.bar_chart(counts)
     st.caption('Medicine, diet, exercise and precaution records are unreviewed source material. Only condition classification is evaluated.')
+    if stats.get('illustrative_rows'):
+        st.info(f"{stats['legacy_unique_rows']:,} original educational patterns plus {stats['illustrative_rows']:,} labelled illustrative examples. Generated subsets are not hospital cases or clinical evidence. The 10 added condition labels have no independent evaluation.")
+    st.subheader('Hospital research datasets')
+    try:
+        catalog, regional, audit = load_regional_preview()
+    except (OSError, ValueError, KeyError) as exc:
+        st.warning(f'Hospital dataset preview unavailable: {exc}')
+        return
+    for col, label, value in zip(st.columns(3),
+                                 ['Distinct observations', 'Research datasets', 'Countries'],
+                                 [regional['unique_rows'], len(catalog['sources']), len(audit['countries'])]):
+        col.metric(label, value)
+    st.info('These public clinical cohorts are collected for research. Their targets include infant referral, '
+            'heart-failure survival, diabetes and kidney disease. They are not used by the symptom classifier, '
+            f"which contains {len(data['training']):,} educational patterns including labelled illustrative examples.")
+    summaries = {s['source_id']: s for s in regional['sources']}
+    st.dataframe(pd.DataFrame([{
+        'Dataset': source['name'], 'Country': source['country'],
+        'Raw rows': summaries[source['id']]['raw_rows'],
+        'Distinct observations': summaries[source['id']]['unique_rows'],
+        'Duplicates removed': summaries[source['id']]['duplicates_removed'],
+        'Task': source['task'],
+    } for source in catalog['sources']]), use_container_width=True, hide_index=True)
+    source_by_name = {source['name']: source for source in catalog['sources']}
+    chosen_name = st.selectbox('Hospital dataset', list(source_by_name))
+    chosen = source_by_name[chosen_name]
+    st.markdown(f"[Published dataset]({chosen['source_url']}) · [Licence]({chosen['license']['url']})")
+    st.caption(chosen['target_meaning'])
+    st.write(chosen['attribution'])
+    prepared = DATA_DIR / 'regional' / summaries[chosen['id']]['file']
+    st.download_button('Download clinical observations', prepared.read_bytes(), file_name=prepared.name,
+                       mime='application/x-ndjson')
+    st.download_button('Download hospital source catalog', json.dumps(catalog, indent=2),
+                       file_name='hospital_sources.json', mime='application/json')
+    with st.expander('Clinical dataset limitations and audit'):
+        st.write(chosen['population'])
+        for note in chosen['limitations']:
+            st.write(note)
+        for note in audit['warnings']:
+            st.caption(note)
 
 
 def evaluation_page(version):
@@ -497,6 +737,8 @@ def evaluation_page(version):
     st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
     st.warning('This is a technical benchmark on 61 template-like held-out records, not a clinical validation. '
                'Perfect scores do not establish real-world diagnosis, triage or medicine safety.')
+    if metrics.get('unevaluated_labels'):
+        st.warning('No independent test examples for: ' + ', '.join(metrics['unevaluated_labels']) + '.')
     chosen = st.selectbox('Inspect model', list(EVAL_NAMES), format_func=lambda k: EVAL_NAMES[k])
     item = metrics['models'][chosen]
     st.metric('Test accuracy', f"{item['accuracy']:.2%}")
@@ -509,7 +751,27 @@ def evaluation_page(version):
     st.caption(f"Best epoch: {metrics['training']['best_epoch']} · All encoder layers fine-tuned · Batch size: 16")
     with st.expander('Hyperparameters and optimization'):
         st.json(metrics['optimization'])
-        st.write('Head regularization selected with 2-fold cross-validation on training data. Transformer checkpoint selected by validation accuracy, then validation loss. Test data is not used for model selection.')
+        st.write('Head regularization selected on fixed original validation examples. Training gives each condition and training family equal total weight. Transformer checkpoint selected by validation accuracy, then validation loss. Test data is not used for model selection.')
+    research_path = ARTIFACT_DIR.parent / 'research/metrics.json'
+    if research_path.exists():
+        st.subheader('Published hospital data benchmarks')
+        research = json.loads(research_path.read_text())
+        st.caption('Separate research tasks using original study labels. These models are not used for chat responses.')
+        st.dataframe(pd.DataFrame([{
+            'Dataset': row['name'], 'Country': row['country'], 'Study task': row['task'],
+            'Train / validation / test': ' / '.join(str(row['split_sizes'][key]) for key in ['train', 'validation', 'test']),
+            'Balanced accuracy': row['test']['balanced_accuracy'], 'ROC AUC': row['test']['roc_auc'],
+            'Majority baseline': row['majority_baseline']['balanced_accuracy'],
+        } for row in research['models']]), use_container_width=True, hide_index=True)
+        with st.expander('Hospital benchmark methods and limitations'):
+            st.write(research['selection_policy'])
+            for row in research['models']:
+                st.markdown('**' + row['name'] + '**')
+                for note in row['limitations']:
+                    st.caption(note)
+            st.caption('The infant-referral cohort is excluded until its coded features and timing are reviewed.')
+        st.download_button('Download hospital benchmark results', research_path.read_bytes(),
+                           file_name='hospital_benchmarks.json', mime='application/json')
     st.download_button(
         'Download evaluation JSON',
         (ARTIFACT_DIR / 'metrics.json').read_bytes(),
@@ -552,7 +814,7 @@ def about_page(data):
     with st.container(border=True):
         st.subheader('What to expect')
         st.write('Describe your symptoms, answer brief follow-up questions, and read educational information. '
-                 'The classifier covers 41 condition labels, but its matches are not clinically validated diagnoses.')
+                 f"The classifier covers {len(data['conditions'])} condition labels, but its matches are not clinically validated diagnoses.")
         st.write('Health context can withhold medicine information. The system cannot verify doses, interactions or personal suitability.')
     st.subheader('Where the information comes from')
     st.markdown('[Original symptom and medicine dataset](https://github.com/dr-mushtaq/Medicine-Recommendation-System)')
@@ -563,11 +825,11 @@ def about_page(data):
                     else 'source updated ' + source['updated_on'] if source.get('updated_on')
                     else 'review date unavailable')
             st.markdown(f"[{record['name']} — {source['publisher']}]({source['url']}) · {date}")
-    st.caption('These additional NHS and FDA records are reference-only. They are not included in classifier predictions.')
+    st.caption('NHS, FDA and Aga Khan University Hospital summaries provide educational references. Selected symptom inventories also support clearly labelled illustrative training examples; they are not patient records.')
     st.subheader('Your conversation')
     st.write('Your conversations are saved in this browser so you can return to them. Anyone using this browser '
              'can see them, and you can clear them from Conversation history. They are not medical records. '
-             'Some questions and relevant symptoms may be shared with Groq to provide an answer. '
+             + model_privacy_notice() + ' '
              'Please leave out names and other identifying details. You can download your conversation before '
              'leaving. We keep anonymous activity counts, but not your messages or health context in those counts.')
     with st.expander('Project resources'):
@@ -609,8 +871,12 @@ def main():
         st.error('The information service is currently unavailable. Please try again later.')
         return
     page = st.session_state.navigation
+    view = (page, chat['id'])
+    requested_landing = st.session_state.pop('chat_landing', False)
+    landing = st.session_state.get('last_view') != view or requested_landing
+    st.session_state.last_view = view
     if page == 'Chat':
-        chat_page(chat, data, version)
+        chat_page(chat, data, version, landing=landing)
     elif page == 'Health context':
         health_context_page(chat)
     elif page == 'Dataset Preview':

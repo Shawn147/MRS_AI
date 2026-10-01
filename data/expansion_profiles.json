@@ -1,0 +1,615 @@
+{
+  "schema_version": 1,
+  "target_unique_patterns": 3040,
+  "provenance": "Source-linked symptom inventories; generated subsets are illustrative, not observed hospital cases or clinically validated combinations.",
+  "symptoms": [
+    {
+      "id": "pale_skin",
+      "label": "pale skin",
+      "aliases": [
+        "pale skin",
+        "skin looks pale"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/iron-deficiency-anaemia/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2024-01-26"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "tinnitus",
+      "label": "tinnitus",
+      "aliases": [
+        "tinnitus",
+        "ringing in my ears",
+        "ringing in ears"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/iron-deficiency-anaemia/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2024-01-26"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "hair_loss",
+      "label": "hair loss",
+      "aliases": [
+        "hair loss",
+        "losing hair"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/iron-deficiency-anaemia/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2024-01-26"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "pica",
+      "label": "pica",
+      "aliases": [
+        "pica",
+        "craving ice",
+        "craving non food items"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/iron-deficiency-anaemia/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2024-01-26"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "restless_legs",
+      "label": "restless legs",
+      "aliases": [
+        "restless legs"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/iron-deficiency-anaemia/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2024-01-26"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "sore_tongue",
+      "label": "sore tongue",
+      "aliases": [
+        "sore tongue"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/iron-deficiency-anaemia/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2024-01-26"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "spoon_shaped_nails",
+      "label": "spoon shaped nails",
+      "aliases": [
+        "spoon shaped nails"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/iron-deficiency-anaemia/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2024-01-26"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "mouth_corner_sores",
+      "label": "mouth corner sores",
+      "aliases": [
+        "mouth corner sores",
+        "sores at the corners of my mouth"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/iron-deficiency-anaemia/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2024-01-26"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "ear_pain",
+      "label": "ear pain",
+      "aliases": [
+        "ear pain",
+        "earache"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/ear-infections/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2025-01-16"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "reduced_hearing",
+      "label": "reduced hearing",
+      "aliases": [
+        "reduced hearing",
+        "hearing loss",
+        "difficulty hearing"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/ear-infections/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2025-01-16"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "ear_discharge",
+      "label": "ear discharge",
+      "aliases": [
+        "ear discharge",
+        "fluid from my ear"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/ear-infections/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2025-01-16"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "ear_pressure",
+      "label": "ear pressure",
+      "aliases": [
+        "ear pressure",
+        "pressure in my ears"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/ear-infections/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2025-01-16"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "difficulty_swallowing",
+      "label": "difficulty swallowing",
+      "aliases": [
+        "difficulty swallowing",
+        "trouble swallowing",
+        "painful swallowing"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/tonsillitis/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2024-03-08"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "swollen_tonsils",
+      "label": "swollen tonsils",
+      "aliases": [
+        "swollen tonsils",
+        "red tonsils"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/tonsillitis/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2024-03-08"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "bad_breath",
+      "label": "bad breath",
+      "aliases": [
+        "bad breath"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/tonsillitis/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2024-03-08"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "dry_mouth",
+      "label": "dry mouth",
+      "aliases": [
+        "dry mouth"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/dehydration/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2026-05-01"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "excessive_thirst",
+      "label": "excessive thirst",
+      "aliases": [
+        "excessive thirst",
+        "very thirsty"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/dehydration/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2026-05-01"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "reduced_urine_output",
+      "label": "reduced urine output",
+      "aliases": [
+        "reduced urine output",
+        "urinating less",
+        "peeing less"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/dehydration/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2026-05-01"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "lower_right_abdominal_pain",
+      "label": "lower right abdominal pain",
+      "aliases": [
+        "lower right abdominal pain",
+        "pain in the lower right abdomen"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/appendicitis/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2024-08-09"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "tooth_pain",
+      "label": "tooth pain",
+      "aliases": [
+        "tooth pain",
+        "toothache"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/sinusitis-sinus-infection/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2024-01-31"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "facial_pain",
+      "label": "facial pain",
+      "aliases": [
+        "facial pain",
+        "pain in my face"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/sinusitis-sinus-infection/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2024-01-31"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "loss_of_taste",
+      "label": "loss of taste",
+      "aliases": [
+        "loss of taste",
+        "lost my taste",
+        "cannot taste"
+      ],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "url": "https://www.nhs.uk/conditions/covid-19/covid-19-symptoms-and-what-to-do/",
+          "accessed_on": "2026-10-01",
+          "page_last_reviewed": "2023-03-21"
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "insomnia",
+      "label": "insomnia",
+      "aliases": [
+        "insomnia",
+        "difficulty sleeping",
+        "poor sleep"
+      ],
+      "sources": [
+        {
+          "publisher": "Aga Khan University Hospital, Pakistan",
+          "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/chronic-kidney-disease.aspx",
+          "accessed_on": "2026-10-01",
+          "date_not_published": true
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "muscle_twitching",
+      "label": "muscle twitching",
+      "aliases": [
+        "muscle twitching"
+      ],
+      "sources": [
+        {
+          "publisher": "Aga Khan University Hospital, Pakistan",
+          "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/chronic-kidney-disease.aspx",
+          "accessed_on": "2026-10-01",
+          "date_not_published": true
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    },
+    {
+      "id": "drowsiness",
+      "label": "drowsiness",
+      "aliases": [
+        "drowsiness",
+        "drowsy"
+      ],
+      "sources": [
+        {
+          "publisher": "Aga Khan University Hospital, Pakistan",
+          "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/chronic-kidney-disease.aspx",
+          "accessed_on": "2026-10-01",
+          "date_not_published": true
+        }
+      ],
+      "data_type": "source_summarized_symptom",
+      "clinically_reviewed": false
+    }
+  ],
+  "conditions": [
+    {
+      "name": "Influenza (flu)",
+      "reference_name": "Influenza (flu)",
+      "symptoms": [
+        "high_fever",
+        "muscle_pain",
+        "fatigue",
+        "cough",
+        "throat_irritation",
+        "headache",
+        "insomnia",
+        "loss_of_appetite"
+      ]
+    },
+    {
+      "name": "COVID-19",
+      "reference_name": "COVID-19",
+      "symptoms": [
+        "high_fever",
+        "cough",
+        "loss_of_smell",
+        "loss_of_taste",
+        "breathlessness",
+        "fatigue",
+        "muscle_pain",
+        "headache",
+        "throat_irritation",
+        "runny_nose",
+        "loss_of_appetite",
+        "diarrhoea",
+        "nausea",
+        "vomiting"
+      ]
+    },
+    {
+      "name": "Sinusitis",
+      "reference_name": "Sinusitis",
+      "symptoms": [
+        "facial_pain",
+        "runny_nose",
+        "congestion",
+        "loss_of_smell",
+        "high_fever",
+        "headache",
+        "tooth_pain",
+        "cough",
+        "ear_pressure",
+        "bad_breath"
+      ]
+    },
+    {
+      "name": "Iron deficiency anaemia",
+      "reference_name": "Iron deficiency anaemia",
+      "symptoms": [
+        "fatigue",
+        "breathlessness",
+        "palpitations",
+        "pale_skin",
+        "headache",
+        "tinnitus",
+        "hair_loss",
+        "pica",
+        "restless_legs",
+        "sore_tongue",
+        "spoon_shaped_nails",
+        "mouth_corner_sores"
+      ]
+    },
+    {
+      "name": "Ear infection",
+      "reference_name": "Ear infection",
+      "symptoms": [
+        "ear_pain",
+        "high_fever",
+        "reduced_hearing",
+        "ear_discharge",
+        "ear_pressure",
+        "itching"
+      ]
+    },
+    {
+      "name": "Appendicitis",
+      "reference_name": "Appendicitis",
+      "symptoms": [
+        "abdominal_pain",
+        "lower_right_abdominal_pain",
+        "nausea",
+        "vomiting",
+        "loss_of_appetite",
+        "high_fever",
+        "constipation",
+        "diarrhoea"
+      ]
+    },
+    {
+      "name": "Tonsillitis",
+      "reference_name": "Tonsillitis",
+      "symptoms": [
+        "throat_irritation",
+        "difficulty_swallowing",
+        "swollen_tonsils",
+        "high_fever",
+        "cough",
+        "headache",
+        "nausea",
+        "vomiting",
+        "ear_pain",
+        "fatigue",
+        "swelled_lymph_nodes",
+        "bad_breath"
+      ]
+    },
+    {
+      "name": "Norovirus infection",
+      "reference_name": "Norovirus infection",
+      "symptoms": [
+        "nausea",
+        "vomiting",
+        "diarrhoea",
+        "high_fever",
+        "headache",
+        "abdominal_pain",
+        "muscle_pain"
+      ]
+    },
+    {
+      "name": "Dehydration",
+      "reference_name": "Dehydration",
+      "symptoms": [
+        "excessive_thirst",
+        "headache",
+        "dark_urine",
+        "reduced_urine_output",
+        "dizziness",
+        "fatigue",
+        "dry_mouth"
+      ]
+    },
+    {
+      "name": "Chronic kidney disease",
+      "reference_name": "Chronic kidney disease",
+      "symptoms": [
+        "fatigue",
+        "nausea",
+        "vomiting",
+        "loss_of_appetite",
+        "breathlessness",
+        "insomnia",
+        "muscle_twitching",
+        "cramps",
+        "swollen_legs",
+        "itching",
+        "drowsiness"
+      ]
+    }
+  ]
+}

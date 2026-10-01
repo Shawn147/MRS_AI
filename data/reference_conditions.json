@@ -115,10 +115,25 @@
   {
     "name": "Headaches",
     "description": "Headaches have many causes, and symptoms alone do not establish which one applies.",
-    "symptom_terms": ["headache", "head pain"],
-    "care_notes": ["Drink water, keep regular meals and rest if you are also unwell. A headache diary can help identify patterns."],
-    "seek_help_notes": ["Seek medical assessment for headaches that persist, worsen or recur.", "A sudden extremely painful headache, or headache with weakness, confusion, loss of vision or seizure needs emergency assessment."],
-    "sources": [{"publisher": "NHS", "url": "https://www.nhs.uk/symptoms/headaches/", "accessed_on": "2026-09-30", "page_last_reviewed": "2024-04-17"}],
+    "symptom_terms": [
+      "headache",
+      "head pain"
+    ],
+    "care_notes": [
+      "Drink water, keep regular meals and rest if you are also unwell. A headache diary can help identify patterns."
+    ],
+    "seek_help_notes": [
+      "Seek medical assessment for headaches that persist, worsen or recur.",
+      "A sudden extremely painful headache, or headache with weakness, confusion, loss of vision or seizure needs emergency assessment."
+    ],
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/symptoms/headaches/",
+        "accessed_on": "2026-09-30",
+        "page_last_reviewed": "2024-04-17"
+      }
+    ],
     "eligible_for_training": false,
     "clinically_reviewed": false,
     "review_status": "source_summarized; pending clinical and local applicability review",
@@ -128,10 +143,26 @@
   {
     "name": "Sore throat",
     "description": "A sore throat is common and often improves by itself within about a week.",
-    "symptom_terms": ["sore throat", "throat pain", "painful swallowing"],
-    "care_notes": ["Drink water, rest, avoid smoke and consider cool or soft foods. Ask a pharmacist before taking a medicine, especially during pregnancy."],
-    "seek_help_notes": ["Seek assessment if it does not improve after a week, frequently recurs or you have dehydration or a very high temperature.", "Difficulty breathing, inability to swallow, drooling or rapidly worsening severe symptoms need emergency assessment."],
-    "sources": [{"publisher": "NHS", "url": "https://www.nhs.uk/symptoms/sore-throat/", "accessed_on": "2026-09-30", "page_last_reviewed": "2024-04-08"}],
+    "symptom_terms": [
+      "sore throat",
+      "throat pain",
+      "painful swallowing"
+    ],
+    "care_notes": [
+      "Drink water, rest, avoid smoke and consider cool or soft foods. Ask a pharmacist before taking a medicine, especially during pregnancy."
+    ],
+    "seek_help_notes": [
+      "Seek assessment if it does not improve after a week, frequently recurs or you have dehydration or a very high temperature.",
+      "Difficulty breathing, inability to swallow, drooling or rapidly worsening severe symptoms need emergency assessment."
+    ],
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/symptoms/sore-throat/",
+        "accessed_on": "2026-09-30",
+        "page_last_reviewed": "2024-04-08"
+      }
+    ],
     "eligible_for_training": false,
     "clinically_reviewed": false,
     "review_status": "source_summarized; pending clinical and local applicability review",
@@ -141,10 +172,29 @@
   {
     "name": "Hepatitis B",
     "description": "Hepatitis B is a liver infection spread through blood and body fluids. Many people have no symptoms or only mild symptoms; a test is needed to know whether it is present.",
-    "symptom_terms": ["fatigue", "fever", "upper abdominal pain", "nausea", "jaundice", "dark urine", "pale stools"],
-    "care_notes": ["If hepatitis B is suspected, ask a clinician about testing and vaccination. The source advises rest and hydration for people with the infection and discussing pain relief with a doctor."],
-    "seek_help_notes": ["See a clinician if you think you may have hepatitis B or are at higher risk. Treatment and follow-up depend on test results and whether infection persists."],
-    "sources": [{"publisher": "NHS", "url": "https://www.nhs.uk/conditions/hepatitis-b/", "accessed_on": "2026-09-30", "page_last_reviewed": "2025-11-17"}],
+    "symptom_terms": [
+      "fatigue",
+      "fever",
+      "upper abdominal pain",
+      "nausea",
+      "jaundice",
+      "dark urine",
+      "pale stools"
+    ],
+    "care_notes": [
+      "If hepatitis B is suspected, ask a clinician about testing and vaccination. The source advises rest and hydration for people with the infection and discussing pain relief with a doctor."
+    ],
+    "seek_help_notes": [
+      "See a clinician if you think you may have hepatitis B or are at higher risk. Treatment and follow-up depend on test results and whether infection persists."
+    ],
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/hepatitis-b/",
+        "accessed_on": "2026-09-30",
+        "page_last_reviewed": "2025-11-17"
+      }
+    ],
     "eligible_for_training": false,
     "clinically_reviewed": false,
     "review_status": "source_summarized; pending clinical and local applicability review",
@@ -155,13 +205,351 @@
     "name": "NSAIDs in pregnancy",
     "description": "Ibuprofen belongs to the NSAID medicine group. The FDA warns against NSAID use at around 20 weeks of pregnancy or later unless a healthcare professional specifically advises it.",
     "symptom_terms": [],
-    "care_notes": ["Ask a pharmacist or pregnancy clinician before using ibuprofen or another NSAID. Check the label because NSAIDs can also be ingredients in combination medicines."],
-    "seek_help_notes": ["A clinician must consider pregnancy stage and personal circumstances before advising on treatment. This app cannot determine personal medicine suitability."],
-    "sources": [{"publisher": "FDA", "url": "https://www.fda.gov/drugs/drug-safety-and-availability/fda-recommends-avoiding-use-nsaids-pregnancy-20-weeks-or-later-because-they-can-result-low-amniotic", "accessed_on": "2026-09-30", "updated_on": "2022-09-01"}],
+    "care_notes": [
+      "Ask a pharmacist or pregnancy clinician before using ibuprofen or another NSAID. Check the label because NSAIDs can also be ingredients in combination medicines."
+    ],
+    "seek_help_notes": [
+      "A clinician must consider pregnancy stage and personal circumstances before advising on treatment. This app cannot determine personal medicine suitability."
+    ],
+    "sources": [
+      {
+        "publisher": "FDA",
+        "url": "https://www.fda.gov/drugs/drug-safety-and-availability/fda-recommends-avoiding-use-nsaids-pregnancy-20-weeks-or-later-because-they-can-result-low-amniotic",
+        "accessed_on": "2026-09-30",
+        "updated_on": "2022-09-01"
+      }
+    ],
     "eligible_for_training": false,
     "clinically_reviewed": false,
     "review_status": "source_summarized; pending clinical and local applicability review",
     "data_type": "medicine_safety_reference",
     "scope": "General safety information only; no personal medicine or dose recommendation."
+  },
+  {
+    "name": "Iron deficiency anaemia",
+    "description": "Low iron can reduce red blood cell production. Blood tests and assessment of the cause are needed.",
+    "symptom_terms": [
+      "fatigue",
+      "breathlessness",
+      "palpitations",
+      "pale skin",
+      "headache",
+      "tinnitus",
+      "hair loss",
+      "pica",
+      "restless legs",
+      "sore tongue",
+      "spoon-shaped nails",
+      "mouth corner sores"
+    ],
+    "care_notes": [
+      "Ask a clinician about testing and the cause. Dietary iron may help when intake is low."
+    ],
+    "seek_help_notes": [
+      "Arrange assessment if you suspect anaemia; this summary does not select iron treatment."
+    ],
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/iron-deficiency-anaemia/",
+        "accessed_on": "2026-10-01",
+        "page_last_reviewed": "2024-01-26"
+      }
+    ],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription."
+  },
+  {
+    "name": "Ear infection",
+    "description": "Infections can affect different parts of the ear; examination helps distinguish the cause.",
+    "symptom_terms": [
+      "ear pain",
+      "fever",
+      "reduced hearing",
+      "ear discharge",
+      "ear pressure",
+      "itching"
+    ],
+    "care_notes": [
+      "Avoid putting fingers or cotton buds inside the ear and keep water out."
+    ],
+    "seek_help_notes": [
+      "Seek assessment for persistent symptoms. New hearing loss, swelling, discharge or severe illness need urgent advice."
+    ],
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/ear-infections/",
+        "accessed_on": "2026-10-01",
+        "page_last_reviewed": "2025-01-16"
+      }
+    ],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription."
+  },
+  {
+    "name": "Appendicitis",
+    "description": "Inflammation of the appendix needs urgent hospital assessment and treatment.",
+    "symptom_terms": [
+      "abdominal pain",
+      "lower right abdominal pain",
+      "nausea",
+      "vomiting",
+      "loss of appetite",
+      "fever",
+      "constipation",
+      "diarrhoea"
+    ],
+    "care_notes": [
+      "Seek urgent assessment rather than relying on a symptom match."
+    ],
+    "seek_help_notes": [
+      "Worsening or persistent abdominal pain, especially moving to the lower right, needs urgent assessment. Severe pain, confusion or breathing difficulty need emergency help."
+    ],
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/appendicitis/",
+        "accessed_on": "2026-10-01",
+        "page_last_reviewed": "2024-08-09"
+      }
+    ],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription."
+  },
+  {
+    "name": "Tonsillitis",
+    "description": "Inflamed tonsils can cause a sore throat and swallowing difficulty.",
+    "symptom_terms": [
+      "sore throat",
+      "difficulty swallowing",
+      "swollen tonsils",
+      "fever",
+      "cough",
+      "headache",
+      "nausea",
+      "vomiting",
+      "ear pain",
+      "fatigue",
+      "swollen neck glands",
+      "bad breath"
+    ],
+    "care_notes": [
+      "Rest and cool drinks may help; persistent or recurrent symptoms need assessment."
+    ],
+    "seek_help_notes": [
+      "Seek urgent help if pain prevents drinking. Inability to swallow, breathing difficulty or rapidly worsening throat swelling needs emergency help."
+    ],
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/tonsillitis/",
+        "accessed_on": "2026-10-01",
+        "page_last_reviewed": "2024-03-08"
+      }
+    ],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription."
+  },
+  {
+    "name": "Norovirus infection",
+    "description": "A contagious infection that can cause sudden vomiting and diarrhoea.",
+    "symptom_terms": [
+      "nausea",
+      "vomiting",
+      "diarrhoea",
+      "fever",
+      "headache",
+      "stomach pain",
+      "body aches"
+    ],
+    "care_notes": [
+      "Rest, take frequent small sips and wash hands with soap and water."
+    ],
+    "seek_help_notes": [
+      "Seek help for inability to retain fluids, dehydration, bloody diarrhoea, a child not feeding or persistent vomiting or diarrhoea."
+    ],
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/norovirus/",
+        "accessed_on": "2026-10-01",
+        "page_last_reviewed": "2024-12-31"
+      }
+    ],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription."
+  },
+  {
+    "name": "Dehydration",
+    "description": "The body has lost more fluid than it takes in.",
+    "symptom_terms": [
+      "thirst",
+      "headache",
+      "dark urine",
+      "reduced urine output",
+      "dizziness",
+      "fatigue",
+      "dry mouth"
+    ],
+    "care_notes": [
+      "Take frequent small sips. A pharmacist can advise about oral rehydration solutions."
+    ],
+    "seek_help_notes": [
+      "Persistent dizziness on standing, reduced urine or unusual drowsiness need urgent advice. Confusion, difficulty waking or breathing difficulty needs emergency help."
+    ],
+    "sources": [
+      {
+        "publisher": "NHS",
+        "url": "https://www.nhs.uk/conditions/dehydration/",
+        "accessed_on": "2026-10-01",
+        "page_last_reviewed": "2026-05-01"
+      }
+    ],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription."
+  },
+  {
+    "name": "Chronic kidney disease",
+    "description": "Kidney function gradually declines. Early disease often has no symptoms; blood and urine tests are needed.",
+    "symptom_terms": [
+      "fatigue",
+      "nausea",
+      "vomiting",
+      "loss of appetite",
+      "breathlessness",
+      "poor sleep",
+      "muscle twitching",
+      "cramps",
+      "swollen feet",
+      "itching",
+      "drowsiness"
+    ],
+    "care_notes": [
+      "Ask a clinician about appropriate testing and follow-up. Symptoms alone cannot establish kidney disease."
+    ],
+    "seek_help_notes": [
+      "Seek medical assessment for concerning symptoms or suspected kidney problems."
+    ],
+    "sources": [
+      {
+        "publisher": "Aga Khan University Hospital, Pakistan",
+        "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/chronic-kidney-disease.aspx",
+        "accessed_on": "2026-10-01",
+        "date_not_published": true
+      }
+    ],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription."
+  },
+  {
+    "name": "Dengue",
+    "description": "A mosquito-borne viral infection that can range from a fever illness to severe bleeding and a fall in blood pressure.",
+    "symptom_terms": [
+      "fever",
+      "rash",
+      "muscle pain",
+      "joint pain"
+    ],
+    "care_notes": [
+      "Seek clinical assessment for suspected dengue and follow local professional advice."
+    ],
+    "seek_help_notes": [
+      "Bleeding or severe illness needs urgent assessment."
+    ],
+    "sources": [
+      {
+        "publisher": "Aga Khan University Hospital, Pakistan",
+        "url": "https://hospitals.aku.edu/pakistan/encyclopedia/dengue",
+        "accessed_on": "2026-10-01",
+        "date_not_published": true
+      }
+    ],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription."
+  },
+  {
+    "name": "Typhoid",
+    "description": "A bacterial infection associated with contaminated food and water.",
+    "symptom_terms": [
+      "persistent fever"
+    ],
+    "care_notes": [
+      "Seek a clinician’s assessment for suspected typhoid; treatment depends on professional evaluation."
+    ],
+    "seek_help_notes": [
+      "Persistent or recurring fever needs medical assessment."
+    ],
+    "sources": [
+      {
+        "publisher": "Aga Khan University Hospital, Pakistan",
+        "url": "https://hospitals.aku.edu/pakistan/encyclopedia/typhoid",
+        "accessed_on": "2026-10-01",
+        "date_not_published": true
+      }
+    ],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription."
+  },
+  {
+    "name": "Tuberculosis",
+    "description": "Active tuberculosis may cause prolonged respiratory and general symptoms; testing is necessary.",
+    "symptom_terms": [
+      "cough for three or more weeks",
+      "fever",
+      "sputum",
+      "coughing blood",
+      "chest pain",
+      "loss of appetite",
+      "weight loss",
+      "night sweats",
+      "fatigue"
+    ],
+    "care_notes": [
+      "Seek testing and follow clinician-directed treatment; this summary does not supply a medicine regimen."
+    ],
+    "seek_help_notes": [
+      "Prolonged cough needs prompt assessment. Coughing blood or breathing difficulty needs urgent help."
+    ],
+    "sources": [
+      {
+        "publisher": "Aga Khan University Hospital, Pakistan",
+        "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/tuberculosis.aspx",
+        "accessed_on": "2026-10-01",
+        "date_not_published": true
+      }
+    ],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription."
   }
 ]

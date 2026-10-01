@@ -46,3 +46,20 @@ class DataQualityTests(unittest.TestCase):
         with patch('scripts.prepare_json.read', return_value=[{'Disease': 'A'}]):
             with self.assertRaisesRegex(ValueError, 'coverage mismatch'):
                 validate_condition_tables({'A', 'B'})
+
+    def test_generated_examples_cannot_enter_holdouts_or_claim_source_rows(self):
+        generated = next(r for r in self.data['training'] if r.get('data_type') == 'illustrative_symptom_pattern')
+        generated['split'] = 'test'
+        generated['source_rows'] = [2]
+        self.assertTrue(any('illustrative provenance' in e for e in validate(self.data)))
+
+    def test_generated_family_cannot_use_a_held_out_parent(self):
+        generated = next(r for r in self.data['training'] if r.get('parent_type') == 'legacy_training_parent')
+        held_out = next(r for r in self.data['training'] if r.get('data_type') == 'legacy_educational_pattern' and r['split'] == 'test')
+        generated['family_id'] = held_out['id']
+        self.assertTrue(any('illustrative provenance' in e for e in validate(self.data)))
+
+    def test_added_profiles_do_not_fabricate_medicine_mappings(self):
+        profiles = [r for r in self.data['conditions'] if r.get('data_type') == 'illustrative_condition_profile']
+        self.assertEqual(len(profiles), 10)
+        self.assertTrue(all(not r['medications'] and r['sources'] and not r['clinically_reviewed'] for r in profiles))

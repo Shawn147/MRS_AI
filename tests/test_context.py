@@ -74,3 +74,16 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(sum(map(len, splits)), len(set.union(*splits)))
         self.assertFalse(metrics['encoder_fine_tuned'])
         self.assertEqual(classify_intent('Can you summarize what I told you?'), 'summary')
+
+    def test_report_help_routes_to_upload_instructions_without_prediction(self):
+        answer = self.say('How do I upload my medical report')
+        self.assertEqual(answer['intent'], 'report_help')
+        self.assertIn('plus icon', answer['text'])
+        self.predict.assert_not_called()
+
+    def test_added_condition_has_no_medicine_output(self):
+        self.state['last_condition'] = 'Sinusitis'
+        answer = self.say('What medicine can I take?')
+        self.assertTrue(answer['medicine_withheld'])
+        self.assertIn('no verified medicine mapping', answer['text'])
+        self.predict.assert_not_called()

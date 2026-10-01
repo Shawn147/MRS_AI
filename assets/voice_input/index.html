@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Voice input</title><style>
+*{box-sizing:border-box}body{margin:0;font:14px system-ui;color:var(--voice-text,#fafafa);background:transparent}
+button{cursor:pointer;font:inherit;border:0;border-radius:8px;padding:8px;background:var(--voice-background,#0e1117);color:var(--voice-text,#fafafa)}
+button:focus-visible{outline:2px solid var(--voice-green,#4ade80);outline-offset:2px}button:disabled{opacity:.45;cursor:not-allowed}
+#mic{display:flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;background:transparent;color:var(--voice-green,#4ade80)}svg{display:block;width:22px;height:22px}
+#panel{display:none;padding:14px;background:var(--voice-surface,#262730);border:1px solid var(--voice-line,#474953);border-radius:10px}
+body.expanded #mic{display:none}body.expanded #panel{display:block}#header{display:flex;align-items:center;gap:8px}
+#close{margin-left:auto;color:var(--voice-red,#ff6b6b);background:transparent;padding:4px}#dot{width:9px;height:9px;border-radius:50%;background:#ff6b6b}
+.listening #dot{animation:pulse 1s infinite}#preview{font-size:13px;line-height:1.5;max-height:64px;overflow:auto;margin:8px 0}
+#hint{font-size:11px;line-height:1.4;opacity:.75;margin:8px 0 0}#stop{width:100%}#timer{opacity:.75;font-variant-numeric:tabular-nums}
+@keyframes pulse{50%{opacity:.3}}@media(prefers-reduced-motion:reduce){.listening #dot{animation:none}}
+</style></head><body>
+<button id="mic" aria-label="Start voice input" title="Voice to text — review before sending">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8"/></svg></button>
+<section id="panel" aria-label="Voice recording">
+<div id="header"><span id="dot"></span><strong id="status">Listening…</strong><span id="timer">0:00</span><button id="close" aria-label="Cancel voice input" title="Discard recording">✕</button></div>
+<div id="preview" role="status" aria-live="polite">Speak clearly. Your words will appear here.</div>
+<button id="stop">Stop and add text</button><p id="hint">Your browser may use its speech service. Review the text before sending. Audio is not saved by MRS AI.</p>
+</section>
+<script>
+(() => {
+ const send=(type,details={})=>window.parent.postMessage({isStreamlitMessage:true,type,...details},'*');
+ const $=id=>document.getElementById(id);
+ const API=window.SpeechRecognition||window.webkitSpeechRecognition;
+ let recognition=null,active=false,cancelled=false,finalText='',interim='',clock=null,limit=null,started=0,disabled=false,language='en-PK',sendButton=null,wasDisabled=false;
+ function expand(open){
+  document.body.classList.toggle('expanded',open);
+  try{window.frameElement.closest('.st-key-composer_voice')?.classList.toggle('voice-expanded',open);}catch{}
+  send('streamlit:setFrameHeight',{height:open?220:40});
+ }
+ function lockSend(locked){
+  try{
+   if(locked){sendButton=window.parent.document.querySelector('.st-key-chat_composer [data-testid="stFormSubmitButton"] button');wasDisabled=sendButton?.disabled||false;}
+   if(sendButton)sendButton.disabled=locked||wasDisabled;
+   if(locked)window.parent.document.addEventListener('keydown',guardEnter,true);
+   else window.parent.document.removeEventListener('keydown',guardEnter,true);
+  }catch{}
+ }
+ function guardEnter(event){if(active&&event.key==='Enter'&&event.target.closest('.st-key-chat_composer')){event.preventDefault();event.stopPropagation();}}
+ function cleanup(){clearInterval(clock);clearTimeout(limit);clock=null;limit=null;active=false;$('panel').classList.remove('listening');lockSend(false);}
+ function fail(message){cancelled=true;recognition?.abort();cleanup();$('status').textContent='Voice input';$('preview').textContent=message;$('dot').style.display='none';$('stop').style.display='none';$('timer').textContent='';expand(true);}
+ function finish(){
+  const text=(finalText+' '+interim).trim();cleanup();expand(false);recognition=null;
+  if(!cancelled&&text)send('streamlit:setComponentValue',{dataType:'json',value:{type:'transcript',id:Date.now()+'-'+Math.random().toString(36).slice(2),text:text.slice(0,2000)}});
+  else if(!cancelled)fail('No speech was detected. Try again in a quieter place, or type your message.');
+ }
+ $('mic').onclick=()=>{
+  if(disabled||active)return;
+  if(!API){fail('Voice input is not supported in this browser. Try Chrome or a compatible browser, or type your message.');return;}
+  if(!window.isSecureContext){fail('Microphone access requires HTTPS or localhost. Please type your message on this connection.');return;}
+  cancelled=false;finalText='';interim='';recognition=new API();recognition.lang=language;recognition.continuous=true;recognition.interimResults=true;
+  $('dot').style.display='';$('stop').style.display='';$('status').textContent='Opening microphone…';$('preview').textContent='Allow microphone access to begin.';$('timer').textContent='0:00';expand(true);lockSend(true);active=true;
+  recognition.onstart=()=>{started=Date.now();$('status').textContent='Listening…';$('panel').classList.add('listening');clock=setInterval(()=>{let n=Math.floor((Date.now()-started)/1000);$('timer').textContent=Math.floor(n/60)+':'+String(n%60).padStart(2,'0');},500);limit=setTimeout(()=>recognition?.stop(),60000);};
+  recognition.onresult=e=>{
+   interim='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)finalText+=e.results[i][0].transcript+' ';else interim+=e.results[i][0].transcript;}
+   $('preview').textContent=(finalText+' '+interim).trim();
+  };
+  recognition.onerror=e=>{
+   if(cancelled)return;
+   const messages={'not-allowed':'Microphone access was not allowed. Enable it in your browser settings, or type your message.','service-not-allowed':'Your browser could not start speech recognition. Please type your message.','audio-capture':'No microphone was found. Connect one, or type your message.','network':'Speech recognition could not connect. Check your connection and try again.','no-speech':'No speech was detected. Try again, or type your message.'};
+   fail(messages[e.error]||'Voice input could not finish. Please try again or type your message.');
+  };
+  recognition.onend=()=>{if(!cancelled)finish();};
+  try{recognition.start();}catch{fail('The microphone could not start. Check browser permissions and try again.');}
+ };
+ $('stop').onclick=()=>{if(active){$('status').textContent='Finishing…';recognition?.stop();}};
+ const cancel=()=>{cancelled=true;recognition?.abort();recognition=null;cleanup();expand(false);};
+ $('close').onclick=cancel;window.addEventListener('beforeunload',cancel);
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')cancel();});
+ window.addEventListener('message',e=>{
+  if(e.source!==window.parent||e.data?.type!=='streamlit:render')return;
+  const theme=e.data.theme;
+  if(theme){
+   const root=document.documentElement;
+   root.style.setProperty('--voice-background',theme.backgroundColor);
+   root.style.setProperty('--voice-surface',theme.secondaryBackgroundColor);
+   root.style.setProperty('--voice-text',theme.textColor);
+   const dark=theme.base==='dark'||/^#(?:0e1117|262730)$/i.test(theme.backgroundColor||'');
+   root.style.setProperty('--voice-green',dark?'#4ade80':'#16803d');
+   root.style.setProperty('--voice-red',dark?'#ff6b6b':'#c62828');
+   root.style.setProperty('--voice-line',dark?'#474953':'#d9e3e8');
+  }
+  disabled=!!e.data.args.disabled;language=e.data.args.language||'en-PK';$('mic').disabled=disabled;if(disabled&&active)cancel();
+ });
+ send('streamlit:componentReady',{apiVersion:1});send('streamlit:setFrameHeight',{height:40});
+})();
+</script></body></html>

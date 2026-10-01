@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "passed": true,
+  "errors": [],
+  "warnings": [
+    "pakistan_yicss: missing features retained as null; no imputation",
+    "pakistan_yicss: 4 observations have computed age outside the published 0-59 day range",
+    "india_chronic_kidney_disease: missing features retained as null; no imputation",
+    "Cohorts have different targets, ages and measurement schemas; they are not interchangeable classifier examples.",
+    "Distinct observations are not verified independent patients; row references are provenance, not patient IDs.",
+    "Verify coded-value meanings, outcome leakage, units and clinical applicability before task-specific modelling.",
+    "The symptom classifier has 3040 educational patterns; no regional cohort is used in chat inference."
+  ],
+  "counts": {
+    "raw_rows": 4169,
+    "unique_rows": 3900,
+    "duplicates_removed": 269,
+    "conflicting_rows": 0
+  },
+  "countries": [
+    "Bangladesh",
+    "India",
+    "Pakistan"
+  ],
+  "source_count": 4
+}

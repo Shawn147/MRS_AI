@@ -11,7 +11,7 @@ EMERGENCY_PHRASES = (
     'shortness of breath', 'severe bleeding', 'one sided weakness', 'one-sided weakness',
     'fainted', 'seizure', 'suicidal', 'coughing blood', 'coughing up blood',
 )
-EMERGENCY_LABELS = {'Heart attack', 'Paralysis (brain hemorrhage)'}
+EMERGENCY_LABELS = {'Heart attack', 'Paralysis (brain hemorrhage)', 'Appendicitis'}
 EMERGENCY_SYMPTOMS = {'chest_pain', 'breathlessness', 'weakness_of_one_body_side'}
 SEX_HEADACHE = re.compile(
     r'(?=.*\b(?:headache|head pain|pain in (?:my |the )?head)\b)'
@@ -22,7 +22,7 @@ SUDDEN_SEVERE = re.compile(
     r'(?:severe|intense|explosive)(?:\s+\w+){0,4}\s+sudden(?:ly)?)\b', re.I,
 )
 NO_CONTEXT = {'', 'none', 'no', 'no known allergies', 'no allergies', 'n/a', 'not applicable'}
-SKIP_WORDS = {'show results', 'results', 'continue', 'skip', 'show matches'}
+SKIP_WORDS = {'show result', 'show results', 'results', 'continue', 'skip', 'show matches'}
 YES = {'yes', 'yes i do', 'yes i have', 'yeah', 'yep'}
 NO = {'no', 'no i do not', "no i don't", 'nope'}
 QUALIFIED_YES = {'a little', 'a little bit', 'little bit', 'a bit', 'somewhat',
@@ -216,9 +216,19 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
             intent='medicine_safety', medicine_withheld=True,
             sources=[source['url']], source_details=[source],
         )
+    if state.get('medical_files'):
+        # Reports never bypass urgent-headache, pregnancy-medicine or dose boundaries.
+        if re.search(r'\b(?:dosage|dose|dosing)\b|how (?:many|much|often|frequently).*(?:tablet|pill|medicin|take)', text, re.I):
+            return _reply('I can help you understand the information printed in your report, but I can’t choose a dose or dosing schedule for you. '
+                          'Please confirm the medicine and instructions with your pharmacist or clinician.', intent='dose_question', medicine_withheld=True)
+        from src.general_qa import answer_general_question
+        return (general_answer or answer_general_question)(text, state, data)
     from src.conversation import remember_details, context_reply
     remember_details(text, state)
     norm = normalize(text)
+    if norm in SKIP_WORDS:
+        state['pending'] = None
+        state['pending_detail'] = None
     detail_answered = False
     if state.get('pending_detail') == 'duration':
         if (re.search(r'\b(?:\d+|one|two|three|four|five|few|several|a)\s+'
@@ -240,7 +250,7 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
     medicine_question = re.search(r'\b(dose|dosage|dosing|tablet|pill|medicine|medication|milligrams|mg|paracetamol|ibuprofen)\w*\b', norm)
     if is_information_question(text) and not medicine_question:
         existing = context_reply(text, state, data, profile_has_context(context))
-        if existing and existing.get('intent') in {'summary', 'explain_match'}:
+        if existing and existing.get('intent') in {'summary', 'explain_match', 'greeting', 'gratitude', 'report_help'}:
             return existing
         return answer_general(text, state, data)
     positive, negative = extract_symptoms(text, data['symptoms'])
@@ -297,7 +307,8 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
         return answer_general(text, state, data)
     if not state['symptoms']:
         state['last_predictions'] = []
-        return _reply('I don’t have an active symptom to check yet. Try describing it directly, such as “cough”, “fever”, “itching”, or “stomach pain”.')
+        return _reply('I haven’t identified a symptom from that message yet. Could you describe what you’re feeling, '
+                      'such as a cough, headache, itching or stomach pain?')
     if not (positive or negative) and not detail_answered:
         if infer_profile(text):
             return _reply('I’ve noted that context. Medicine suitability requires a clinician’s review. Add any remaining symptoms, or update your Health context.')
@@ -309,8 +320,8 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
                               'These symptoms can have several causes, so I cannot name a reliable condition '
                               'from this information alone. If they persist, worsen, or concern you, '
                               'a healthcare professional can assess them.', uncertain=True)
-            return _reply('I may have missed that detail. You can answer the last question in your own words '
-                          'or tell me what else you are experiencing.')
+            return _reply('Thank you for adding that detail. Could you clarify how it relates to your symptoms? '
+                          'You can also answer the previous question or describe anything that has changed.')
     predictions = predictor(state['symptoms'])
     state['last_condition'] = None
     state['last_predictions'] = predictions
@@ -356,9 +367,10 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
         state['pending'] = None
         return _reply(
             f'You mentioned **{labels}**. I still do not have enough information to name a reliable '
-            'condition match or show medicine information. If symptoms persist or worry you, '
-            'a healthcare professional can assess them.',
-            uncertain=True,
+            'condition match. Here are the available dataset matches for your symptoms; '
+            'they are uncertain possibilities, not a diagnosis. Medicine information is withheld. '
+            'If symptoms persist or worry you, a healthcare professional can assess them.',
+            predictions, uncertain=True, result_ready=True, medicine_withheld=True,
         )
     if set(state['symptoms']) <= COMMON_HEADACHE_SYMPTOMS:
         source = next((record['sources'][0] for record in data['reference_conditions']
@@ -376,7 +388,8 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
             'Rest, regular meals and enough fluids may help. Because the symptoms are continuing, '
             'consider speaking with a healthcare professional, especially if they are worsening or unusual for you. '
             'Seek urgent help for a sudden, extremely painful headache or new weakness, confusion, or vision loss.',
-            uncertain=True, sources=[source['url']] if source else [],
+            predictions, uncertain=True, result_ready=True, medicine_withheld=True,
+            sources=[source['url']] if source else [],
             source_details=[source] if source else [],
         )
     if low:
@@ -390,16 +403,22 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
             answer += f'\n\nHave you also had **{data["by_symptom"][missing]["label"]}**?'
         else:
             answer += ' Please add any other symptoms or speak with a healthcare professional if you remain concerned.'
-        return _reply(answer, predictions, uncertain=True)
+        return _reply(answer, predictions, uncertain=True,
+                      result_ready=state['pending'] is None, medicine_withheld=True)
     record = data['by_condition'][best['condition']]
     state['last_condition'] = best['condition']
     answer = (
         f'Based on **{labels}**, one possible condition is **{best["condition"]}**. This is not a diagnosis.\n\n'
         f'{record["description"]}\n\n'
     )
-    withheld = profile_has_context(context)
+    if record.get('data_type') == 'illustrative_condition_profile':
+        answer += 'This label is supported by illustrative training patterns and has no independent clinical evaluation.\n\n'
+    withheld = profile_has_context(context) or not record['medications']
     if withheld:
-        answer += '**Patient context noted.** Medicine names are withheld because the source data cannot establish suitability for your history, allergies, current medicines, age, or preferences. Please discuss these details with a clinician.\n\n'
+        if not record['medications']:
+            answer += 'This illustrative condition profile has no verified medicine mapping. Medicine information is withheld; a clinician should assess the cause and treatment.\n\n'
+        else:
+            answer += '**Patient context noted.** Medicine names are withheld because the source data cannot establish suitability for your history, allergies, current medicines, age, or preferences. Please discuss these details with a clinician.\n\n'
     else:
         meds = '\n'.join('- ' + name for name in record['medications'][:5])
         answer += (

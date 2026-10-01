@@ -1,12 +1,12 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "repository": "https://github.com/dr-mushtaq/Medicine-Recommendation-System",
   "revision": "aa6b145d4838ac1dd6fd21b4db7a43c3098e19f9",
-  "raw_rows": 4920,
-  "unique_rows": 304,
+  "raw_rows": 7656,
+  "unique_rows": 3040,
   "duplicates_removed": 4616,
-  "condition_count": 41,
-  "feature_count": 131,
+  "condition_count": 51,
+  "feature_count": 156,
   "source_sha256": {
     "Symptom-severity.csv": "cb5a84b5ebde81bb18738b7e7733bcbc5abdc667b4376893fb1774d8c444bc8d",
     "Training.csv": "cc00c869b702c0c90eef3c1fb4d0b54f16965f8def2dec7e1bf91d0b76480ac3",
@@ -20,11 +20,25 @@
   "notes": [
     "No patient-level identifiers in training; independence of patients cannot be established.",
     "CSV medicine mappings are unreviewed educational reference data, not prescribing rules.",
-    "Severity weights are stored for provenance, not used as clinical triage thresholds."
+    "Severity weights are stored for provenance, not used as clinical triage thresholds.",
+    "Illustrative rows are generated educational examples, not hospital patients or new clinical evidence.",
+    "Original CSV row count remains 4920. Total input rows include explicitly illustrative additions.",
+    "New condition labels lack independent clinical evaluation; no medication mappings have been generated."
   ],
+  "legacy_raw_rows": 4920,
+  "legacy_unique_rows": 304,
+  "illustrative_rows": 2736,
+  "provenance_counts": {
+    "legacy_educational_pattern": 304,
+    "illustrative_symptom_pattern": 2736
+  },
+  "split_policy": "Fixed legacy holdouts; generated training-parent subsets stay in training. New condition profiles have no independent evaluation.",
+  "ambiguity_excluded": 260,
+  "expansion_config_sha256": "0f932edc1f60dd8c6eb3831aa44a9cb90e576b8feb9aa4bf72b10e4fa7b4ef6a",
+  "legacy_splits_sha256": "9b97b09fdfb38b477644c13252f1d05466dd094c163acf7b616096517f15e550",
   "json_sha256": {
-    "training.json": "d13cfccf91f2586a90e137b2a68e6fd5e3f1da87a82be8e901eae9e9d99a452d",
-    "conditions.json": "293785ffceccb0b5eec36545b0c368e163948c60b1ebe8d0bdb607ce8d1dafd8",
-    "symptoms.json": "dae66c23729ab70890f9e3977f0dec1c6414a4d7385317bae829032e07058461"
+    "training.json": "06accd20d3d3fc9aa41b8ba51bb00d72caee8b07977e3cc4763af62a53d208c0",
+    "conditions.json": "0e6fa483d71b8b292190fdcbf0fc483698e84c122be34472ee61a3ca48c18b09",
+    "symptoms.json": "d641566511c9d1d8671d528412701049a83e1b1129190a003c82c8e6adebfc83"
   }
 }

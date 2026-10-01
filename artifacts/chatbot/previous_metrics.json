@@ -63,7 +63,7 @@
     "batch_size": 16,
     "max_length": 128,
     "encoder_fine_tuned": true,
-    "seconds": 66.77221575,
+    "seconds": 70.339993166,
     "history": [
       {
         "epoch": 1,
@@ -2176,8 +2176,8 @@
         ]
       ],
       "test_rows": 61,
-      "training_seconds": 0.44051220800000035,
-      "inference_ms": 0.5450829999915641
+      "training_seconds": 0.40794750000000013,
+      "inference_ms": 0.39624999999432475
     },
     "frozen": {
       "accuracy": 1.0,
@@ -6238,7 +6238,7 @@
         ]
       ],
       "test_rows": 61,
-      "inference_ms": 25.39408399999843
+      "inference_ms": 14.111083000003077
     }
   }
 }
