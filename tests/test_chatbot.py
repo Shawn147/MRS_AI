@@ -100,13 +100,15 @@ class DialogueTests(unittest.TestCase):
 
     def test_context_withholds_medicine_names(self):
         answer=respond('cough, fever and runny nose for two days',self.state,self.data,self.predict,{'allergies':'penicillin'})
-        self.assertIn('withheld',answer['text'])
+        self.assertTrue(answer['medicine_withheld'])
+        self.assertIn('which medicine would be safe',answer['text'])
         self.assertNotIn('Educational medicine information',answer['text'])
 
     def test_chat_allergy_is_retained(self):
         respond('I am allergic to penicillin',self.state,self.data,self.predict)
         answer=respond('cough, fever and runny nose for two days',self.state,self.data,self.predict)
-        self.assertIn('withheld',answer['text'])
+        self.assertTrue(answer['medicine_withheld'])
+        self.assertIn('which medicine would be safe',answer['text'])
 
     def test_context_does_not_leak_between_chats(self):
         respond('I am pregnant',self.state,self.data,self.predict)
@@ -167,7 +169,7 @@ class DialogueTests(unittest.TestCase):
         self.assertTrue(answer['uncertain'])
         self.assertTrue(answer['medicine_withheld'])
         self.assertEqual(answer['predictions'], self.state['last_predictions'])
-        self.assertIn('available dataset matches', answer['text'])
+        self.assertIn('some possible causes', answer['text'])
         self.assertIsNone(self.state['pending'])
         self.assertIsNone(self.state['last_condition'])
 

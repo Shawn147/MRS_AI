@@ -27,7 +27,12 @@ body.expanded #mic{display:none}body.expanded #panel{display:block}#header{displ
  let recognition=null,active=false,cancelled=false,finalText='',interim='',clock=null,limit=null,started=0,disabled=false,language='en-PK',sendButton=null,wasDisabled=false;
  function expand(open){
   document.body.classList.toggle('expanded',open);
-  try{window.frameElement.closest('.st-key-composer_voice')?.classList.toggle('voice-expanded',open);}catch{}
+  try{
+   const frame=window.frameElement || [...window.parent.document.querySelectorAll('.st-key-composer_voice iframe')]
+    .find(node=>node.contentWindow===window);
+   const container=frame?.closest('.st-key-composer_voice') || window.parent.document.querySelector('.st-key-composer_voice');
+   container?.classList.toggle('voice-expanded',open);
+  }catch{}
   send('streamlit:setFrameHeight',{height:open?220:40});
  }
  function lockSend(locked){
@@ -40,7 +45,8 @@ body.expanded #mic{display:none}body.expanded #panel{display:block}#header{displ
  }
  function guardEnter(event){if(active&&event.key==='Enter'&&event.target.closest('.st-key-chat_composer')){event.preventDefault();event.stopPropagation();}}
  function cleanup(){clearInterval(clock);clearTimeout(limit);clock=null;limit=null;active=false;$('panel').classList.remove('listening');lockSend(false);}
- function fail(message){cancelled=true;recognition?.abort();cleanup();$('status').textContent='Voice input';$('preview').textContent=message;$('dot').style.display='none';$('stop').style.display='none';$('timer').textContent='';expand(true);}
+ function abortRecognition(){try{recognition?.abort();}catch{}}
+ function fail(message){cancelled=true;abortRecognition();cleanup();$('status').textContent='Voice input';$('preview').textContent=message;$('dot').style.display='none';$('stop').style.display='none';$('timer').textContent='';expand(true);}
  function finish(){
   const text=(finalText+' '+interim).trim();cleanup();expand(false);recognition=null;
   if(!cancelled&&text)send('streamlit:setComponentValue',{dataType:'json',value:{type:'transcript',id:Date.now()+'-'+Math.random().toString(36).slice(2),text:text.slice(0,2000)}});
@@ -66,7 +72,7 @@ body.expanded #mic{display:none}body.expanded #panel{display:block}#header{displ
   try{recognition.start();}catch{fail('The microphone could not start. Check browser permissions and try again.');}
  };
  $('stop').onclick=()=>{if(active){$('status').textContent='Finishing…';recognition?.stop();}};
- const cancel=()=>{cancelled=true;recognition?.abort();recognition=null;cleanup();expand(false);};
+ const cancel=()=>{cancelled=true;cleanup();expand(false);abortRecognition();recognition=null;};
  $('close').onclick=cancel;window.addEventListener('beforeunload',cancel);
  document.addEventListener('keydown',e=>{if(e.key==='Escape')cancel();});
  window.addEventListener('message',e=>{

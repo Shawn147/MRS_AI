@@ -142,8 +142,7 @@ def sidebar(chat):
                                       ('About & sources', 'About', 'menu_book')]:
                 st.button(label, icon=f':material/{icon}:', on_click=navigate, args=(page,),
                           use_container_width=True)
-        st.markdown('<div class="sidebar-note">For educational information.<br>Not a diagnosis or prescription.'
-                    '<br><br>Conversations are saved in this browser. ' + escape(model_privacy_notice()) +
+        st.markdown('<div class="sidebar-note">Conversations are saved in this browser. ' + escape(model_privacy_notice()) +
                     ' Please leave out names and other identifying details.</div>',
                     unsafe_allow_html=True)
 
@@ -227,7 +226,7 @@ def render_message(message, chat, data, editable=False, latest=False, animate=Fa
             if not message.get('file_only') and not (names and message['content'] == REPORT_PROMPT):
                 st.markdown(message['content'])
             if editable:
-                st.button('Edit last prompt', icon=':material/edit:', key='edit_last_' + chat['id'],
+                st.button('Edit last prompt', icon=':material/edit:', help='Edit message', key='edit_last_' + chat['id'],
                           on_click=begin_edit, args=(chat,))
             return
         if message.get('urgent'):
@@ -242,38 +241,31 @@ def render_message(message, chat, data, editable=False, latest=False, animate=Fa
             st.markdown('<div class="result-label">What this could suggest</div>'
                         f'<div class="result-title">{escape(record["name"])}</div>', unsafe_allow_html=True)
             st.write(record['description'])
-            st.caption('A possible match from your symptoms, not a diagnosis. A healthcare professional can assess the cause.')
-            if record.get('data_type') == 'illustrative_condition_profile':
-                st.caption('This possibility comes from illustrative training examples and has no independent clinical evaluation.')
-                render_sources({'source_details': record['sources']})
-            else:
-                st.caption('Source: original symptom and medicine dataset · clinical review date unavailable.')
             context = {**chat['state']['context'], **chat['profile']}
             withheld = message.get('medicine_withheld') or profile_has_context(context) or chat['state']['urgent']
-            if withheld:
-                text = ('No verified medicine information is available for this condition. A clinician or pharmacist can advise on treatment.'
-                        if not record['medications'] else
-                        'Medicine information is withheld because your health context needs a clinician’s review. '
-                        'A clinician or pharmacist can discuss suitable options with you.')
-                st.info(text, icon=':material/info:')
-            else:
+            if record.get('sources'):
+                with st.expander('Sources'):
+                    render_sources({'source_details': record['sources']})
+            if not withheld:
                 with st.expander('Medicine information · educational reference', icon=':material/medication:'):
-                    st.caption('Unreviewed entries from the source dataset. Suitability and effectiveness have not been established.')
+                    st.caption('These medicine names have not been checked by healthcare professionals. I can’t tell whether they would be safe or helpful for you.')
                     for medicine in record['medications'][:5]:
                         st.write('• ' + medicine)
-                    st.caption('This source does not provide verified doses, allergy checks or interaction rules. '
+                    st.caption('I can’t check the right dose, your allergies, or how these medicines may affect other medicines you take. '
                                'Discuss treatment with a qualified healthcare professional.')
             others = [p['condition'] for p in message.get('predictions', []) if p['condition'] != record['name']]
             if others:
                 with st.expander('Other possible matches'):
                     st.write(' · '.join(others))
-                    st.caption('These are other possibilities to discuss with a healthcare professional, not confirmed conditions.')
         elif message.get('result_ready'):
             symptom_tags(message.get('symptoms', []), data)
-            st.markdown('### Available symptom matches')
-            st.info(message['content'], icon=':material/info:')
-            st.caption('Dataset matches are not confirmed conditions or clinically validated likelihoods. '
-                       'Medicine information is withheld because the result is uncertain.')
+            st.markdown('### Possible causes')
+            text = message['content']
+            # Display older saved match notices with the current concise wording.
+            if ('available dataset matches' in text or
+                    'some possible causes based on' in text):
+                text = 'Here are some possible causes based on your symptoms.'
+            st.info(text, icon=':material/info:')
             for prediction in message.get('predictions', [])[:3]:
                 record = data['by_condition'][prediction['condition']]
                 with st.expander(record['name']):
@@ -392,10 +384,14 @@ def chat_page(chat, data, version, landing=False):
             render_message(message, chat, data, editable=editable,
                            latest=index == len(chat['messages']) - 1,
                            animate=bool(animate_id and message.get('id') == animate_id))
+        scroll_key = 'chat_scroll_' + chat['id']
         if animate_id:
-            scroll_to_message('chat-message-' + animate_id)
-        elif landing and chat['messages']:
-            scroll_to_message('chat-message-' + chat['messages'][-1]['id'], smooth=False)
+            st.session_state[scroll_key] = ('chat-message-' + animate_id, True, uuid4().hex)
+        elif chat['messages'] and (landing or scroll_key not in st.session_state):
+            st.session_state[scroll_key] = ('chat-message-' + chat['messages'][-1]['id'], False, uuid4().hex)
+        if scroll_key in st.session_state and chat['messages']:
+            anchor, smooth, request_id = st.session_state[scroll_key]
+            scroll_to_message(anchor, smooth=smooth, request_id=request_id)
     edited_prompt = None
     if chat.get('editing_last'):
         from src.chat_edit import turn_attachments, REPORT_PROMPT
@@ -437,7 +433,8 @@ def chat_page(chat, data, version, landing=False):
                 col.button(label, on_click=queue_prompt, args=(prompt,), use_container_width=True)
     if chat['state']['urgent']:
         st.warning('Medicine suggestions are paused for this conversation. Contact local emergency services or seek urgent care.')
-    st.markdown('<div class="composer-note">For educational information. Not a diagnosis or prescription.</div>', unsafe_allow_html=True)
+    # Preserve the composer's widget position when follow-up controls appear or disappear.
+    st.empty()
     submitted, entered = False, ''
     if not chat.get('editing_last'):
         with st.container(key='chat_composer'):
@@ -856,6 +853,7 @@ def main():
                 if chats:
                     st.session_state.chats = chats
                     st.session_state.active_chat = active
+                    st.session_state.chat_landing = True
             st.session_state.browser_history_loaded = True
         elif isinstance(stored, dict) and stored.get('status') == 'error':
             st.session_state.browser_history_loaded = True

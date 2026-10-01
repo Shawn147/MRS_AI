@@ -366,10 +366,7 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
     if len(state['symptoms']) < 3:
         state['pending'] = None
         return _reply(
-            f'You mentioned **{labels}**. I still do not have enough information to name a reliable '
-            'condition match. Here are the available dataset matches for your symptoms; '
-            'they are uncertain possibilities, not a diagnosis. Medicine information is withheld. '
-            'If symptoms persist or worry you, a healthcare professional can assess them.',
+            'Here are some possible causes based on your symptoms.',
             predictions, uncertain=True, result_ready=True, medicine_withheld=True,
         )
     if set(state['symptoms']) <= COMMON_HEADACHE_SYMPTOMS:
@@ -402,29 +399,24 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
             state['questions_asked'].append(missing)
             answer += f'\n\nHave you also had **{data["by_symptom"][missing]["label"]}**?'
         else:
-            answer += ' Please add any other symptoms or speak with a healthcare professional if you remain concerned.'
+            answer += ' Please add any other symptoms you’ve noticed.'
         return _reply(answer, predictions, uncertain=True,
                       result_ready=state['pending'] is None, medicine_withheld=True)
     record = data['by_condition'][best['condition']]
     state['last_condition'] = best['condition']
     answer = (
-        f'Based on **{labels}**, one possible condition is **{best["condition"]}**. This is not a diagnosis.\n\n'
+        f'Based on **{labels}**, one possible condition is **{best["condition"]}**.\n\n'
         f'{record["description"]}\n\n'
     )
-    if record.get('data_type') == 'illustrative_condition_profile':
-        answer += 'This label is supported by illustrative training patterns and has no independent clinical evaluation.\n\n'
     withheld = profile_has_context(context) or not record['medications']
     if withheld:
-        if not record['medications']:
-            answer += 'This illustrative condition profile has no verified medicine mapping. Medicine information is withheld; a clinician should assess the cause and treatment.\n\n'
-        else:
-            answer += '**Patient context noted.** Medicine names are withheld because the source data cannot establish suitability for your history, allergies, current medicines, age, or preferences. Please discuss these details with a clinician.\n\n'
+        if profile_has_context(context):
+            answer += '**I’ve noted your health details.** I can’t tell which medicine would be safe for you.\n\n'
     else:
         meds = '\n'.join('- ' + name for name in record['medications'][:5])
         answer += (
-            '**Educational medicine information from the supplied dataset**\n\n'
+            '**Medicine information for learning**\n\n'
             f'{meds}\n\n'
-            'These entries are in source order; they are not ranked by safety or effectiveness. The dataset does not provide verified dosage, interaction, or allergy rules.\n\n'
+            'The order of these names does not mean one is safer or works better. I can’t check the right dose, your allergies, or how they may affect other medicines you take.\n\n'
         )
-    answer += 'This is educational information, not a diagnosis or prescription. A qualified healthcare professional should confirm the condition and treatment.'
     return _reply(answer, predictions, condition=best['condition'], medicine_withheld=withheld)

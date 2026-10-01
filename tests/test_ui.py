@@ -113,7 +113,9 @@ class UITests(unittest.TestCase):
         self.assertEqual(at.session_state['chats'][key]['profile']['allergies'], 'penicillin')
         click(at, 'Back to conversation')
         self.assertFalse(any('Medicine information' in e.label for e in list(at.expander) + list(at.status)))
-        self.assertTrue(any('withheld' in i.value for i in at.info))
+        self.assertFalse(any('not a diagnosis' in i.value.lower() or 'Ask a doctor' in i.value for i in at.caption))
+        self.assertFalse(any('practice examples' in i.value for i in at.caption))
+        self.assertFalse(any('medicine information' in i.value.lower() for i in at.info))
         click(at, 'New conversation')
         new_key = at.session_state['active_chat']
         self.assertFalse(at.session_state['chats'][new_key]['profile'])
@@ -131,10 +133,14 @@ class UITests(unittest.TestCase):
         key = at.session_state['active_chat']
         answer = at.session_state['chats'][key]['messages'][-1]
         self.assertTrue(answer['result_ready'])
-        self.assertTrue(any('Available symptom matches' in item.value for item in at.markdown))
-        self.assertTrue(any('available dataset matches' in item.value for item in at.info))
+        self.assertTrue(any('Possible causes' in item.value for item in at.markdown))
+        self.assertTrue(any('some possible causes' in item.value for item in at.info))
         self.assertTrue(any(item.label == answer['predictions'][0]['condition'] for item in at.expander))
         self.assertFalse(any('Medicine information' in item.label for item in at.expander))
+        answer['content'] = 'Here are the available dataset matches for your symptoms; medicine information is withheld.'
+        at.run()
+        self.assertTrue(any(item.value == 'Here are some possible causes based on your symptoms.' for item in at.info))
+        self.assertFalse(any('dataset matches' in item.value for item in at.info))
 
     def test_attachment_menu_and_report_explanation(self):
         at = self.app()
@@ -264,10 +270,13 @@ class UITests(unittest.TestCase):
         with patch('src.ui.scroll_to_message') as scroll:
             click(at, 'Health context')
             click(at, 'Back to conversation')
-            scroll.assert_called_once_with('chat-message-' + last_id, smooth=False)
+            scroll.assert_called_once()
+            self.assertEqual(scroll.call_args.args, ('chat-message-' + last_id,))
+            self.assertFalse(scroll.call_args.kwargs['smooth'])
+            request_id = scroll.call_args.kwargs['request_id']
             scroll.reset_mock()
             at.run()
-            scroll.assert_not_called()
+            scroll.assert_called_once_with('chat-message-' + last_id, smooth=False, request_id=request_id)
         self.assertFalse(at.exception)
 
     def test_urgent_notice_persists_without_medicine_expanders(self):

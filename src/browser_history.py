@@ -20,9 +20,9 @@ def write_history(chats, active_chat, clear=False):
                       key='history_writer', default=None)
 
 
-def scroll_to_message(anchor, smooth=True):
+def scroll_to_message(anchor, smooth=True, request_id=None):
     """Ask the browser bridge to reveal a newly inserted message."""
-    return _component(action='scroll', anchor=anchor, smooth=smooth,
+    return _component(action='scroll', anchor=anchor, smooth=smooth, request_id=request_id,
                       key='message_scroll_' + anchor + ('_new' if smooth else '_landing'), default=None)
 
 

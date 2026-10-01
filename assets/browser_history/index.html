@@ -7,9 +7,46 @@
   const send = (type, details = {}) => window.parent.postMessage(
     {isStreamlitMessage: true, type, ...details}, '*'
   );
-  let lastWrite = '';
+  let lastWrite = '', lastScrollRequest = '', stopReveal = () => {};
+  let observedComposer;
+  // Measure the pane without containment, which would trap fixed controls in its scroll area.
+  const host = window.parent;
+  let observedMain;
+  const alignComposer = () => {
+    const main = host.document.querySelector('[data-testid="stMain"]');
+    if (!main) return;
+    if (main !== observedMain) {
+      paneObserver.disconnect();
+      observedComposer = undefined;
+      paneObserver.observe(main);
+      observedMain = main;
+    }
+    const composer = [...host.document.querySelectorAll('.st-key-chat_composer')]
+      .find(node => node.getBoundingClientRect().height > 0 && host.getComputedStyle(node).display !== 'none');
+    if (composer !== observedComposer) {
+      if (observedComposer) paneObserver.unobserve(observedComposer);
+      if (composer) paneObserver.observe(composer);
+      observedComposer = composer;
+    }
+    const bounds = main.getBoundingClientRect();
+    const root = host.document.documentElement;
+    const composerBounds = composer?.getBoundingClientRect();
+    const clearance = composerBounds?.height ? host.innerHeight - composerBounds.top + 32 : 130;
+    root.style.setProperty('--chat-bottom-gap', `${Math.max(130, clearance)}px`);
+    root.style.setProperty('--chat-main-width', `${bounds.width}px`);
+    root.style.setProperty('--chat-main-right', `${Math.max(0, host.innerWidth - bounds.right)}px`);
+  };
+  const paneObserver = new host.ResizeObserver(alignComposer);
+  host.addEventListener('resize', alignComposer);
+  window.addEventListener('pagehide', () => {
+    stopReveal();
+    paneObserver.disconnect();
+    host.removeEventListener('resize', alignComposer);
+  });
+
   window.addEventListener('message', (event) => {
     if (event.source !== window.parent || event.data?.type !== 'streamlit:render') return;
+    alignComposer();
     // Keep custom chat surfaces in step with Streamlit's selected native theme.
     const theme = event.data.theme;
     if (theme) {
@@ -25,21 +62,45 @@
     const {action, storage_key: key, payload} = event.data.args || {};
     try {
       if (action === 'scroll') {
+        const request = event.data.args.request_id || event.data.args.anchor;
+        if (request === lastScrollRequest) return;
+        stopReveal();
+        lastScrollRequest = request;
         const anchor = event.data.args.anchor;
         if (!/^chat-message-[a-f0-9]{32}$/.test(anchor || '')) return;
         const doc = window.parent.document;
-        const reduced = window.parent.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        let attempts = 0;
+        let attempts = 0, stable = 0, previous = '', cancelled = false;
+        const cancel = () => { cancelled = true; cleanup(); };
+        stopReveal = cancel;
+        const cleanup = () => {
+          doc.removeEventListener('wheel', cancel, true);
+          doc.removeEventListener('touchstart', cancel, true);
+        };
+        doc.addEventListener('wheel', cancel, {capture:true, passive:true});
+        doc.addEventListener('touchstart', cancel, {capture:true, passive:true});
         const reveal = () => {
+          if (cancelled) return;
+          alignComposer();
           const element = doc.getElementById(anchor);
           const message = element?.closest('[data-testid="stChatMessage"]');
-          if (message) {
-            message.scrollIntoView({behavior: reduced || !event.data.args.smooth ? 'auto' : 'smooth', block: 'end'});
-          } else if (++attempts < 180) {
-            window.parent.requestAnimationFrame(reveal);
+          const main = doc.querySelector('[data-testid="stMain"]');
+          const composer = observedComposer;
+          if (message && main) {
+            const bounds = message.getBoundingClientRect();
+            const composerBounds = composer?.getBoundingClientRect();
+            const bottom = composerBounds?.height ? composerBounds.top - 24 : host.innerHeight - 100;
+            const delta = bounds.bottom - bottom;
+            const signature = `${message.offsetHeight}:${main.scrollHeight}:${bottom}`;
+            stable = signature === previous ? stable + 1 : 0;
+            previous = signature;
+            // Recheck while Streamlit hydrates the composer and restores saved history.
+            main.scrollBy({top: delta, behavior: 'auto'});
+            if (composerBounds?.height && stable >= 30 && attempts >= 90) { cleanup(); return; }
           }
+          if (++attempts < 180) host.requestAnimationFrame(reveal);
+          else cleanup();
         };
-        window.parent.requestAnimationFrame(reveal);
+        host.requestAnimationFrame(reveal);
       } else if (action === 'read') {
         const raw = window.localStorage.getItem(key);
         send('streamlit:setComponentValue', {

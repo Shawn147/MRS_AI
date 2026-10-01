@@ -35,7 +35,7 @@ def fallback_reply(records, reports, reason='connection', retryable=True):
                 found = True
                 sections.append('**' + re.sub(r'[`*<>\[\]]', '', report['name']) + '**\n\n' + '\n\n'.join(lines))
         if found:
-            sections.append('These are values copied from your file, not an interpretation or diagnosis. '
+            sections.append('Here are the values I could read from your file. '
                             'Please check them against the original report. Select **Retry answer** for a detailed explanation, '
                             'or tell me which result you would like to discuss.')
         else:
@@ -50,7 +50,6 @@ def fallback_reply(records, reports, reason='connection', retryable=True):
             if record.get('care_notes'):
                 sections.append('**General care**\n\n' + ' '.join(record['care_notes']))
             sections.append('**When to seek help**\n\n' + ' '.join(record['seek_help_notes']))
-        sections.append('This is general information. A healthcare professional can assess how it applies to you.')
         sources = [s for r in records[:2] for s in r['sources']]
         return {'text': '\n\n'.join(sections), 'predictions': [], 'intent': 'reference_fallback',
                 'sources': list(dict.fromkeys(s['url'] for s in sources)), 'source_details': sources,

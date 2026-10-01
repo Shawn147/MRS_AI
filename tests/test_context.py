@@ -85,5 +85,5 @@ class ContextTests(unittest.TestCase):
         self.state['last_condition'] = 'Sinusitis'
         answer = self.say('What medicine can I take?')
         self.assertTrue(answer['medicine_withheld'])
-        self.assertIn('no verified medicine mapping', answer['text'])
+        self.assertIn('checked medicine information', answer['text'])
         self.predict.assert_not_called()

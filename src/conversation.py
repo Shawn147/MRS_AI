@@ -46,7 +46,7 @@ def context_reply(text, state, data, blocked):
             parts.append('**Symptoms you denied:** ' + ', '.join(data['by_symptom'][s]['label'] for s in state['denied']))
         parts.extend(f'**{key.title()}:** {value}' for key, value in details.items())
         if state.get('last_condition'):
-            parts.append('**Previous possible match:** ' + state['last_condition'] + ' (not a diagnosis).')
+            parts.append('**Previous possible match:** ' + state['last_condition'] + '.')
         if blocked:
             parts.append('**Health context noted:** medicine suitability needs a clinician’s review.')
         if state['pending']:
@@ -61,23 +61,23 @@ def context_reply(text, state, data, blocked):
         record = data['by_condition'][condition]
         overlap = [data['by_symptom'][s]['label'] for s in state['symptoms'] if s in record['symptoms']]
         return reply(f'**{condition}** came up as one possible match for the symptoms you described.\n\n' + record['description'] +
-                     '\n\nSymptoms shared with its source record: ' + (', '.join(overlap) or 'No direct overlap recorded') +
-                     '. This overlap alone cannot confirm the cause. I’ve kept any duration or severity details you shared '
-                     'in our conversation, but they do not change how the condition match is calculated. A clinician can assess the cause.')
+                     '\n\nSymptoms that fit this possibility: ' + (', '.join(overlap) or 'None of the symptoms you shared') +
+                     '. These symptoms alone cannot confirm the cause. I’ve kept any duration or severity details you shared '
+                     'in our conversation, but this suggestion is based only on the symptoms you shared. ')
     if intent == 'medicine_question':
         condition = state.get('last_condition')
         if blocked:
-            return reply('Your health context is noted. Medicine names remain withheld because this dataset cannot '
-                         'check suitability, allergies or interactions. Please discuss your context with a pharmacist or clinician.', medicine_withheld=True)
+            return reply('I’ve noted your health details. I can’t tell which medicine would be safe for you or how it may affect '
+                         'other medicines you take.', medicine_withheld=True)
         if not condition:
             return reply('I don’t have a clear symptom-based match to attach medicine information to. '
                          'Describe your symptoms first. I can show educational references, but cannot choose a medicine for you.', medicine_withheld=True)
         record = data['by_condition'][condition]
         if not record['medications']:
-            return reply('This condition profile has no verified medicine mapping. Please ask a clinician or pharmacist about treatment.', medicine_withheld=True)
+            return reply('I don’t have checked medicine information for this condition.', medicine_withheld=True)
         return reply('**Educational medicine information for the previous possible match: ' + condition + '**\n\n' +
                      '\n'.join('- ' + name for name in record['medications'][:5]) +
-                     '\n\nThese are unreviewed source references, not prescriptions or a suitability check.',
+                     '\n\nThese medicine names have not been checked by healthcare professionals. They are for learning only; I can’t tell whether they would be safe or helpful for you.',
                      condition=condition, medicine_withheld=False)
     if intent in {'duration', 'severity', 'improving', 'worsening'}:
         if not labels:

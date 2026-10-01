@@ -4,7 +4,7 @@ const vm = require('node:vm');
 const assert = require('node:assert/strict');
 const html = fs.readFileSync('assets/voice_input/index.html', 'utf8');
 const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
-function setup(supported = true) {
+function setup(supported = true, missingFrameElement = false) {
   const messages = [], classes = new Set(), listeners = {}, elements = {};
   const makeClass = () => ({toggle(name, on) {on ? classes.add(name) : classes.delete(name);}, add(name) {classes.add(name);}, remove(name) {classes.delete(name);}});
   for (const id of ['mic', 'panel', 'status', 'preview', 'dot', 'stop', 'timer', 'close'])
@@ -22,10 +22,14 @@ function setup(supported = true) {
     frameElement: {closest() {return {classList: makeClass()};}},
     isSecureContext: true, addEventListener(name, callback) {listeners[name] = callback;}
   };
+  const hostContainer = {classList: makeClass()};
+  const hostFrame = {contentWindow: window, closest() {return hostContainer;}};
+  window.parent.document.querySelectorAll = () => [hostFrame];
+  window.frameElement = missingFrameElement ? null : hostFrame;
   if (supported) window.SpeechRecognition = Recognition;
   const document = {body: {classList: makeClass()}, getElementById(id) {return elements[id];}, addEventListener() {}};
   vm.runInNewContext(script, {window, document, Date, Math, setTimeout() {}, setInterval() {}, clearTimeout() {}, clearInterval() {}});
-  return {elements, messages, sendButton, get instance() {return instance;},
+  return {elements, messages, sendButton, classes, get instance() {return instance;},
     transcripts() {return messages.filter(m => m.type === 'streamlit:setComponentValue');}};
 }
 function result(text) {const value = [{transcript: text}]; value.isFinal = true; return {resultIndex: 0, results: [value]};}
@@ -49,4 +53,13 @@ assert.match(unsupported.elements.preview.textContent, /not supported/);
 assert.equal(unsupported.transcripts().length, 0);
 const empty = setup(); empty.elements.mic.onclick(); empty.elements.stop.onclick();
 assert.equal(empty.transcripts().length, 0); assert.match(empty.elements.preview.textContent, /No speech was detected/);
+const nested = setup(false, true); nested.elements.mic.onclick();
+assert.equal(nested.classes.has('voice-expanded'), true, 'Panel must expand even when frameElement is unavailable');
+nested.elements.close.onclick();
+assert.equal(nested.classes.has('voice-expanded'), false);
+const abortError = setup(); abortError.elements.mic.onclick();
+abortError.instance.abort = () => {throw new Error('Microphone has not started');};
+abortError.elements.close.onclick();
+assert.equal(abortError.classes.has('voice-expanded'), false);
+assert.equal(abortError.sendButton.disabled, false);
 console.log('Voice component: stop, cancel, permission denial, unsupported browser and empty speech passed.');

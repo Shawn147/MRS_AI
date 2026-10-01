@@ -144,12 +144,12 @@ p,li { line-height:1.65; }
 .st-key-chat_composer [data-testid="stPopoverButton"] svg { display:none; }
 .st-key-chat_composer [data-testid="stPopoverButton"]:hover { background:var(--hover); color:var(--composer-icon); }
 /* Keep the shared composer at the bottom of the visible chat area. */
-[data-testid="stMain"] { container-type:inline-size; }
+/* No size containment: fixed controls must stay relative to the viewport. */
 [data-testid="stMainBlockContainer"]:has(.st-key-chat_composer) { padding-bottom:130px; }
 .st-key-chat_composer {
  position:fixed; bottom:max(16px, env(safe-area-inset-bottom)); z-index:99;
- right:max(2.8rem, calc((100cqw - 960px) / 2 + 2.8rem));
- width:min(calc(100cqw - 5.6rem), calc(960px - 5.6rem));
+ right:calc(var(--chat-main-right, 0px) + max(2.8rem, calc((var(--chat-main-width, 100vw) - 960px) / 2 + 2.8rem)));
+ width:min(calc(var(--chat-main-width, 100vw) - 5.6rem), calc(960px - 5.6rem));
 }
 /* Stable composer slots prevent old controls moving into attachment cards on rerun. */
 .st-key-chat_composer [data-testid="stVerticalBlockBorderWrapper"]:has(> div > .st-key-composer_notice_slot):not(:has([data-testid="stAlert"])),
@@ -178,14 +178,14 @@ p,li { line-height:1.65; }
 .st-key-chat_composer.file-drop-busy::after { content:"Adding your files…"; pointer-events:auto; }
 [data-testid="stMainBlockContainer"]:has(.st-key-chat_composer) .composer-note {
  position:fixed; bottom:86px; z-index:98;
- right:max(2.8rem, calc((100cqw - 960px) / 2 + 2.8rem));
- width:min(calc(100cqw - 5.6rem), calc(960px - 5.6rem));
+ right:calc(var(--chat-main-right, 0px) + max(2.8rem, calc((var(--chat-main-width, 100vw) - 960px) / 2 + 2.8rem)));
+ width:min(calc(var(--chat-main-width, 100vw) - 5.6rem), calc(960px - 5.6rem));
  margin:0; padding:4px 0; background:var(--surface);
 }
 @media (max-width:760px) {
  .st-key-chat_composer,
  [data-testid="stMainBlockContainer"]:has(.st-key-chat_composer) .composer-note {
-  right:1rem; width:calc(100cqw - 2rem);
+  right:calc(var(--chat-main-right, 0px) + 1rem); width:calc(var(--chat-main-width, 100vw) - 2rem);
  }
 }
 
@@ -254,7 +254,7 @@ p,li { line-height:1.65; }
 .st-key-chat_composer [data-testid="stFormSubmitButton"] button p {
  position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap;
 }
-[data-testid="stMainBlockContainer"]:has(.st-key-draft_cards [data-stale="false"]) { padding-bottom:250px; }
+[data-testid="stMainBlockContainer"]:has(.st-key-draft_cards [data-stale="false"]) { padding-bottom:var(--chat-bottom-gap, 250px); }
 [data-testid="stMainBlockContainer"]:has(.st-key-draft_cards [data-stale="false"]) .composer-note { bottom:202px; }
 .st-key-chat_composer [data-testid="stForm"] [data-testid="stElementContainer"]:has([data-testid="stFormSubmitButton"]) {
  position:absolute; top:50%; transform:translateY(-50%); right:4px; width:40px!important; height:40px;
@@ -287,7 +287,7 @@ p,li { line-height:1.65; }
  position:absolute; z-index:3; right:48px; top:50%; transform:translateY(-50%); width:40px; height:40px;
 }
 .st-key-composer_input_row [data-testid="stVerticalBlockBorderWrapper"]:has(> div > .st-key-composer_voice.voice-expanded) {
- width:min(320px, calc(100cqw - 80px)); height:auto; top:auto; bottom:6px; transform:none;
+ width:min(320px, calc(var(--chat-main-width, 100vw) - 80px)); height:auto; top:auto; bottom:calc(100% + 10px); transform:none;
 }
 .st-key-composer_voice iframe { width:100%!important; border:0; }
 .st-key-composer_voice [data-testid="stElementContainer"] { width:100%!important; }
@@ -295,9 +295,9 @@ p,li { line-height:1.65; }
 .st-key-voice_draft [data-testid="stTextArea"] label { font-size:12px; color:var(--muted); }
 .st-key-voice_draft [data-testid="stButton"] button { width:28px; min-height:28px; padding:0; border:0; background:transparent; }
 .st-key-voice_draft [data-testid="stButton"] button p { display:none; }
-[data-testid="stMainBlockContainer"]:has(.st-key-voice_draft) { padding-bottom:260px; }
+[data-testid="stMainBlockContainer"]:has(.st-key-voice_draft) { padding-bottom:var(--chat-bottom-gap, 260px); }
 [data-testid="stMainBlockContainer"]:has(.st-key-voice_draft) .composer-note { bottom:216px; }
-[data-testid="stMainBlockContainer"]:has(.st-key-voice_draft):has(.st-key-draft_cards [data-stale="false"]) { padding-bottom:380px; }
+[data-testid="stMainBlockContainer"]:has(.st-key-voice_draft):has(.st-key-draft_cards [data-stale="false"]) { padding-bottom:var(--chat-bottom-gap, 380px); }
 [data-testid="stMainBlockContainer"]:has(.st-key-voice_draft):has(.st-key-draft_cards [data-stale="false"]) .composer-note { bottom:332px; }
 [class*="st-key-draft_tile_"] [data-testid="stButton"] button {
  width:28px; height:28px; min-height:28px; color:var(--danger);
@@ -317,3 +317,46 @@ p,li { line-height:1.65; }
  font-size:18px; line-height:18px; width:18px; height:18px; margin:0; color:var(--danger);
 }
 [class*="st-key-draft_tile_"] [data-testid="stButton"] button:hover { background:color-mix(in srgb, var(--danger) 12%, var(--surface-raised)); border-color:var(--danger); }
+
+/* Reserve the measured input height, including file cards and voice drafts. */
+[data-testid="stMainBlockContainer"]:has(.st-key-chat_composer) {
+ padding-bottom:var(--chat-bottom-gap, 130px);
+}
+
+/* Compact edit action beneath the latest user message; retain its accessible label. */
+[class*="st-key-edit_last_"] [data-testid="stButton"] button {
+ width:28px; height:28px; min-height:28px; padding:0; gap:0;
+ display:flex; align-items:center; justify-content:center;
+ border:1px solid var(--line); border-radius:6px; background:var(--surface); color:var(--muted);
+}
+[class*="st-key-edit_last_"] [data-testid="stButton"] button:hover {
+ background:var(--hover); color:var(--ink);
+}
+[class*="st-key-edit_last_"] button > span {
+ width:16px; height:16px; margin:0;
+ display:flex; align-items:center; justify-content:center;
+}
+[class*="st-key-edit_last_"] [data-testid="stIconMaterial"] {
+ width:16px; height:16px; margin:0; font-size:16px; line-height:16px;
+}
+[class*="st-key-edit_last_"] button [data-testid="stMarkdownContainer"] {
+ position:absolute; width:1px; height:1px; overflow:hidden;
+ clip-path:inset(50%); white-space:nowrap;
+}
+
+.st-key-composer_voice.voice-expanded {
+ width:100%!important; min-width:0; overflow:visible;
+}
+.st-key-composer_voice.voice-expanded [data-testid="stElementContainer"],
+.st-key-composer_voice.voice-expanded [data-testid="stCustomComponentV1"] {
+ width:100%!important; min-width:0;
+}
+
+/* Streamlit's frame height is authoritative even when an embedded frame cannot reach its parent. */
+.st-key-composer_input_row [data-testid="stVerticalBlockBorderWrapper"]:has(> div > .st-key-composer_voice):has(iframe[height="220"]) {
+ width:min(320px, calc(var(--chat-main-width, 100vw) - 80px));
+ height:220px; top:auto; bottom:calc(100% + 10px); transform:none;
+}
+.st-key-composer_voice:has(iframe[height="220"]) {
+ width:100%!important; min-width:0;
+}
