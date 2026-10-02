@@ -49,7 +49,11 @@ def fallback_reply(records, reports, reason='connection', retryable=True):
             sections.append('**' + record['name'] + '**\n\n' + record['description'])
             if record.get('care_notes'):
                 sections.append('**General care**\n\n' + ' '.join(record['care_notes']))
-            sections.append('**When to seek help**\n\n' + ' '.join(record['seek_help_notes']))
+            if record.get('seek_help_notes'):
+                title = 'Label safety notes' if record.get('data_type') == 'drug_label_excerpt' else 'When to seek help'
+                sections.append('**' + title + '**\n\n' + ' '.join(record['seek_help_notes']))
+            if record.get('data_type') == 'drug_label_excerpt':
+                sections.append('This is a brief extract from the US product label. Read the full label for complete instructions and safety information.')
         sources = [s for r in records[:2] for s in r['sources']]
         return {'text': '\n\n'.join(sections), 'predictions': [], 'intent': 'reference_fallback',
                 'sources': list(dict.fromkeys(s['url'] for s in sources)), 'source_details': sources,

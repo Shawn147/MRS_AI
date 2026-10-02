@@ -195,6 +195,8 @@ def render_sources(message):
                 st.caption(f'{publisher} · page last reviewed {date}')
             elif source.get('updated_on'):
                 st.caption(f'{publisher} · updated {source["updated_on"]}')
+            if source.get('attribution'):
+                st.caption(source['attribution'])
 
 
 def sent_file_cards(names):
@@ -209,8 +211,25 @@ def sent_file_cards(names):
     st.markdown('<div class="sent-file-cards">' + ''.join(cards) + '</div>', unsafe_allow_html=True)
 
 
+def duration_choices(chat, message):
+    key = 'duration_' + chat['id'] + '_' + message['id']
+    options = {'Today': 'Since today', '1–2 days': 'For 1–2 days',
+               '3–7 days': 'For 3–7 days', 'More than a week': 'For more than one week',
+               'Not sure': 'Not sure', 'Other': None}
+    with st.container(key='duration_choices'):
+        selected = st.radio('How long have you had these symptoms?', list(options),
+                            index=None, horizontal=True, key=key)
+        answer = options.get(selected, '')
+        if selected == 'Other':
+            answer = st.text_input('Other duration', placeholder='For example, since yesterday or about three weeks',
+                                   max_chars=100, key=key + '_other').strip()
+        st.button('Continue', key=key + '_submit', type='primary', disabled=not answer,
+                  on_click=queue_prompt, args=(answer,))
+
+
 def render_message(message, chat, data, editable=False, latest=False, animate=False):
     is_user = message['role'] == 'user'
+    duration_slot = None
     with st.chat_message(message['role'], avatar=':material/person:' if is_user else str(ASSETS / 'logo.svg')):
         author = 'You' if is_user else 'MRS AI'
         time = datetime.fromisoformat(message['timestamp']).astimezone().strftime('%H:%M') if message.get('timestamp') else ''
@@ -276,9 +295,15 @@ def render_message(message, chat, data, editable=False, latest=False, animate=Fa
         else:
             st.markdown(message['content'])
             render_sources(message)
+        if (latest and chat['state'].get('pending_detail') == 'duration'
+                and not chat.get('editing_last') and not chat['state']['urgent']):
+            duration_slot = st.empty()
+            with duration_slot.container():
+                duration_choices(chat, message)
         if latest and message.get('retryable'):
             st.button('Retry answer', icon=':material/refresh:', key='retry_' + chat['id'],
                       on_click=queue_retry)
+    return duration_slot
 
 
 def add_selected_files(chat, upload_key):
@@ -379,11 +404,14 @@ def chat_page(chat, data, version, landing=False):
         else:
             st.markdown('<div class="conversation-heading"><h1>Let’s understand how you’re feeling</h1>'
                         '<p>You can add details or correct a symptom at any time.</p></div>', unsafe_allow_html=True)
+        duration_slots = []
         for index, message in enumerate(chat['messages']):
             editable = (index == len(chat['messages']) - 2 and message['role'] == 'user')
-            render_message(message, chat, data, editable=editable,
+            duration_slot = render_message(message, chat, data, editable=editable,
                            latest=index == len(chat['messages']) - 1,
                            animate=bool(animate_id and message.get('id') == animate_id))
+            if duration_slot is not None:
+                duration_slots.append(duration_slot)
         scroll_key = 'chat_scroll_' + chat['id']
         if animate_id:
             st.session_state[scroll_key] = ('chat-message-' + animate_id, True, uuid4().hex)
@@ -494,6 +522,8 @@ def chat_page(chat, data, version, landing=False):
         file_only = not combined and bool(sending_files)
         prompt = combined or ('Please summarize and explain my attached medical reports.' if sending_files else None)
     if prompt and not pending_prompt:
+        for duration_slot in duration_slots:
+            duration_slot.empty()
         if submitted:
             chat.pop('voice_draft', None)
         replacement = chat.pop('replacement_turn', {}) if (retry_prompt or edited_prompt) else {}
@@ -643,6 +673,19 @@ def health_context_page(chat):
 def dataset_page(data):
     st.title('Dataset Preview')
     st.write('Original educational data and labelled illustrative additions, with separate hospital research cohorts.')
+    library = data.get('health_library', {})
+    if library.get('manifest'):
+        st.subheader('Expanded health reference library')
+        for col, label, key in zip(st.columns(3),
+                                   ['Condition topics', 'Scoped symptom phrases', 'Distinct medicine names'],
+                                   ['conditions', 'symptoms', 'medicines']):
+            col.metric(label, len(library[key]))
+        st.caption('Reference coverage is separate from trained condition labels and symptom features. '
+                   'Medicine records are US label excerpts; availability in Pakistan has not been verified.')
+        chosen = st.selectbox('Reference library', ['conditions', 'symptoms', 'medicines'])
+        st.dataframe(pd.DataFrame(library[chosen]), use_container_width=True, hide_index=True)
+        st.download_button('Download reference ' + chosen, json.dumps(library[chosen], indent=2),
+                           file_name='health_library_' + chosen + '.json', mime='application/json')
     stats = data['manifest']
     labels = ['Total input rows', 'Unique patterns', 'Conditions', 'Symptom features']
     values = [stats['raw_rows'], stats['unique_rows'], stats['condition_count'], stats['feature_count']]
@@ -654,8 +697,17 @@ def dataset_page(data):
     )
     st.info(f"{len(data['reference_conditions'])} source-linked reference records provide educational summaries. "
             'They are not clinically reviewed prescribing guidance or patient observations.')
+    hospital = data['pakistan_hospital_symptoms']
+    st.subheader('Pakistani hospital symptom references')
+    for col, label, value in zip(st.columns(3),
+                                ['Symptom terms', 'Topic–symptom links', 'Hospital pages'],
+                                [len({r['term'] for r in hospital}), len(hospital),
+                                 len({r['source']['url'] for r in hospital})]):
+        col.metric(label, value)
+    st.caption('Published guidance from Aga Khan University Hospital, Shifa International Hospital and PKLI. '
+               'These references improve wording coverage and answers; they are separate from patient cases and classifier training.')
     table = st.selectbox('JSON table', ['training', 'conditions', 'symptoms', 'manifest',
-                                      'reference_conditions', 'symptom_metadata'])
+                                      'reference_conditions', 'symptom_metadata', 'pakistan_hospital_symptoms'])
     if table == 'manifest':
         st.json(stats)
     else:
@@ -814,6 +866,11 @@ def about_page(data):
                  f"The classifier covers {len(data['conditions'])} condition labels, but its matches are not clinically validated diagnoses.")
         st.write('Health context can withhold medicine information. The system cannot verify doses, interactions or personal suitability.')
     st.subheader('Where the information comes from')
+    if data.get('health_library', {}).get('manifest'):
+        st.markdown('Information from the NHS website is licensed under the '
+                    '[Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/). '
+                    'The reference excerpts were collected on ' + data['health_library']['manifest']['collected_on'] + '.')
+        st.markdown('[Medicine label source and limitations](https://open.fda.gov/apis/drug/label/)')
     st.markdown('[Original symptom and medicine dataset](https://github.com/dr-mushtaq/Medicine-Recommendation-System)')
     st.caption('Medicine mappings in this dataset have not been clinically reviewed.')
     for record in data['reference_conditions']:
@@ -822,7 +879,7 @@ def about_page(data):
                     else 'source updated ' + source['updated_on'] if source.get('updated_on')
                     else 'review date unavailable')
             st.markdown(f"[{record['name']} — {source['publisher']}]({source['url']}) · {date}")
-    st.caption('NHS, FDA and Aga Khan University Hospital summaries provide educational references. Selected symptom inventories also support clearly labelled illustrative training examples; they are not patient records.')
+    st.caption('NHS, FDA, Aga Khan University Hospital, Shifa International Hospital and PKLI summaries provide educational references. Selected symptom inventories also support clearly labelled illustrative training examples; they are not patient records.')
     st.subheader('Your conversation')
     st.write('Your conversations are saved in this browser so you can return to them. Anyone using this browser '
              'can see them, and you can clear them from Conversation history. They are not medical records. '
@@ -862,7 +919,9 @@ def main():
     sidebar(chat)
     try:
         version = fingerprint()
-        supplemental = tuple((DATA_DIR / name).stat().st_mtime_ns for name in ['reference_conditions.json', 'symptom_metadata.json'])
+        supplemental = tuple((DATA_DIR / name).stat().st_mtime_ns for name in ['reference_conditions.json', 'symptom_metadata.json', 'pakistan_hospital_symptoms.json'])
+        library_manifest = DATA_DIR / 'health_library/manifest.json'
+        supplemental += (library_manifest.stat().st_mtime_ns if library_manifest.exists() else 0,)
         data = cached_data((version, supplemental))
     except (FileNotFoundError, ValueError):
         logging.exception('Unable to load knowledge base')

@@ -1,0 +1,15 @@
+{
+  "errors": [],
+  "counts": {
+    "conditions": 639,
+    "symptoms": 2465,
+    "medicines": 1238
+  },
+  "topics_with_symptom_lists": 495,
+  "targets_met": {
+    "condition_topics": true,
+    "symptom_phrases": true,
+    "medicine_names": true
+  },
+  "note": "Reference counts do not measure independent clinical evidence or classifier coverage."
+}

@@ -60,6 +60,30 @@ class ContextTests(unittest.TestCase):
         self.assertNotIn('condition', self.say('Why did you suggest that condition?'))
         self.predict.assert_not_called()
 
+    def test_bare_medicine_uses_symptoms_after_uncertain_result(self):
+        self.state['symptoms'] = ['cough', 'fatigue']
+        self.state['last_predictions'] = [
+            {'condition': 'Bronchial Asthma', 'probability': .4},
+            {'condition': 'Influenza (flu)', 'probability': .3},
+        ]
+        answer = self.say('medicine')
+        self.assertEqual(answer['intent'], 'medicine_question')
+        self.assertIn('cough and fatigue', answer['text'])
+        self.assertNotIn('Describe your symptoms first', answer['text'])
+        self.assertIn('How long', answer['text'])
+        self.assertTrue(answer['medicine_withheld'])
+        self.assertNotIn('condition', answer)
+        self.predict.assert_not_called()
+        self.assertEqual(self.state['symptoms'], ['cough', 'fatigue'])
+
+    def test_medicine_followup_does_not_repeat_known_duration(self):
+        self.state['symptoms'] = ['cough', 'fatigue']
+        self.state['details']['duration'] = 'for three days'
+        answer = self.say('medicines please')
+        self.assertIn('cough and fatigue', answer['text'])
+        self.assertNotIn('How long', answer['text'])
+        self.predict.assert_not_called()
+
     def test_new_symptoms_do_not_use_stale_match_for_medicine_question(self):
         self.say('cough and fever')
         answer = self.say('What medicine can I take for diarrhea?')

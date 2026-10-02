@@ -24,7 +24,15 @@ def load_data():
             raise ValueError(f'{name} changed. Run python scripts/prepare_json.py, then retrain.')
     data['reference_conditions'] = json.loads((DATA_DIR / 'reference_conditions.json').read_text())
     data['symptom_metadata'] = json.loads((DATA_DIR / 'symptom_metadata.json').read_text())
+    data['pakistan_hospital_symptoms'] = json.loads((DATA_DIR / 'pakistan_hospital_symptoms.json').read_text())
     symptoms = {row['id']: row for row in data['symptoms']}
+    from src.hospital_symptoms import validate_hospital_symptoms
+    validate_hospital_symptoms(data['pakistan_hospital_symptoms'], symptoms)
+    for row in data['pakistan_hospital_symptoms']:
+        if row['feature_id']:
+            aliases = symptoms[row['feature_id']]['aliases']
+            if row['term'] not in aliases:
+                aliases.append(row['term'])
     seen = set()
     for metadata in data['symptom_metadata']:
         key = metadata['id']
@@ -37,6 +45,8 @@ def load_data():
         symptoms[key]['source_severity_weight'] = weight
     data['by_condition'] = {row['name']: row for row in data['conditions']}
     data['by_symptom'] = {row['id']: row for row in data['symptoms']}
+    from src.health_library import load_health_library
+    data['health_library'] = load_health_library()
     return data
 
 

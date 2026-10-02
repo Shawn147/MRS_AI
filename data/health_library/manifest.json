@@ -1,0 +1,24 @@
+{
+  "collected_on": "2026-10-02",
+  "baseline": {
+    "classifier_condition_labels": 51,
+    "classifier_symptom_features": 156,
+    "legacy_medicine_entries": 121
+  },
+  "requested_targets": {
+    "conditions": 510,
+    "symptom_phrases": 1560,
+    "medicine_names": 1210
+  },
+  "collected": {
+    "conditions": 639,
+    "symptoms": 2465,
+    "medicines": 1238
+  },
+  "sha256": {
+    "conditions.json": "9646aef8f08701672fb8b60a340a123ab08b51b9b8de6d3fe550acce53c24bb7",
+    "symptoms.json": "0254235ae6e9eedb0881b2f43f8e28ea7702d585cb0b0d6d99bf10cab5dbff32",
+    "medicines.json": "5f79706014e99b4a7a820847a9564c4eba06291e203d3465dd53c0909140b8ed"
+  },
+  "scope": "Reference library only. Counts do not represent classifier labels/features or patient cases. Symptom phrases are scoped source descriptions, not medically distinct normalized features."
+}

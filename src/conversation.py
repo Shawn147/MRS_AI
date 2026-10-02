@@ -19,7 +19,9 @@ def context_reply(text, state, data, blocked):
     # Explicit medication boundaries are handled even when model confidence is low.
     if re.search(r'\b(dosage|dose|dosing|milligrams|mg)\b|how (?:many|much|often|frequently).*(?:tablet|pill|medicin|take)', norm):
         intent = 'dose_question'
-    elif re.search(r'\b(medicine|medication|tablet|painkiller|antibiotic|paracetamol|ibuprofen)\w*\b', norm) and re.search(r'\b(what|which|can|could|should|show|tell|take)\b', norm):
+    elif (re.fullmatch(r'\s*(?:medicines?|medications?)(?: please)?[?.!]*\s*', norm) or
+          (re.search(r'\b(medicine|medication|tablet|painkiller|antibiotic|paracetamol|ibuprofen)\w*\b', norm) and
+           re.search(r'\b(what|which|can|could|should|show|tell|take)\b', norm))):
         intent = 'medicine_question'
     else:
         try:
@@ -70,6 +72,14 @@ def context_reply(text, state, data, blocked):
             return reply('I’ve noted your health details. I can’t tell which medicine would be safe for you or how it may affect '
                          'other medicines you take.', medicine_withheld=True)
         if not condition:
+            if labels:
+                mentioned = labels[0] if len(labels) == 1 else ', '.join(labels[:-1]) + ' and ' + labels[-1]
+                next_step = ('How long have these symptoms been happening?' if not details.get('duration') else
+                             'Have you noticed any other symptoms?')
+                return reply('You mentioned **' + mentioned + '**. The earlier results were possible causes; '
+                             'they don’t tell us which medicine would help. '
+                             + next_step + ' If you have a medicine in mind, tell me its name and I can explain it.',
+                             medicine_withheld=True)
             return reply('I don’t have a clear symptom-based match to attach medicine information to. '
                          'Describe your symptoms first. I can show educational references, but cannot choose a medicine for you.', medicine_withheld=True)
         record = data['by_condition'][condition]

@@ -551,5 +551,176 @@
     "review_status": "source_summarized; pending clinical and local applicability review",
     "data_type": "reference_summary",
     "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription."
+  },
+  {
+    "name": "Malaria",
+    "description": "A mosquito-borne parasitic infection that can cause recurring fever and chills.",
+    "symptom_terms": [
+      "fever",
+      "chills",
+      "headache",
+      "muscle pain",
+      "nausea",
+      "vomiting",
+      "fatigue"
+    ],
+    "care_notes": [
+      "Blood tests can check for malaria. Treatment depends on the infection and individual circumstances."
+    ],
+    "seek_help_notes": [
+      "Fever after possible malaria exposure needs prompt assessment."
+    ],
+    "sources": [
+      {
+        "publisher": "Aga Khan University Hospital",
+        "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/malaria.aspx",
+        "accessed_on": "2026-10-01",
+        "date_not_published": true
+      }
+    ],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "All ages; higher-risk groups include young children and pregnant people."
+  },
+  {
+    "name": "Asthma",
+    "description": "Inflamed, narrowed airways can cause episodes of breathing difficulty.",
+    "symptom_terms": [
+      "shortness of breath",
+      "chest tightness",
+      "chest pain",
+      "wheezing when breathing out",
+      "sleep disturbed by coughing",
+      "coughing attacks"
+    ],
+    "care_notes": [
+      "Avoid known triggers and follow an existing asthma action plan."
+    ],
+    "seek_help_notes": [
+      "Severe breathing difficulty or blue lips or face needs emergency help."
+    ],
+    "sources": [
+      {
+        "publisher": "Aga Khan University Hospital",
+        "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/asthma.aspx",
+        "accessed_on": "2026-10-01",
+        "date_not_published": true
+      }
+    ],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Symptoms vary between people; no prescribing rules."
+  },
+  {
+    "name": "Gallstones",
+    "description": "Stones in the gallbladder or bile ducts may cause pain; some cause no symptoms.",
+    "symptom_terms": [
+      "upper abdominal pain",
+      "pain between the shoulder blades",
+      "pain under the right shoulder",
+      "sweating",
+      "vomiting",
+      "fever",
+      "yellow skin",
+      "yellow eyes",
+      "bloating",
+      "nausea"
+    ],
+    "care_notes": [
+      "Ultrasound and other tests can check for gallstones. Treatment depends on their location and symptoms."
+    ],
+    "seek_help_notes": [
+      "Pain with fever or yellow skin needs prompt assessment for possible blockage or infection."
+    ],
+    "sources": [
+      {
+        "publisher": "Pakistan Kidney and Liver Institute and Research Centre",
+        "url": "https://pkli.org.pk/gallstones/",
+        "accessed_on": "2026-10-01",
+        "date_not_published": true
+      }
+    ],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Symptom list includes signs of bile-duct blockage; asymptomatic stones are possible."
+  },
+  {
+    "name": "Ear infection in children",
+    "description": "Middle-ear infections can affect a child’s comfort, sleep and hearing.",
+    "symptom_terms": [
+      "ear pain when lying down",
+      "difficulty sleeping",
+      "agitation",
+      "pulling at the ear",
+      "fever",
+      "crying more than usual",
+      "fluid draining from the ear",
+      "difficulty eating",
+      "reduced response to soft sounds",
+      "talking louder than usual",
+      "difficulty hearing"
+    ],
+    "care_notes": [
+      "Observe changes in sleep, eating and response to sounds. An ear examination can identify the cause."
+    ],
+    "seek_help_notes": [
+      "Ear pain lasting more than a day or severe pain or discharge needs assessment."
+    ],
+    "sources": [
+      {
+        "publisher": "Aga Khan University Hospital",
+        "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/ear-infection.aspx",
+        "accessed_on": "2026-10-01",
+        "date_not_published": true
+      }
+    ],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Child-specific signs; do not interpret this list as an adult symptom profile."
+  },
+  {
+    "name": "Emergency warning signs",
+    "description": "Some sudden or severe symptoms need immediate help.",
+    "symptom_terms": [
+      "severe chest pain",
+      "difficulty breathing",
+      "sudden weakness",
+      "uncontrollable bleeding",
+      "loss of consciousness",
+      "sudden severe headache",
+      "eye pain",
+      "sudden loss of vision",
+      "vomiting blood",
+      "bleeding from the ear",
+      "jaw pain",
+      "fever with fits in a child"
+    ],
+    "care_notes": [
+      "Go to an emergency department for life-threatening symptoms."
+    ],
+    "seek_help_notes": [
+      "Seek immediate help for severe chest pain, breathing difficulty, sudden weakness or uncontrolled bleeding."
+    ],
+    "sources": [
+      {
+        "publisher": "Shifa International Hospital",
+        "url": "https://www.shifa.com.pk/specialities/emergency-medicine/islamabad",
+        "accessed_on": "2026-10-01",
+        "date_not_published": true
+      }
+    ],
+    "eligible_for_training": false,
+    "clinically_reviewed": false,
+    "review_status": "source_summarized; pending clinical and local applicability review",
+    "data_type": "reference_summary",
+    "scope": "Emergency-service warning signs, not a condition-specific diagnostic profile."
   }
 ]

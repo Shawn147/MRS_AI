@@ -1,0 +1,1067 @@
+[
+  {
+    "topic": "Chronic kidney disease",
+    "term": "fatigue",
+    "feature_id": "fatigue",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/chronic-kidney-disease.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Chronic kidney disease",
+    "term": "nausea",
+    "feature_id": "nausea",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/chronic-kidney-disease.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Chronic kidney disease",
+    "term": "vomiting",
+    "feature_id": "vomiting",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/chronic-kidney-disease.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Chronic kidney disease",
+    "term": "loss of appetite",
+    "feature_id": "loss_of_appetite",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/chronic-kidney-disease.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Chronic kidney disease",
+    "term": "breathlessness",
+    "feature_id": "breathlessness",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/chronic-kidney-disease.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Chronic kidney disease",
+    "term": "poor sleep",
+    "feature_id": "insomnia",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/chronic-kidney-disease.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Chronic kidney disease",
+    "term": "muscle twitching",
+    "feature_id": "muscle_twitching",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/chronic-kidney-disease.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Chronic kidney disease",
+    "term": "cramps",
+    "feature_id": "cramps",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/chronic-kidney-disease.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Chronic kidney disease",
+    "term": "swollen feet",
+    "feature_id": null,
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/chronic-kidney-disease.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Chronic kidney disease",
+    "term": "itching",
+    "feature_id": "itching",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/chronic-kidney-disease.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Chronic kidney disease",
+    "term": "drowsiness",
+    "feature_id": "drowsiness",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/chronic-kidney-disease.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Dengue",
+    "term": "fever",
+    "feature_id": "high_fever",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/encyclopedia/dengue",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Dengue",
+    "term": "rash",
+    "feature_id": "skin_rash",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/encyclopedia/dengue",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Dengue",
+    "term": "muscle pain",
+    "feature_id": "muscle_pain",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/encyclopedia/dengue",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Dengue",
+    "term": "joint pain",
+    "feature_id": "joint_pain",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/encyclopedia/dengue",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Typhoid",
+    "term": "persistent fever",
+    "feature_id": null,
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/encyclopedia/typhoid",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Tuberculosis",
+    "term": "cough for three or more weeks",
+    "feature_id": null,
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/tuberculosis.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Tuberculosis",
+    "term": "fever",
+    "feature_id": "high_fever",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/tuberculosis.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Tuberculosis",
+    "term": "sputum",
+    "feature_id": null,
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/tuberculosis.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Tuberculosis",
+    "term": "coughing blood",
+    "feature_id": null,
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/tuberculosis.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Tuberculosis",
+    "term": "chest pain",
+    "feature_id": "chest_pain",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/tuberculosis.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Tuberculosis",
+    "term": "loss of appetite",
+    "feature_id": "loss_of_appetite",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/tuberculosis.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Tuberculosis",
+    "term": "weight loss",
+    "feature_id": "weight_loss",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/tuberculosis.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Tuberculosis",
+    "term": "night sweats",
+    "feature_id": null,
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/tuberculosis.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Tuberculosis",
+    "term": "fatigue",
+    "feature_id": "fatigue",
+    "source": {
+      "publisher": "Aga Khan University Hospital, Pakistan",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/tuberculosis.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Non-exhaustive educational summary; not an observed patient, diagnosis or prescription.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Malaria",
+    "term": "fever",
+    "feature_id": "high_fever",
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/malaria.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "All ages; higher-risk groups include young children and pregnant people.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Malaria",
+    "term": "chills",
+    "feature_id": "chills",
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/malaria.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "All ages; higher-risk groups include young children and pregnant people.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Malaria",
+    "term": "headache",
+    "feature_id": "headache",
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/malaria.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "All ages; higher-risk groups include young children and pregnant people.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Malaria",
+    "term": "muscle pain",
+    "feature_id": "muscle_pain",
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/malaria.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "All ages; higher-risk groups include young children and pregnant people.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Malaria",
+    "term": "nausea",
+    "feature_id": "nausea",
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/malaria.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "All ages; higher-risk groups include young children and pregnant people.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Malaria",
+    "term": "vomiting",
+    "feature_id": "vomiting",
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/malaria.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "All ages; higher-risk groups include young children and pregnant people.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Malaria",
+    "term": "fatigue",
+    "feature_id": "fatigue",
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/malaria.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "All ages; higher-risk groups include young children and pregnant people.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Asthma",
+    "term": "shortness of breath",
+    "feature_id": "breathlessness",
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/asthma.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Symptoms vary between people; no prescribing rules.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Asthma",
+    "term": "chest tightness",
+    "feature_id": null,
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/asthma.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Symptoms vary between people; no prescribing rules.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Asthma",
+    "term": "chest pain",
+    "feature_id": "chest_pain",
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/asthma.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Symptoms vary between people; no prescribing rules.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Asthma",
+    "term": "wheezing when breathing out",
+    "feature_id": null,
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/asthma.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Symptoms vary between people; no prescribing rules.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Asthma",
+    "term": "sleep disturbed by coughing",
+    "feature_id": null,
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/asthma.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Symptoms vary between people; no prescribing rules.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Asthma",
+    "term": "coughing attacks",
+    "feature_id": "cough",
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/asthma.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Symptoms vary between people; no prescribing rules.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Gallstones",
+    "term": "upper abdominal pain",
+    "feature_id": "abdominal_pain",
+    "source": {
+      "publisher": "Pakistan Kidney and Liver Institute and Research Centre",
+      "url": "https://pkli.org.pk/gallstones/",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Symptom list includes signs of bile-duct blockage; asymptomatic stones are possible.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Gallstones",
+    "term": "pain between the shoulder blades",
+    "feature_id": "back_pain",
+    "source": {
+      "publisher": "Pakistan Kidney and Liver Institute and Research Centre",
+      "url": "https://pkli.org.pk/gallstones/",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Symptom list includes signs of bile-duct blockage; asymptomatic stones are possible.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Gallstones",
+    "term": "pain under the right shoulder",
+    "feature_id": null,
+    "source": {
+      "publisher": "Pakistan Kidney and Liver Institute and Research Centre",
+      "url": "https://pkli.org.pk/gallstones/",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Symptom list includes signs of bile-duct blockage; asymptomatic stones are possible.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Gallstones",
+    "term": "sweating",
+    "feature_id": "sweating",
+    "source": {
+      "publisher": "Pakistan Kidney and Liver Institute and Research Centre",
+      "url": "https://pkli.org.pk/gallstones/",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Symptom list includes signs of bile-duct blockage; asymptomatic stones are possible.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Gallstones",
+    "term": "vomiting",
+    "feature_id": "vomiting",
+    "source": {
+      "publisher": "Pakistan Kidney and Liver Institute and Research Centre",
+      "url": "https://pkli.org.pk/gallstones/",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Symptom list includes signs of bile-duct blockage; asymptomatic stones are possible.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Gallstones",
+    "term": "fever",
+    "feature_id": "high_fever",
+    "source": {
+      "publisher": "Pakistan Kidney and Liver Institute and Research Centre",
+      "url": "https://pkli.org.pk/gallstones/",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Symptom list includes signs of bile-duct blockage; asymptomatic stones are possible.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Gallstones",
+    "term": "yellow skin",
+    "feature_id": "yellowish_skin",
+    "source": {
+      "publisher": "Pakistan Kidney and Liver Institute and Research Centre",
+      "url": "https://pkli.org.pk/gallstones/",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Symptom list includes signs of bile-duct blockage; asymptomatic stones are possible.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Gallstones",
+    "term": "yellow eyes",
+    "feature_id": "yellowing_of_eyes",
+    "source": {
+      "publisher": "Pakistan Kidney and Liver Institute and Research Centre",
+      "url": "https://pkli.org.pk/gallstones/",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Symptom list includes signs of bile-duct blockage; asymptomatic stones are possible.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Gallstones",
+    "term": "bloating",
+    "feature_id": null,
+    "source": {
+      "publisher": "Pakistan Kidney and Liver Institute and Research Centre",
+      "url": "https://pkli.org.pk/gallstones/",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Symptom list includes signs of bile-duct blockage; asymptomatic stones are possible.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Gallstones",
+    "term": "nausea",
+    "feature_id": "nausea",
+    "source": {
+      "publisher": "Pakistan Kidney and Liver Institute and Research Centre",
+      "url": "https://pkli.org.pk/gallstones/",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Symptom list includes signs of bile-duct blockage; asymptomatic stones are possible.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Ear infection in children",
+    "term": "ear pain when lying down",
+    "feature_id": "ear_pain",
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/ear-infection.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Child-specific signs; do not interpret this list as an adult symptom profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Ear infection in children",
+    "term": "difficulty sleeping",
+    "feature_id": "insomnia",
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/ear-infection.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Child-specific signs; do not interpret this list as an adult symptom profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Ear infection in children",
+    "term": "agitation",
+    "feature_id": null,
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/ear-infection.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Child-specific signs; do not interpret this list as an adult symptom profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Ear infection in children",
+    "term": "pulling at the ear",
+    "feature_id": null,
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/ear-infection.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Child-specific signs; do not interpret this list as an adult symptom profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Ear infection in children",
+    "term": "fever",
+    "feature_id": "high_fever",
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/ear-infection.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Child-specific signs; do not interpret this list as an adult symptom profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Ear infection in children",
+    "term": "crying more than usual",
+    "feature_id": null,
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/ear-infection.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Child-specific signs; do not interpret this list as an adult symptom profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Ear infection in children",
+    "term": "fluid draining from the ear",
+    "feature_id": "ear_discharge",
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/ear-infection.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Child-specific signs; do not interpret this list as an adult symptom profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Ear infection in children",
+    "term": "difficulty eating",
+    "feature_id": null,
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/ear-infection.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Child-specific signs; do not interpret this list as an adult symptom profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Ear infection in children",
+    "term": "reduced response to soft sounds",
+    "feature_id": null,
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/ear-infection.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Child-specific signs; do not interpret this list as an adult symptom profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Ear infection in children",
+    "term": "talking louder than usual",
+    "feature_id": null,
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/ear-infection.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Child-specific signs; do not interpret this list as an adult symptom profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Ear infection in children",
+    "term": "difficulty hearing",
+    "feature_id": "reduced_hearing",
+    "source": {
+      "publisher": "Aga Khan University Hospital",
+      "url": "https://hospitals.aku.edu/pakistan/diseases-and-conditions/Pages/ear-infection.aspx",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Child-specific signs; do not interpret this list as an adult symptom profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Emergency warning signs",
+    "term": "severe chest pain",
+    "feature_id": "chest_pain",
+    "source": {
+      "publisher": "Shifa International Hospital",
+      "url": "https://www.shifa.com.pk/specialities/emergency-medicine/islamabad",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Emergency-service warning signs, not a condition-specific diagnostic profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Emergency warning signs",
+    "term": "difficulty breathing",
+    "feature_id": "breathlessness",
+    "source": {
+      "publisher": "Shifa International Hospital",
+      "url": "https://www.shifa.com.pk/specialities/emergency-medicine/islamabad",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Emergency-service warning signs, not a condition-specific diagnostic profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Emergency warning signs",
+    "term": "sudden weakness",
+    "feature_id": null,
+    "source": {
+      "publisher": "Shifa International Hospital",
+      "url": "https://www.shifa.com.pk/specialities/emergency-medicine/islamabad",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Emergency-service warning signs, not a condition-specific diagnostic profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Emergency warning signs",
+    "term": "uncontrollable bleeding",
+    "feature_id": null,
+    "source": {
+      "publisher": "Shifa International Hospital",
+      "url": "https://www.shifa.com.pk/specialities/emergency-medicine/islamabad",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Emergency-service warning signs, not a condition-specific diagnostic profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Emergency warning signs",
+    "term": "loss of consciousness",
+    "feature_id": null,
+    "source": {
+      "publisher": "Shifa International Hospital",
+      "url": "https://www.shifa.com.pk/specialities/emergency-medicine/islamabad",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Emergency-service warning signs, not a condition-specific diagnostic profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Emergency warning signs",
+    "term": "sudden severe headache",
+    "feature_id": "headache",
+    "source": {
+      "publisher": "Shifa International Hospital",
+      "url": "https://www.shifa.com.pk/specialities/emergency-medicine/islamabad",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Emergency-service warning signs, not a condition-specific diagnostic profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Emergency warning signs",
+    "term": "eye pain",
+    "feature_id": null,
+    "source": {
+      "publisher": "Shifa International Hospital",
+      "url": "https://www.shifa.com.pk/specialities/emergency-medicine/islamabad",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Emergency-service warning signs, not a condition-specific diagnostic profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Emergency warning signs",
+    "term": "sudden loss of vision",
+    "feature_id": null,
+    "source": {
+      "publisher": "Shifa International Hospital",
+      "url": "https://www.shifa.com.pk/specialities/emergency-medicine/islamabad",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Emergency-service warning signs, not a condition-specific diagnostic profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Emergency warning signs",
+    "term": "vomiting blood",
+    "feature_id": null,
+    "source": {
+      "publisher": "Shifa International Hospital",
+      "url": "https://www.shifa.com.pk/specialities/emergency-medicine/islamabad",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Emergency-service warning signs, not a condition-specific diagnostic profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Emergency warning signs",
+    "term": "bleeding from the ear",
+    "feature_id": null,
+    "source": {
+      "publisher": "Shifa International Hospital",
+      "url": "https://www.shifa.com.pk/specialities/emergency-medicine/islamabad",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Emergency-service warning signs, not a condition-specific diagnostic profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Emergency warning signs",
+    "term": "jaw pain",
+    "feature_id": null,
+    "source": {
+      "publisher": "Shifa International Hospital",
+      "url": "https://www.shifa.com.pk/specialities/emergency-medicine/islamabad",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Emergency-service warning signs, not a condition-specific diagnostic profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  },
+  {
+    "topic": "Emergency warning signs",
+    "term": "fever with fits in a child",
+    "feature_id": null,
+    "source": {
+      "publisher": "Shifa International Hospital",
+      "url": "https://www.shifa.com.pk/specialities/emergency-medicine/islamabad",
+      "accessed_on": "2026-10-01",
+      "date_not_published": true
+    },
+    "scope": "Emergency-service warning signs, not a condition-specific diagnostic profile.",
+    "data_type": "hospital_published_symptom_reference",
+    "eligible_for_training": false,
+    "patient_record": false
+  }
+]

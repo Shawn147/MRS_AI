@@ -85,10 +85,15 @@ def validate(data):
                 (row['data_type'] != 'medicine_safety_reference' and not row['symptom_terms'])):
             errors.append(f"Incomplete reference: {row['name']}")
         for source in row['sources']:
-            if (not source['url'].startswith(('https://www.nhs.uk/', 'https://www.fda.gov/', 'https://hospitals.aku.edu/pakistan/'))
+            if (not source['url'].startswith(('https://www.nhs.uk/', 'https://www.fda.gov/', 'https://hospitals.aku.edu/pakistan/', 'https://www.shifa.com.pk/', 'https://pkli.org.pk/'))
                     or not source.get('accessed_on')
                     or not (source.get('page_last_reviewed') or source.get('updated_on') or source.get('date_not_published') is True)):
                 errors.append(f"Missing source provenance: {row['name']}")
+    from src.hospital_symptoms import validate_hospital_symptoms
+    try:
+        validate_hospital_symptoms(data['pakistan_hospital_symptoms'], data['by_symptom'])
+    except (ValueError, KeyError, TypeError) as exc:
+        errors.append(str(exc))
     return errors
 
 
@@ -109,6 +114,13 @@ def main():
         'schema_version': 1, 'errors': errors,
         'classifier_conditions': len(data['conditions']),
         'source_linked_reference_records': len(data['reference_conditions']),
+        'pakistan_hospital_symptoms': {
+            'topic_symptom_links': len(data['pakistan_hospital_symptoms']),
+            'distinct_terms': len({r['term'] for r in data['pakistan_hospital_symptoms']}),
+            'source_pages': len({r['source']['url'] for r in data['pakistan_hospital_symptoms']}),
+            'mapped_links': sum(r['feature_id'] is not None for r in data['pakistan_hospital_symptoms']),
+            'sha256': hashlib.sha256((ROOT / 'data/pakistan_hospital_symptoms.json').read_bytes()).hexdigest(),
+        },
         'unique_patterns_per_condition': dict(sorted(counts.items())),
         'missing_severity_metadata': [r['id'] for r in data['symptoms'] if r['source_severity_weight'] is None],
         'warnings': [

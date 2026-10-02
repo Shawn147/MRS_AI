@@ -79,7 +79,7 @@ def _matched_references(question, records):
                'Norovirus infection': ('norovirus',)}
     selected = [record for record in records if any(
         re.search(r'(?<!\w)' + re.escape(alias) + r'(?!\w)', question, re.I)
-        for alias in aliases.get(record['name'], (record['name'],))
+        for alias in aliases.get(record['name'], record.get('aliases') or (record['name'],))
     )]
     return selected
 
@@ -90,7 +90,12 @@ def answer_general_question(question, state, data):
     if protected:
         return protected
     reports = [r for r in reports if not is_account_file(r.get('name', ''))]
-    records = _matched_references(question, data['reference_conditions'])
+    from src.health_library import answer_records
+    reference_records = list(data['reference_conditions'])
+    existing = {r['name'].casefold() for r in reference_records}
+    reference_records.extend(r for r in answer_records(data.get('health_library',
+                             {'conditions': [], 'medicines': []})) if r['name'].casefold() not in existing)
+    records = _matched_references(question, reference_records)
     def fallback(reason='connection', retryable=True):
         return fallback_reply(records, reports, reason, retryable)
     # Keep every field of a directly matched reference so self-care and when-to-seek-help
@@ -99,7 +104,7 @@ def answer_general_question(question, state, data):
         {'text': record['name'] + ': ' + record['description'] + '\nSymptoms: ' +
          ', '.join(record.get('symptom_terms', [])) + '\nSelf-care: ' +
          ' '.join(record.get('care_notes', [])) + '\nWhen to seek help: ' +
-         ' '.join(record.get('seek_help_notes', [])),
+         ' '.join(record.get('seek_help_notes', [])) + '\nScope: ' + record.get('scope', ''),
          'source': record['sources'][0]['url']}
         for record in records if record.get('sources')
     ]

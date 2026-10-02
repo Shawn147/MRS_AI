@@ -2,7 +2,14 @@
   "schema_version": 1,
   "errors": [],
   "classifier_conditions": 51,
-  "source_linked_reference_records": 17,
+  "source_linked_reference_records": 22,
+  "pakistan_hospital_symptoms": {
+    "topic_symptom_links": 71,
+    "distinct_terms": 58,
+    "source_pages": 9,
+    "mapped_links": 45,
+    "sha256": "4c5fdecf5a858f57f303aad35612f36a5820fbd4e0c2bef9e0a9a96fa68b58b4"
+  },
   "unique_patterns_per_condition": {
     "(vertigo) Paroymsal Positional Vertigo": 42,
     "AIDS": 5,

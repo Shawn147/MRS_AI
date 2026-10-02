@@ -142,6 +142,35 @@ class UITests(unittest.TestCase):
         self.assertTrue(any(item.value == 'Here are some possible causes based on your symptoms.' for item in at.info))
         self.assertFalse(any('dataset matches' in item.value for item in at.info))
 
+    def test_duration_radio_submits_once_and_then_disappears(self):
+        at = self.app()
+        send(at, 'fatigue, headache and cough')
+        key = at.session_state['active_chat']
+        radio = next(r for r in at.radio if r.label == 'How long have you had these symptoms?')
+        self.assertIsNone(radio.value)
+        self.assertTrue(next(b for b in at.button if b.label == 'Continue').disabled)
+        radio.set_value('3–7 days').run()
+        self.assertEqual(len(at.session_state['chats'][key]['messages']), 2)
+        click(at, 'Continue')
+        state = at.session_state['chats'][key]['state']
+        self.assertIn('3–7 days', state['details']['duration'])
+        self.assertIsNone(state['pending_detail'])
+        self.assertEqual(len(at.session_state['chats'][key]['messages']), 4)
+        self.assertFalse(any(r.label == 'How long have you had these symptoms?' for r in at.radio))
+        self.assertFalse(at.exception)
+
+    def test_duration_other_has_free_text_input(self):
+        at = self.app()
+        send(at, 'fatigue, headache and cough')
+        next(r for r in at.radio if r.label == 'How long have you had these symptoms?').set_value('Other').run()
+        self.assertTrue(next(b for b in at.button if b.label == 'Continue').disabled)
+        next(t for t in at.text_input if t.label == 'Other duration').set_value('Since yesterday').run()
+        click(at, 'Continue')
+        chat = at.session_state['chats'][at.session_state['active_chat']]
+        self.assertIn('yesterday', chat['state']['details']['duration'])
+        self.assertEqual(chat['messages'][-2]['content'], 'Since yesterday')
+        self.assertFalse(at.exception)
+
     def test_attachment_menu_and_report_explanation(self):
         at = self.app()
         self.assertTrue(any(item.label == 'Choose files' for item in at.get('file_uploader')))
