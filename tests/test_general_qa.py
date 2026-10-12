@@ -78,6 +78,128 @@ class GeneralQuestionTests(unittest.TestCase):
         self.assertTrue(result['urgent'])
         answer.assert_not_called()
 
+    def test_new_spine_pain_is_not_treated_as_old_symptom_duration(self):
+        state = new_state()
+        state['symptoms'] = ['fatigue', 'headache', 'cough']
+        state['details']['duration'] = 'two days'
+        state['last_condition'] = 'Influenza (flu)'
+        predictor = Mock()
+        answer = Mock(return_value={'text': 'Where in your back is the pain?',
+                                   'predictions': [], 'intent': 'general_question'})
+        message = "i've pain in spinal cord from past 5 days"
+        result = respond(message, state, self.data, predictor, general_answer=answer)
+        self.assertEqual(result['text'], 'Where in your back is the pain?')
+        self.assertEqual(state['active_health_report'], message)
+        self.assertEqual(state['details']['duration'], 'two days')
+        self.assertIsNone(state['last_condition'])
+        self.assertEqual(state['symptoms'], ['fatigue', 'headache', 'cough'])
+        predictor.assert_not_called()
+        answer.assert_called_once()
+        respond('lower back, about 6 out of 10', state, self.data, predictor, general_answer=answer)
+        self.assertEqual(answer.call_count, 2)
+        predictor.assert_not_called()
+
+    def test_saved_chat_recovers_latest_pain_before_reason_question(self):
+        state = new_state()
+        state['symptoms'] = ['fatigue', 'headache', 'cough']
+        state['recent_turns'] = [
+            {'role': 'user', 'content': "i've pain in spinal cord from past 5 days"},
+            {'role': 'assistant', 'content': 'I’m still keeping track of fatigue, headache, cough.'},
+            {'role': 'user', 'content': 'how can i get rid of this'},
+            {'role': 'assistant', 'content': 'This is definitely urgent.'}]
+        answer = Mock(return_value={'text': 'Possible reasons for back pain', 'intent': 'general_question'})
+        predictor = Mock()
+        result = respond('what are the reasons?', state, self.data, predictor, general_answer=answer)
+        self.assertEqual(result['text'], 'Possible reasons for back pain')
+        self.assertIn('spinal cord', state['active_health_report'])
+        predictor.assert_not_called()
+
+    def test_causal_followup_is_not_classifier_result_explanation(self):
+        state = new_state()
+        state['symptoms'] = ['cough']
+        answer = Mock(return_value={'text': 'Reasons for the current concern', 'intent': 'general_question'})
+        with patch('src.context_model.classify_intent', return_value='explain_match'):
+            result = respond('what are the reasons?', state, self.data, Mock(), general_answer=answer)
+        self.assertEqual(result['text'], 'Reasons for the current concern')
+        answer.assert_called_once()
+
+    def test_new_information_topic_replaces_pain_focus_for_followups(self):
+        state = new_state()
+        state['active_health_report'] = 'back pain for five days'
+        answer = Mock(return_value={'text': 'Information', 'intent': 'general_question'})
+        respond('What causes malaria?', state, self.data, Mock(), general_answer=answer)
+        self.assertNotIn('active_health_report', state)
+        self.assertEqual(state['active_general_topic'], 'What causes malaria?')
+        respond('what are the reasons?', state, self.data, Mock(), general_answer=answer)
+        self.assertEqual(answer.call_count, 2)
+
+    def test_back_pain_followup_uses_source_not_old_assistant_claim(self):
+        state = new_state()
+        state['active_health_report'] = "i've pain in spinal cord from past 5 days"
+        with patch('src.general_qa.urlopen', side_effect=URLError('offline')):
+            result = answer_general_question('what are the reasons?', state, self.data)
+        self.assertIn('https://www.nhs.uk/conditions/back-pain/', result['sources'])
+        self.assertIn('pulled muscle', result['text'])
+
+    def test_old_assistant_urgency_claim_is_not_repeated_for_duration_alone(self):
+        state = new_state()
+        state['active_health_report'] = 'pain around my spine for five days'
+        state['recent_turns'] = [{'role': 'assistant', 'content': 'You must get urgent care today.'}]
+        response = Mock()
+        response.__enter__ = Mock(return_value=response)
+        response.__exit__ = Mock(return_value=None)
+        response.read = Mock(return_value=json.dumps({'message': {'content':
+            'Spinal pain lasting five days needs urgent medical evaluation. Please see a doctor today. Do not wait.'}}).encode())
+        with patch('src.general_qa.urlopen', return_value=response):
+            result = answer_general_question('what are the reasons?', state, self.data)
+        self.assertEqual(result['generation_status'], 'source_correction')
+        self.assertIn('pulled muscle', result['text'])
+        self.assertNotIn('Do not wait', result['text'])
+
+    def test_reported_warning_signs_do_not_trigger_urgency_correction(self):
+        state = new_state()
+        state['active_health_report'] = 'back pain and numbness in both legs'
+        response = Mock()
+        response.__enter__ = Mock(return_value=response)
+        response.__exit__ = Mock(return_value=None)
+        response.read = Mock(return_value=json.dumps({'message': {'content':
+            'These symptoms need urgent medical assessment.'}}).encode())
+        with patch('src.general_qa.urlopen', return_value=response):
+            result = answer_general_question('what should I do about this?', state, self.data)
+        self.assertEqual(result['intent'], 'general_question')
+        self.assertIn('urgent', result['text'])
+
+    def test_report_without_first_person_still_answers_current_concern(self):
+        state = new_state()
+        state['symptoms'] = ['cough']
+        answer = Mock(return_value={'text': 'Where do you feel this pain?', 'intent': 'general_question'})
+        respond('spinal cord have also pain',state,self.data,Mock(),general_answer=answer)
+        answer.assert_called_once()
+
+    def test_general_provider_receives_recent_conversation_and_latest_question(self):
+        state = new_state()
+        state['recent_turns'] = [
+            {'role': 'user', 'content': 'My back has hurt for five days'},
+            {'role': 'assistant', 'content': 'Where in your back do you feel it?'}]
+        response = Mock()
+        response.__enter__ = Mock(return_value=response)
+        response.__exit__ = Mock(return_value=None)
+        response.read = Mock(return_value=json.dumps({'message': {'content': 'Is it worse when moving?'}}).encode())
+        with patch('src.general_qa.urlopen',return_value=response) as send:
+            answer_general_question('Lower back',state,self.data)
+        payload=json.loads(send.call_args.args[0].data)
+        self.assertEqual(payload['messages'][1:3],state['recent_turns'])
+        self.assertTrue(payload['messages'][-1]['content'].startswith('Lower back'))
+
+    def test_offline_pain_reply_does_not_list_only_old_symptoms(self):
+        state=new_state()
+        state['symptoms']=['fatigue','headache','cough']
+        with patch('src.general_qa.urlopen',side_effect=URLError('offline')):
+            result=respond("i've pain in spinal cord from past 5 days",state,self.data,Mock())
+        self.assertIn('spinal cord',result['text'])
+        self.assertIn('5 days',result['text'])
+        self.assertNotIn('still keeping track',result['text'])
+
     def test_reference_answer_has_only_real_source(self):
         response = Mock()
         response.__enter__ = Mock(return_value=response)

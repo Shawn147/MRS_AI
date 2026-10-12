@@ -57,12 +57,19 @@ def is_information_question(text):
 def is_unrecognized_health_report(text):
     """Find personal health descriptions that the symptom aliases did not capture."""
     return bool(UNRECOGNIZED_HEALTH_REPORT.search(text) or
+                re.search(r'\b(?:pain|aches?|aching|hurts?|soreness|swelling|bleeding)\b', text, re.I) or
                 (text.strip().endswith('?') and PERSONAL_SYMPTOMS.search(text)))
 
 
 def is_contextual_symptom_report(text):
     """Recognize circumstances that a symptom-only classifier would discard."""
     return bool(CONTEXTUAL_REPORT.search(text))
+
+
+def is_topic_followup(text):
+    """Short causal/relief questions refer to the current topic, not old predictions."""
+    return bool(re.search(r'\b(?:this|that|it|these|those)\b', text, re.I) or
+                re.fullmatch(r'\s*(?:what (?:are|is) (?:the )?(?:reasons?|causes?)|why|how to (?:treat|fix|ease) (?:it|this))\s*[?.!]*', text, re.I))
 
 
 def _matched_references(question, records):
@@ -96,8 +103,31 @@ def answer_general_question(question, state, data):
     reference_records.extend(r for r in answer_records(data.get('health_library',
                              {'conditions': [], 'medicines': []})) if r['name'].casefold() not in existing)
     records = _matched_references(question, reference_records)
+    concern = state.get('active_health_report', '')
+    related = is_topic_followup(question) or is_unrecognized_health_report(question)
+    back_guidance = []
+    if concern and related and re.search(r'\b(?:spine|spinal|back)\b', concern, re.I) and re.search(r'\bpain\b', concern, re.I):
+        # Back/spine wording identifies an information topic, not a diagnosis.
+        back_guidance = [r for r in data.get('health_library', {}).get('conditions', [])
+                         if r['name'].casefold() == 'back pain' and
+                         any(s['url'] == 'https://www.nhs.uk/conditions/back-pain/' for s in r['sources'])]
+        if not records:
+            records = back_guidance
     def fallback(reason='connection', retryable=True):
-        return fallback_reply(records, reports, reason, retryable)
+        concern = state.get('active_health_report', '')
+        if (concern and not records and not reports
+                and (not is_information_question(question) or is_unrecognized_health_report(question) or is_topic_followup(question))):
+            described = question if is_unrecognized_health_report(question) else concern
+            followup = ('Where exactly do you feel the pain, and how severe is it?'
+                        if re.search(r'\b(?:pain|ache|aching|hurts?)\b', concern, re.I)
+                        else 'Could you describe what you are noticing most right now?')
+            return {'text': 'You described **' + described.strip() + '**. ' + followup,
+                    'predictions': [], 'intent': 'health_followup_fallback',
+                    'retryable': retryable, 'generation_status': reason}
+        result = fallback_reply(records, reports, reason, retryable)
+        if concern and related and records:
+            result['text'] = 'You described **' + concern.strip() + '**.\n\n' + result['text']
+        return result
     # Keep every field of a directly matched reference so self-care and when-to-seek-help
     # notes cannot be lost to similarity ranking or missing embedding weights.
     passages = [
@@ -119,6 +149,13 @@ def answer_general_question(question, state, data):
         'You are MRS AI, an educational health information assistant. Answer the user\'s actual question '
         'in a professional, warm and respectful tone. Start with a useful answer, use plain language, '
         'and end with a clear next step when needed. Do not mention datasets, classifier scores, model confidence, medicine mappings, or clinical validation in chat. Explain limits in everyday words. Lead with the answer and keep routine replies concise. Use words such as possible when the cause is uncertain. Do not append routine disclaimers about being a test product, not a diagnosis, or consulting a professional; these are covered on the About screen. Include advice to seek care only when the symptoms or specific medicine question warrant it. Keep urgent warnings and specific safety instructions when relevant. Avoid repetitive headings, jargon, alarmist wording '
+        'Prioritize the latest message. If the topic changes, answer the new topic directly rather than '
+        'continuing an earlier symptom questionnaire. If it is a related follow-up, use the recent conversation '
+        'and any timing already provided; do not ask the user to repeat it. Do not assume separate concerns '
+        'have the same cause. When a user says spinal cord pain, acknowledge pain around the back or spine '
+        'without assuming an injury to the spinal cord, and clarify its location and severity. '
+        'Do not declare pain urgent solely because it has lasted five days. '
+        'Do not repeat an earlier assistant claim as a verified medical fact; reassess it against the supplied sources. '
         'and vague reassurance. Never promise certainty or satisfaction. For general information questions, '
         'provide the relevant answer and next steps without an unnecessary "Would you like" follow-up. '
         'If the user describes a feeling or symptom, acknowledge it and ask one useful '
@@ -131,6 +168,11 @@ def answer_general_question(question, state, data):
         'give cautious general information and say that this app has no reviewed source for the topic. '
         'Do not invent citations or imply that a condition has been clinically confirmed. '
         f'Previously reported symptoms (context only): {symptoms}.\n'
+        f'Latest health concern, if different: {state.get("active_health_report", "none")}.\n'
+        f'Latest information topic, if different: {state.get("active_general_topic", "none")}.\n'
+        f'User-provided area/city: {state.get("location", "not provided")}.\n'
+        'No live hospital results are supplied. Never invent hospital names, nearest facilities, distances, '
+        'opening hours, or emergency telephone numbers. Do not assume a country from earlier assistant messages. '
         f'Reference notes:\n{source_text or "None for this topic."}'
     )
     if reports:
@@ -155,8 +197,12 @@ def answer_general_question(question, state, data):
             (parsed.scheme != 'https' and not local)):
         LOG.warning('General-answer model configuration is incomplete')
         return fallback('configuration', retryable=False)
-    messages = [{'role': 'system', 'content': system},
-                {'role': 'user', 'content': (json.dumps({'uploaded_reports': reports}, ensure_ascii=False) + '\n' if reports else '') + question + ('\n/no_think' if backend == 'ollama' else '')}]
+    history = [{'role': turn['role'], 'content': turn['content'][:2000]}
+               for turn in state.get('recent_turns', [])[-10:]
+               if isinstance(turn, dict) and turn.get('role') in {'user', 'assistant'}
+               and isinstance(turn.get('content'), str)]
+    messages = [{'role': 'system', 'content': system}] + history + [
+        {'role': 'user', 'content': (json.dumps({'uploaded_reports': reports}, ensure_ascii=False) + '\n' if reports else '') + question + ('\n/no_think' if backend == 'ollama' else '')}]
     if backend == 'ollama':
         payload = {'model': model, 'stream': False, 'think': False, 'messages': messages,
                    'options': {'temperature': 0.2, 'num_predict': 1200}}
@@ -201,6 +247,20 @@ def answer_general_question(question, state, data):
     if not answer:
         LOG.warning('General-answer provider returned no usable answer')
         return fallback('empty_response')
+    # Earlier assistant text can contain an unsupported urgency claim. Do not
+    # amplify it merely because the provider repeated it despite source notes.
+    user_reports = ' '.join(t.get('content', '') for t in state.get('recent_turns', [])
+                            if t.get('role') == 'user') + ' ' + concern + ' ' + question
+    red_flags = re.search(r'\b(?:weakness|numbness|bladder|bowel|incontinence|fever|accident|trauma|genitals|anus|severe|unbearable)\b|'
+                          r'sudden(?:ly)?(?:\s+\w+){0,4}\s+severe|rapidly worsening|worsening quickly', user_reports, re.I)
+    unsupported_urgency = re.search(r'\b(?:needs?|requires?)\b[^.!?\n]{0,65}\b(?:urgent|immediate)\b|'
+                                   r'\b(?:do not|don’t|don\x27t) (?:wait|delay)|'
+                                   r'\b(?:see|visit)\b[^.!?\n]{0,60}\b(?:doctor|clinic|urgent care)\b[^.!?\n]{0,30}\btoday\b|'
+                                   r'\b(?:seek|get)\b[^.!?\n]{0,35}\b(?:urgent|emergency)\b[^.!?\n]{0,35}\b(?:now|today|immediately)\b', answer, re.I)
+    if back_guidance and unsupported_urgency and not red_flags and not state.get('urgent'):
+        result = fallback('source_correction', retryable=False)
+        result['text'] = back_guidance[0]['description'] + '\n\nWhere in your back do you feel the pain, and how severe is it?'
+        return result
     sources = list(dict.fromkeys(item['source'] for item in passages))
     source_details = [source for record in records for source in record.get('sources', [])
                       if source['url'] in sources]

@@ -106,8 +106,9 @@ Pinned revision: `aa6b145d4838ac1dd6fd21b4db7a43c3098e19f9`
 `scripts/prepare_json.py` reads `references/supervisor/dataset` and writes `data/*.json`. The app reads JSON only.
 
 - 4,920 original rows → 304 original patterns; 4,616 repeats removed
-- 2,736 explicitly illustrative additions → **3,040 unique patterns (10× the original)**
-- 7,656 total input rows, 51 conditions, 156 symptom features and 17 reference records
+- 5,696 explicitly illustrative additions → **6,000 unique patterns**
+- 10,616 total input rows, 510 condition labels, 1,560 symptom phrase features and 481 source summaries
+- 2,935 Pakistani hospital topic–symptom links from published patient education; not patient cases
 - Original rows are preserved; generated examples are not counted as hospital cases
 - Duplicate `fluid_overload` columns merged by OR; `Peptic ulcer diseae` corrected so tables join
 - Severity weights stored as metadata, not used as triage
@@ -216,10 +217,18 @@ Questions about other topics receive a clearly unverified general answer, with n
 invented source link. The symptom flow, emergency handling and medicine/dose guards
 remain separate. These generated answers have not been clinically validated.
 
-Coverage is **51 classifier labels and 17 source-linked reference records**.
-Ten new condition inventories and 25 symptom terms are summarized from NHS and
-Aga Khan University Hospital Pakistan sources. Generated symptom subsets are
-explicitly illustrative and not observed patient cases. The ten new labels have
+Nearby hospital requests use a separate location flow. The chat asks for an area
+and city, remembers the user's reply, and supplies a Google Maps hospital search
+for that place. This also restores pending requests from older saved chats.
+Facility names, distances and opening hours are provided by Maps after the user
+opens the link; the app does not invent live hospital listings. Source checks
+also prevent repeating unsupported urgent-care claims for back-pain duration alone.
+
+Coverage is **510 classifier labels and 481 source-linked reference records**.
+There are 469 added condition inventories sourced from NHS and Aga Khan
+University Hospital Pakistan. The 1,560 features include exact source phrases;
+overlapping phrases do not imply medically distinct symptoms. Generated subsets
+are explicitly illustrative and not observed patient cases. The added labels have
 no independent test cohort and cannot establish clinical accuracy. Their
 medicine mappings are empty and medicine output is withheld. Existing medicine
 mappings remain unreviewed. Some legacy classes still have only five patterns;

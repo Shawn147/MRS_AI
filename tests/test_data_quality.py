@@ -61,5 +61,5 @@ class DataQualityTests(unittest.TestCase):
 
     def test_added_profiles_do_not_fabricate_medicine_mappings(self):
         profiles = [r for r in self.data['conditions'] if r.get('data_type') == 'illustrative_condition_profile']
-        self.assertEqual(len(profiles), 10)
+        self.assertEqual(len(profiles), self.data['manifest']['condition_count'] - 41)
         self.assertTrue(all(not r['medications'] and r['sources'] and not r['clinically_reviewed'] for r in profiles))

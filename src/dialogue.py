@@ -78,9 +78,14 @@ def extract_symptoms(text, symptoms):
     matches = []
     for item in symptoms:
         for alias in item['aliases']:
+            alias = alias.lower().replace('\u200b', '')
             for match in re.finditer(r'(?<!\w)' + re.escape(alias) + r'(?!\w)', lower):
                 matches.append((match.start(), match.end(), item['id'], negated(lower, match.start())))
     matches.sort(key=lambda hit: -(hit[1] - hit[0]))
+    # Prefer existing canonical IDs when a new phrase adds qualifiers to them.
+    matches = [hit for hit in matches if not (hit[2].startswith('source_') and
+               any(not other[2].startswith('source_') and other[0] >= hit[0] and
+                   other[1] <= hit[1] for other in matches))]
     accepted = []
     for hit in matches:
         if any(hit[0] >= old[0] and hit[1] <= old[1] for old in accepted):
@@ -138,6 +143,10 @@ def respond(text, state, data, predictor, profile=None, general_answer=None):
         note = '; '.join(f'“{original}” as “{replacement}”' for original, replacement in corrections)
         answer['text'] = f'I understood {note}.\n\n' + answer['text']
         answer['correction_note'] = f'I understood {note}.'
+    turns = state.get('recent_turns', [])
+    turns.extend([{'role': 'user', 'content': text[:2000]},
+                  {'role': 'assistant', 'content': answer['text'][:2000]}])
+    state['recent_turns'] = turns[-10:]
     return answer
 
 
@@ -172,6 +181,10 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
             'These symptoms may need urgent assessment. Contact local emergency services or seek urgent medical care. I will not suggest medicines for this conversation.',
             urgent=True,
         )
+    from src.care_navigation import navigation_reply
+    navigation = navigation_reply(text, state)
+    if navigation:
+        return navigation
     if state['urgent']:
         return _reply(
             'This conversation contains an urgent symptom report. Please seek urgent medical assessment; medicine suggestions remain paused.',
@@ -223,6 +236,53 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
                           'Please confirm the medicine and instructions with your pharmacist or clinician.', intent='dose_question', medicine_withheld=True)
         from src.general_qa import answer_general_question
         return (general_answer or answer_general_question)(text, state, data)
+    from src.general_qa import (answer_general_question, is_information_question,
+                                is_unrecognized_health_report, is_contextual_symptom_report, is_topic_followup)
+    answer_general = general_answer or answer_general_question
+    # Older saved chats may contain a new concern in messages without having
+    # stored the focus field. Restore it from user statements, not assistant claims.
+    if not state.get('active_health_report'):
+        for turn in reversed(state.get('recent_turns', [])):
+            if turn.get('role') != 'user':
+                continue
+            previous = turn.get('content', '')
+            if is_information_question(previous):
+                if is_topic_followup(previous):
+                    continue
+                break
+            found, absent = extract_symptoms(previous, data['symptoms'])
+            specific = {s for s in found if normalize(data['by_symptom'][s]['label']) not in {'pain', 'discomfort'}}
+            if is_unrecognized_health_report(previous) and not (specific or absent):
+                state['active_health_report'] = previous[:2000]
+                state['last_condition'] = None
+                state['last_predictions'] = []
+                break
+            if specific or absent:
+                break
+    # A new health description must not be mistaken for a duration answer about
+    # the old symptoms. Recognized additions still use the cumulative symptom flow.
+    recognized, denied = extract_symptoms(text, data['symptoms'])
+    medicine_request = re.search(r'\b(dose|dosage|dosing|tablet|pill|medicine|medication|milligrams|mg|paracetamol|ibuprofen)\w*\b', text, re.I)
+    specific_recognized = {s for s in recognized if normalize(data['by_symptom'][s]['label']) not in {'pain', 'discomfort'}}
+    if (not (specific_recognized or denied) and not medicine_request
+            and is_unrecognized_health_report(text)):
+        state.pop('active_general_topic', None)
+        state['active_health_report'] = text[:2000]
+        state['last_condition'] = None
+        state['last_predictions'] = []
+        return answer_general(text, state, data)
+    canonical_recognized = {s for s in recognized if not s.startswith('source_')}
+    explicit_history = re.search(r'\b(?:summari[sz]e|summary|previous result|previous match|explain.*result)\b', text, re.I)
+    if state.get('active_general_topic') and is_topic_followup(text) and not explicit_history and not medicine_request:
+        return answer_general(text, state, data)
+    if (state.get('active_health_report') and not (canonical_recognized or denied) and not medicine_request
+            and normalize(text) not in SKIP_WORDS
+            and (not is_information_question(text) or is_topic_followup(text))
+            and not re.search(r'\b(?:summari[sz]e|summary|previous result|previous match)\b', text, re.I)):
+        return answer_general(text, state, data)
+    if recognized or denied:
+        state.pop('active_health_report', None)
+        state.pop('active_general_topic', None)
     from src.conversation import remember_details, context_reply
     remember_details(text, state)
     norm = normalize(text)
@@ -242,16 +302,18 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
         return _reply('Hello! Tell me which symptoms you have. You can add details over several messages, and correct a symptom by saying, for example, “no cough”.')
     if norm in {'thanks', 'thank you', 'ok', 'okay'}:
         return _reply('You’re welcome. You can add another symptom or start a new chat for a different concern.')
-    from src.general_qa import (answer_general_question, is_information_question,
-                                is_unrecognized_health_report, is_contextual_symptom_report)
-    answer_general = general_answer or answer_general_question
     # Informational questions must not be entered as symptoms or consume a pending answer.
     # Keep explicit medicine and dose requests in the existing guarded reply path.
     medicine_question = re.search(r'\b(dose|dosage|dosing|tablet|pill|medicine|medication|milligrams|mg|paracetamol|ibuprofen)\w*\b', norm)
     if is_information_question(text) and not medicine_question:
         existing = context_reply(text, state, data, profile_has_context(context))
-        if existing and existing.get('intent') in {'summary', 'explain_match', 'greeting', 'gratitude', 'report_help'}:
+        explicit_result = re.search(r'\b(?:previous|last)\s+(?:result|match)|\b(?:result|match|prediction)\b', text, re.I)
+        if existing and (existing.get('intent') in {'summary', 'greeting', 'gratitude', 'report_help'} or
+                         (existing.get('intent') == 'explain_match' and explicit_result)):
             return existing
+        if not is_topic_followup(text):
+            state.pop('active_health_report', None)
+            state['active_general_topic'] = text[:2000]
         return answer_general(text, state, data)
     positive, negative = extract_symptoms(text, data['symptoms'])
     pending = state['pending']
@@ -391,7 +453,7 @@ def _respond(text, state, data, predictor, profile=None, general_answer=None):
         )
     if low:
         answer = (f'You mentioned **{labels}**. These symptoms can happen for different reasons, '
-                  'so I need a little more detail before discussing possible conditions or medicine information.')
+                  'so I need a little more detail to understand what may be causing them.')
         if state.get('details', {}).get('duration'):
             answer += ' I’ve also noted how long this has been going on.'
         if missing and len(state['questions_asked']) < MAX_FOLLOWUP_QUESTIONS:

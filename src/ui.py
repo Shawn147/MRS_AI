@@ -295,7 +295,7 @@ def render_message(message, chat, data, editable=False, latest=False, animate=Fa
         else:
             st.markdown(message['content'])
             render_sources(message)
-        if (latest and chat['state'].get('pending_detail') == 'duration'
+        if (latest and message.get('uncertain') and chat['state'].get('pending_detail') == 'duration'
                 and not chat.get('editing_last') and not chat['state']['urgent']):
             duration_slot = st.empty()
             with duration_slot.container():
@@ -552,6 +552,11 @@ def chat_page(chat, data, version, landing=False):
         prompt = pending_prompt
         try:
             with st.spinner('Preparing your response…'):
+                # Include existing saved turns too, not just conversations started
+                # after contextual answers were introduced.
+                chat['state']['recent_turns'] = [
+                    {'role': m['role'], 'content': m['content'][:2000]}
+                    for m in chat['messages'][:-1][-10:] if m['role'] in {'user', 'assistant'}]
                 answer = respond(prompt, chat['state'], data, predictor, chat['profile'])
             message = {
                 **answer,
@@ -682,6 +687,10 @@ def dataset_page(data):
             col.metric(label, len(library[key]))
         st.caption('Reference coverage is separate from trained condition labels and symptom features. '
                    'Medicine records are US label excerpts; availability in Pakistan has not been verified.')
+        dictionary_count = sum(r.get('data_type') == 'ontology_definition' for r in library['conditions'])
+        st.caption(f'{dictionary_count:,} topics are disease dictionary definitions; '
+                   f'{len(library["conditions"]) - dictionary_count:,} are health guidance excerpts. '
+                   'Dictionary definitions do not supply symptom or treatment rules.')
         chosen = st.selectbox('Reference library', ['conditions', 'symptoms', 'medicines'])
         st.dataframe(pd.DataFrame(library[chosen]), use_container_width=True, hide_index=True)
         st.download_button('Download reference ' + chosen, json.dumps(library[chosen], indent=2),
@@ -722,7 +731,8 @@ def dataset_page(data):
     st.bar_chart(counts)
     st.caption('Medicine, diet, exercise and precaution records are unreviewed source material. Only condition classification is evaluated.')
     if stats.get('illustrative_rows'):
-        st.info(f"{stats['legacy_unique_rows']:,} original educational patterns plus {stats['illustrative_rows']:,} labelled illustrative examples. Generated subsets are not hospital cases or clinical evidence. The 10 added condition labels have no independent evaluation.")
+        added_labels = sum(r.get('data_type') == 'illustrative_condition_profile' for r in data['conditions'])
+        st.info(f"{stats['legacy_unique_rows']:,} original educational patterns plus {stats['illustrative_rows']:,} labelled illustrative examples. Generated subsets are not hospital cases or clinical evidence. The {added_labels} added condition labels have no independent evaluation. Symptom features include exact source phrases, which can describe overlapping symptoms.")
     st.subheader('Hospital research datasets')
     try:
         catalog, regional, audit = load_regional_preview()
@@ -787,7 +797,9 @@ def evaluation_page(version):
     st.warning('This is a technical benchmark on 61 template-like held-out records, not a clinical validation. '
                'Perfect scores do not establish real-world diagnosis, triage or medicine safety.')
     if metrics.get('unevaluated_labels'):
-        st.warning('No independent test examples for: ' + ', '.join(metrics['unevaluated_labels']) + '.')
+        st.warning(f"{len(metrics['unevaluated_labels'])} condition labels have no independent test examples.")
+        with st.expander('Labels awaiting evaluation'):
+            st.write(', '.join(metrics['unevaluated_labels']))
     chosen = st.selectbox('Inspect model', list(EVAL_NAMES), format_func=lambda k: EVAL_NAMES[k])
     item = metrics['models'][chosen]
     st.metric('Test accuracy', f"{item['accuracy']:.2%}")

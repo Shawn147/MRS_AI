@@ -61,8 +61,17 @@ def apply_expansion(files, manifest):
         if set(symptoms) - known_symptoms:
             raise ValueError('Unknown profile symptom')
         minimum = max(3, (len(symptoms) + 1) // 2)
-        for length in range(minimum, len(symptoms) + 1):
-            for pattern in itertools.combinations(symptoms, length):
+        if kind == 'source_summarized_profile' and len(symptoms) > 10:
+            # Large inventories must not allocate their entire exponential power set.
+            rng_profile = random.Random(parent)
+            patterns = {tuple(symptoms)}
+            for _ in range(512):
+                length = rng_profile.randint(minimum, len(symptoms))
+                patterns.add(tuple(sorted(rng_profile.sample(symptoms, length))))
+        else:
+            patterns = itertools.chain.from_iterable(itertools.combinations(symptoms, length)
+                         for length in range(minimum, len(symptoms) + 1))
+        for pattern in sorted(patterns):
                 if pattern not in occupied:
                     candidates[pattern].append((condition, parent, kind, sources))
     queues = defaultdict(list)
@@ -78,6 +87,10 @@ def apply_expansion(files, manifest):
     rng = random.Random(42)
     for name in sorted(queues):
         rng.shuffle(queues[name])
+        # Every new label needs its complete inventory represented. This also
+        # ensures no new feature exists solely as an unused dictionary entry.
+        full = next((tuple(sorted(p['symptoms'])) for p in config['conditions'] if p['name'] == name), None)
+        queues[name].sort(key=lambda item: item[0] == full)
     target = config['target_unique_patterns']
     added = []
     while len(legacy) + len(added) < target:
@@ -96,6 +109,10 @@ def apply_expansion(files, manifest):
         if not progress:
             raise ValueError('Insufficient unambiguous illustrative patterns for target')
     files['training.json'] = legacy + added
+    used = {s for row in files['training.json'] for s in row['symptoms']}
+    labels = {row['condition'] for row in files['training.json']}
+    if known_symptoms - used or {r['name'] for r in conditions} - labels:
+        raise ValueError('Expansion leaves unused features or labels: ' + str(sorted(known_symptoms - used)) + str(sorted({r['name'] for r in conditions} - labels)))
     conditions.sort(key=lambda r: r['name'])
     manifest.update(schema_version=2, legacy_raw_rows=manifest['raw_rows'],
                     legacy_unique_rows=len(legacy), illustrative_rows=len(added),

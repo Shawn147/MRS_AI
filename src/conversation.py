@@ -44,6 +44,8 @@ def context_reply(text, state, data, blocked):
                      'Please check the medicine’s leaflet and ask a pharmacist or clinician about the correct dose for you.', medicine_withheld=True)
     if intent == 'summary':
         parts = ['**Your conversation so far**', '**Symptoms:** ' + (', '.join(labels) if labels else 'No active symptoms recorded yet.')]
+        if state.get('active_health_report'):
+            parts.append('**Latest concern:** ' + state['active_health_report'])
         if state['denied']:
             parts.append('**Symptoms you denied:** ' + ', '.join(data['by_symptom'][s]['label'] for s in state['denied']))
         parts.extend(f'**{key.title()}:** {value}' for key, value in details.items())
@@ -71,6 +73,11 @@ def context_reply(text, state, data, blocked):
         if blocked:
             return reply('I’ve noted your health details. I can’t tell which medicine would be safe for you or how it may affect '
                          'other medicines you take.', medicine_withheld=True)
+        if state.get('active_health_report'):
+            return reply('For your latest concern, **' + state['active_health_report'] + '**, '
+                         'the right medicine depends on the cause. If you have a medicine in mind, '
+                         'tell me its name and I can explain its uses and safety information.',
+                         medicine_withheld=True)
         if not condition:
             if labels:
                 mentioned = labels[0] if len(labels) == 1 else ', '.join(labels[:-1]) + ' and ' + labels[-1]

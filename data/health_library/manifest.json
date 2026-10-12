@@ -1,24 +1,28 @@
 {
-  "collected_on": "2026-10-02",
+  "collected_on": "2026-10-07",
   "baseline": {
     "classifier_condition_labels": 51,
     "classifier_symptom_features": 156,
     "legacy_medicine_entries": 121
   },
   "requested_targets": {
-    "conditions": 510,
+    "conditions": 6390,
     "symptom_phrases": 1560,
     "medicine_names": 1210
   },
   "collected": {
-    "conditions": 639,
+    "conditions": 6390,
     "symptoms": 2465,
     "medicines": 1238
   },
   "sha256": {
-    "conditions.json": "9646aef8f08701672fb8b60a340a123ab08b51b9b8de6d3fe550acce53c24bb7",
+    "conditions.json": "e2dd6e933f73fa0d696ee40a010c850f8b2bc74e577616873c55d44ce70e6c22",
     "symptoms.json": "0254235ae6e9eedb0881b2f43f8e28ea7702d585cb0b0d6d99bf10cab5dbff32",
     "medicines.json": "5f79706014e99b4a7a820847a9564c4eba06291e203d3465dd53c0909140b8ed"
   },
-  "scope": "Reference library only. Counts do not represent classifier labels/features or patient cases. Symptom phrases are scoped source descriptions, not medically distinct normalized features."
+  "scope": "Reference library only. Counts do not represent classifier labels/features or patient cases. Symptom phrases are scoped source descriptions, not medically distinct normalized features.",
+  "condition_record_types": {
+    "public_source_excerpt": 874,
+    "ontology_definition": 5516
+  }
 }

@@ -1,0 +1,8 @@
+{
+  "release": "releases/2026-10-06",
+  "sha256": "2631e8e165d41def1a46749adb1ce0a336c8aba7f6bc0978729592cee8fed60b",
+  "download_url": "https://github.com/monarch-initiative/mondo/releases/download/v2026-10-06/mondo.obo",
+  "license": "CC BY 4.0",
+  "definitions_added": 5516,
+  "selection": "Active MONDO:0 leaf concepts with complete 5\u2013100 word definitions; exact names and exact synonyms deduplicated against existing references."
+}

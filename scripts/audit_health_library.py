@@ -22,8 +22,8 @@ def validate(library):
             sources=[row['source']] if category=='medicines' else row['sources']
             for source in sources:
                 url=urlparse(source['url'])
-                expected='dailymed.nlm.nih.gov' if category=='medicines' else 'www.nhs.uk'
-                if url.scheme!='https' or url.hostname!=expected or not source.get('accessed_on'):
+                expected={'dailymed.nlm.nih.gov'} if category=='medicines' else {'www.nhs.uk', 'hospitals.aku.edu', 'www.ebi.ac.uk'}
+                if url.scheme!='https' or url.hostname not in expected or not source.get('accessed_on'):
                     errors.append('Invalid source: '+key)
             if category=='medicines':
                 if (row.get('prescribing_approved') is not False or row.get('pakistan_availability_verified') is not False
@@ -34,6 +34,8 @@ def validate(library):
             elif category=='conditions':
                 if not row['description'] or row.get('clinically_reviewed') is not False:
                     errors.append('Invalid condition scope: '+key)
+                if row.get('data_type') == 'ontology_definition' and (row['symptom_terms'] or row['care_notes'] or row['seek_help_notes'] or not row.get('concept_id', '').startswith('MONDO:')):
+                    errors.append('Dictionary definition presented as clinical guidance: '+key)
     return errors
 
 
@@ -42,7 +44,7 @@ def main():
     report={'errors':errors,'counts':library['manifest']['collected'],
             'topics_with_symptom_lists':sum(bool(r['symptom_terms']) for r in library['conditions']),
             'targets_met':{k:library['manifest']['collected'][category]>=target for k,category,target in
-                           [('condition_topics','conditions',510),('symptom_phrases','symptoms',1560),('medicine_names','medicines',1210)]},
+                           [('condition_topics','conditions',6390),('symptom_phrases','symptoms',1560),('medicine_names','medicines',1210)]},
             'note':'Reference counts do not measure independent clinical evidence or classifier coverage.'}
     (DIRECTORY/'quality_report.json').write_text(json.dumps(report,indent=2)+'\n')
     print(json.dumps(report,indent=2))

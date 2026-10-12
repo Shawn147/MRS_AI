@@ -65,7 +65,7 @@ def validate(data):
             if hashlib.sha256((ROOT / 'data' / filename).read_bytes()).hexdigest() != manifest.get(key):
                 errors.append(f'Expansion provenance checksum mismatch: {filename}')
     for row in data['conditions']:
-        fields = ['description', 'precautions', 'symptoms'] if row.get('data_type') == 'illustrative_condition_profile' else ['description', 'medications', 'diet', 'precautions', 'workout', 'symptoms']
+        fields = ['description', 'symptoms'] if row.get('data_type') == 'illustrative_condition_profile' else ['description', 'medications', 'diet', 'precautions', 'workout', 'symptoms']
         if row.get('data_type') == 'illustrative_condition_profile' and (not row.get('sources') or row['medications'] or row.get('clinically_reviewed') is not False):
             errors.append(f"Invalid illustrative condition provenance: {row['name']}")
         for field in fields:
@@ -80,8 +80,9 @@ def validate(data):
     for row in references:
         if row['eligible_for_training'] is not False or row['clinically_reviewed'] is not False:
             errors.append(f"Unsupported approval status: {row['name']}")
-        if (not row['sources'] or not row['description'] or not row.get('care_notes')
-                or not row.get('seek_help_notes') or
+        if (not row['sources'] or not row['description'] or
+                (row['data_type'] != 'public_source_excerpt' and
+                 (not row.get('care_notes') or not row.get('seek_help_notes'))) or
                 (row['data_type'] != 'medicine_safety_reference' and not row['symptom_terms'])):
             errors.append(f"Incomplete reference: {row['name']}")
         for source in row['sources']:

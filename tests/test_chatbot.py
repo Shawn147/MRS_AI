@@ -253,8 +253,8 @@ class DialogueTests(unittest.TestCase):
         m=json.loads((ARTIFACT_DIR/'metrics.json').read_text())
         self.assertEqual(m['data_fingerprint'],fingerprint())
         self.assertTrue(m['training']['encoder_fine_tuned'])
-        self.assertEqual(m['split_sizes'],{'train':2918,'validation':61,'test':61})
-        self.assertEqual(len(self.data['by_condition']),51)
+        self.assertEqual(m['split_sizes'],{'train':5878,'validation':61,'test':61})
+        self.assertEqual(len(self.data['by_condition']),510)
 
 
 if __name__=='__main__':unittest.main()

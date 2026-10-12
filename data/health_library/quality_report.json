@@ -1,11 +1,11 @@
 {
   "errors": [],
   "counts": {
-    "conditions": 639,
+    "conditions": 6390,
     "symptoms": 2465,
     "medicines": 1238
   },
-  "topics_with_symptom_lists": 495,
+  "topics_with_symptom_lists": 730,
   "targets_met": {
     "condition_topics": true,
     "symptom_phrases": true,

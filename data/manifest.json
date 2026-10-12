@@ -2,11 +2,11 @@
   "schema_version": 2,
   "repository": "https://github.com/dr-mushtaq/Medicine-Recommendation-System",
   "revision": "aa6b145d4838ac1dd6fd21b4db7a43c3098e19f9",
-  "raw_rows": 7656,
-  "unique_rows": 3040,
+  "raw_rows": 10616,
+  "unique_rows": 6000,
   "duplicates_removed": 4616,
-  "condition_count": 51,
-  "feature_count": 156,
+  "condition_count": 510,
+  "feature_count": 1560,
   "source_sha256": {
     "Symptom-severity.csv": "cb5a84b5ebde81bb18738b7e7733bcbc5abdc667b4376893fb1774d8c444bc8d",
     "Training.csv": "cc00c869b702c0c90eef3c1fb4d0b54f16965f8def2dec7e1bf91d0b76480ac3",
@@ -27,18 +27,18 @@
   ],
   "legacy_raw_rows": 4920,
   "legacy_unique_rows": 304,
-  "illustrative_rows": 2736,
+  "illustrative_rows": 5696,
   "provenance_counts": {
     "legacy_educational_pattern": 304,
-    "illustrative_symptom_pattern": 2736
+    "illustrative_symptom_pattern": 5696
   },
   "split_policy": "Fixed legacy holdouts; generated training-parent subsets stay in training. New condition profiles have no independent evaluation.",
-  "ambiguity_excluded": 260,
-  "expansion_config_sha256": "0f932edc1f60dd8c6eb3831aa44a9cb90e576b8feb9aa4bf72b10e4fa7b4ef6a",
+  "ambiguity_excluded": 307,
+  "expansion_config_sha256": "fec62634367d3e191b8f730eb400477cbca8239a25e3e89a6e5a194a4253877b",
   "legacy_splits_sha256": "9b97b09fdfb38b477644c13252f1d05466dd094c163acf7b616096517f15e550",
   "json_sha256": {
-    "training.json": "06accd20d3d3fc9aa41b8ba51bb00d72caee8b07977e3cc4763af62a53d208c0",
-    "conditions.json": "0e6fa483d71b8b292190fdcbf0fc483698e84c122be34472ee61a3ca48c18b09",
-    "symptoms.json": "d641566511c9d1d8671d528412701049a83e1b1129190a003c82c8e6adebfc83"
+    "training.json": "c7545ee46f9ca8004720caf8129a8168b939ce3b8023d02dd6e612cbaaaa232e",
+    "conditions.json": "6139fd8af5aba0926f78fd36775ad4268a28f40796a242552f5eaed932256efd",
+    "symptoms.json": "c6ebb68a4f14c7102e1b72fa33c35ea64a6e75e441d2c402f7fc262b86f94ddc"
   }
 }

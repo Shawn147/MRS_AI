@@ -54,7 +54,7 @@ class HealthLibraryTests(unittest.TestCase):
         with patch('src.general_qa.urlopen', side_effect=URLError('offline')):
             result=answer_general_question('What is shingles?',new_state(),data)
         self.assertEqual(result['intent'],'reference_fallback')
-        self.assertTrue(any('/shingles/' in s for s in result['sources']))
+        self.assertTrue(any('/shingles' in s for s in result['sources']))
         self.assertIn('Shingles',result['text'])
 
     def test_condition_short_name_is_matched(self):

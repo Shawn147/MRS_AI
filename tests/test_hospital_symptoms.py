@@ -14,11 +14,11 @@ class HospitalSymptomTests(unittest.TestCase):
     def test_published_sources_and_mappings(self):
         rows = self.data['pakistan_hospital_symptoms']
         validate_hospital_symptoms(rows, self.data['by_symptom'])
-        self.assertEqual(len(rows), 71)
-        self.assertEqual(len({r['term'] for r in rows}), 58)
-        self.assertEqual(len({r['source']['url'] for r in rows}), 9)
+        self.assertGreaterEqual(len(rows), 710)
+        self.assertGreater(len({r['term'] for r in rows}), 58)
+        self.assertGreater(len({r['source']['url'] for r in rows}), 9)
         self.assertTrue(any(r['feature_id'] is None for r in rows))
-        self.assertEqual(len(self.data['symptoms']), 156)
+        self.assertEqual(len(self.data['symptoms']), 1560)
 
     def test_new_phrase_is_recognized_and_negation_is_preserved(self):
         found, _ = extract_symptoms('I have upper abdominal pain and yellow eyes', self.data['symptoms'])

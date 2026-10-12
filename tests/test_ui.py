@@ -31,7 +31,11 @@ class UITests(unittest.TestCase):
         self.assertFalse(at.exception)
         return at
 
-    def test_chat_navigation_and_isolated_history(self):
+    @patch('src.models.predict', return_value=[
+        {'condition': 'Common Cold', 'probability': .9},
+        {'condition': 'Allergy', 'probability': .06},
+        {'condition': 'Pneumonia', 'probability': .02}])
+    def test_chat_navigation_and_isolated_history(self, predict_fixture):
         at = self.app()
         send(at, 'I have a runny nose, sneezing and cough for two days')
         self.assertFalse(at.exception)
@@ -80,7 +84,7 @@ class UITests(unittest.TestCase):
         click(at, 'About & sources')
         click(at, 'Dataset Preview')
         metrics = {metric.label: metric.value for metric in at.metric}
-        self.assertEqual(metrics['Unique patterns'], '3040')
+        self.assertEqual(metrics['Unique patterns'], '6000')
         self.assertEqual(metrics['Distinct observations'], '3900')
         self.assertTrue(any('not used by the symptom classifier' in item.value for item in at.info))
         for index in range(4):

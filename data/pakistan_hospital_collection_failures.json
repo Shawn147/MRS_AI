@@ -1,0 +1,578 @@
+[
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/abdominoplasty-tummy-tuck-",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/adrenal-crisis",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/alzheimers-disease",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/bladder-cancer",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/bladder-dysfunction",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/bladder-outlet-obstruction",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/blepharospasm",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/borderline-personality-disorder",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/bruxism",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/cerebral-palsy",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/cervical-radiculopathy",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/cervicitis",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/chalazion",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/chiari-malformation",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/chickenpox",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/childhood-disintegrative-disorder",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/cataracts",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/carbuncles",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/cavities",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/cholesteatoma",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/chipped-tooth",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/chondrosarcoma",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/chronic-fatigue-syndrome-cfs-",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/combined-hyperlipidemia",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/cough",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/craniosynostosis",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/cutaneous-lupus-erythematosus",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/dental-injuries",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/deviated-nasal-septum",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/diabetes-type-1",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/diabetes-and-foot-problems",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/developmental-coordination-disorder",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/diabetic-retinopathy",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/diabetes-type-2",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/diarrhoea",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/dopamine-responsive-dystonia",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/down-syndrome",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/dry-eyes",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/drooping-eyelids-ptosis-",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/dry-mouth",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/dysfunctional-uterine-bleeding",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/dry-socket",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/ductal-carcinoma",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/dyscalculia",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/dyslipidaemia",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/dyslexia",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/dysmenorrhoea",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/dysphagia",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/dystonia-musculorum",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/ear-infection-otitis-media-",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/ear-infection",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/ear-pressure-pain",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/ebsteins-anomaly",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/earwax-blockage",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/early-or-delayed-puberty",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/ebola",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/ectopic-pregnancy",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/emphysema",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/enchondroma",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/eczema",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/endometrial-cancer",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/endometriosis",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/entropion",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/enlarged-adenoids",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/erb-s-palsy",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/epistaxis",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/erectile-dysfunction",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/ewing-s-sarcoma",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/eye-floaters",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/eye-allergies",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/facelift",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/ewings-sarcoma",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/female-infertility",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/family-health",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/faecal-and-bowel-incontinence",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/fatigue-and-excessive-sleepiness",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/female-sexual-arousal-disorder",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/fibrous-dysplasia",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/fibroids",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/fibromyalgia",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/fifth-disease",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/fungal-nail-infection",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/flu",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/finger-replant",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/gallstones-",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/gastroenteritis",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/gastroesophageal-reflux-disease-ent",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/gastroesophageal-reflux-disease-gerd-",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/gastrointestinal-cancer",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/gestation-diabetes",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/generalized-anxiety-disorder",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/genital-hpv",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/giant-cell-tumor",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/gliomas",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/glaucoma",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/glomerulonephritis",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/glue-ear",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/gyanaecomastia",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/hives",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/human-papilloma-virus",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/hyperdontia",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/hydrocele",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/idiopathic-epilepsy",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/idiopathic-short-stature",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/jaundice",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/keloid",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/kidney-and-bladder-cancer",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/lip-cancer",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/lipid-management",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/lipid-disorders",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/lung-cancer",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/melasma",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/mouth-cancer",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/obesity-excess-weight",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/orthodontics",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/non-melanoma-skin-cancer",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/osteoporosis",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/osteosarcoma",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/obesity-excess-weight-",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/painful-bladder-syndrome",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/penile-cancer",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/planning-for-pregnancy",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/premature-ejaculation",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/presbyopia",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/primary-hypertension",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/prostate-cancer",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/proteinuria",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/renal-cell-carcinoma",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/rotavirus",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/sciatica",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/secondary-hypertension",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/severe-acute-respiratory-syndrom",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/skin-cancer",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/skin-grafting-for-primary-burn",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/skin-tags",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/small-pox",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/somatoform-pain-disorder",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/spinal-accessory-nerve-dysfunction",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/spondylolisthesis",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/tongue-cancer",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/umbilical-hernia",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/undescended-testicle",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/urinary-tract-infection",
+    "error": "No explicit short symptom list"
+  },
+  {
+    "url": "https://hospitals.aku.edu/pakistan/encyclopedia/varicose-veins",
+    "error": "No explicit short symptom list"
+  }
+]

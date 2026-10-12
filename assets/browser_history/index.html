@@ -86,15 +86,16 @@
           const main = doc.querySelector('[data-testid="stMain"]');
           const composer = observedComposer;
           if (message && main) {
-            const bounds = message.getBoundingClientRect();
             const composerBounds = composer?.getBoundingClientRect();
             const bottom = composerBounds?.height ? composerBounds.top - 24 : host.innerHeight - 100;
-            const delta = bounds.bottom - bottom;
-            const signature = `${message.offsetHeight}:${main.scrollHeight}:${bottom}`;
+            // Scroll to the actual end, including follow-up choices after the reply.
+            // Aligning only the message edge could leave newer controls below view
+            // or pull the conversation upwards while Streamlit rerendered it.
+            const signature = `${message.offsetHeight}:${main.scrollHeight}:${main.clientHeight}:${bottom}`;
             stable = signature === previous ? stable + 1 : 0;
             previous = signature;
             // Recheck while Streamlit hydrates the composer and restores saved history.
-            main.scrollBy({top: delta, behavior: 'auto'});
+            main.scrollTo({top: main.scrollHeight, behavior: 'auto'});
             if (composerBounds?.height && stable >= 30 && attempts >= 90) { cleanup(); return; }
           }
           if (++attempts < 180) host.requestAnimationFrame(reveal);

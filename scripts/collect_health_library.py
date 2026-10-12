@@ -111,14 +111,14 @@ def collect_conditions():
             if i%25==0:
                 save('conditions.json',list(cache.values())); print('condition pages',len(cache),'failures',len(failures),flush=True)
     # Some NHS topics place symptom lists on a dedicated child page.
-    children={u for r in cache.values() if not r['symptom_terms'] for u in r['symptom_page_urls']}
+    children={u for r in cache.values() if not r['symptom_terms'] for u in r.get('symptom_page_urls', [])}
     with ThreadPoolExecutor(max_workers=4) as pool:
         pending={pool.submit(nhs_page,u):u for u in sorted(children)}
         for future in as_completed(pending):
             try:
                 child=future.result()
                 for row in cache.values():
-                    if pending[future] in row['symptom_page_urls']:
+                    if pending[future] in row.get('symptom_page_urls', []):
                         row['symptom_terms']=child['symptom_terms']
                         row['symptom_source']=child['sources'][0]
             except Exception as exc: failures.append({'url':pending[future],'error':str(exc)})
@@ -189,6 +189,8 @@ def collect_medicines(target=1210, start=0):
 def manifest():
     files={n:json.loads((OUT/n).read_text()) for n in ['conditions.json','symptoms.json','medicines.json']}
     result={'collected_on':TODAY,'baseline':{'classifier_condition_labels':51,'classifier_symptom_features':156,'legacy_medicine_entries':121},'requested_targets':{'conditions':510,'symptom_phrases':1560,'medicine_names':1210},'collected':{n[:-5]:len(v) for n,v in files.items()},'sha256':{n:hashlib.sha256((OUT/n).read_bytes()).hexdigest() for n in files},'scope':'Reference library only. Counts do not represent classifier labels/features or patient cases. Symptom phrases are scoped source descriptions, not medically distinct normalized features.'}
+    result['condition_record_types'] = dict(__import__('collections').Counter(r['data_type'] for r in files['conditions.json']))
+    result['requested_targets']['conditions'] = 6390
     save('manifest.json',result); print(json.dumps(result['collected']),flush=True)
 
 if __name__=='__main__':
